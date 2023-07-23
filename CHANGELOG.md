@@ -1,3 +1,12 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+
+### Changed
+
+### Fixed
+- Fixed issue #62, contracts failing to fetch if a token is invalid
+
 # Change Log
 
 All notable changes to this project will be documented in this file.

@@ -7,6 +7,7 @@ from celery import shared_task
 from django.db import Error
 from django.utils import timezone
 from eveuniverse.models import EveMarketPrice
+from esi.errors import TokenError
 
 from allianceauth.services.hooks import get_extension_logger
 from allianceauth.services.tasks import QueueOnce
@@ -224,7 +225,14 @@ def update_all_prices():
 def update_contracts_for_owner(self, owner_pk):
     """fetches all contracts for owner from ESI"""
 
-    return _get_owner(owner_pk).update_contracts_esi()
+    try:
+        return _get_owner(owner_pk).update_contracts_esi()
+    except TokenError:
+        print("Invalid token provided.")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}")
+        return None
 
 
 @shared_task(**TASK_DEFAULT_KWARGS)
