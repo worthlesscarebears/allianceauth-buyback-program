@@ -1,8 +1,10 @@
-## [Unreleased] - yyyy-mm-dd
+## [1.12.0] - 2023-07-23
 
 ### Added
+- Minimum eveuniverse version bump django-eveuniverse>=1.0.0
 
 ### Changed
+- Improve eveuniverse data load
 
 ### Fixed
 - Fixed issue #62, contracts failing to fetch if a token is invalid
