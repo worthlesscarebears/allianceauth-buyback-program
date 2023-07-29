@@ -1,3 +1,12 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+
+### Changed
+
+### Fixed
+- Fixes #66, adds Rogue Drone Infestation Data to red loot table
+
 ## [1.12.0] - 2023-07-23
 
 ### Added

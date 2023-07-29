@@ -44,4 +44,5 @@ BLUE_LOOT_TYPE_IDS = [
 
 RED_LOOT_TYPE_IDS = [
     48121,
+    60459,
 ]
