@@ -133,7 +133,8 @@ CELERYBEAT_SCHEDULE['buybackprogram_update_all_contracts'] = {
 }
 ```
 
-**Additional settings**
+#### Additional settings
+
 You may change the following settings by adding the lines in your `local.py` setting files
 
 Name | Description | Default
@@ -177,12 +178,14 @@ Each buyback program is operated by a manager. To add a new manager click on the
 
 Each buyback program operates at a location that is constructed of `SolarSystem` and a `Custom name` and an optional `Structure ID`. To add a new location click on the `add location` button on the buyback page.
 
-**Solar System & Name**
+##### Solar System & Name
+
 Find a solar system by typing in the solar system box. Then determine a name for the structure. Most often you want to use the actual in-game name of the structure so that people are able to identify the location.
 
 The solar system name will indicate your sellers where the program contract structure is located. The name will describe the structure name in where the contracts should be created and most often should be identical to the actual structure name in-game.
 
-**Structure ID**
+##### Structure ID
+
 Structure ID is optional and will enable contract location tracking in the program statistics page. If a program location has been given a structure ID the statistics page will display a warning if the user has made the actual contract from some other structure than the one that was determined in the buyback program.
 
 The easiest way to find the actual structure id is to link the structure name into any chat box and post the structure name into the chat. This can be done in any channel or the structure name can be also copied from any MOTDs.
@@ -327,7 +330,8 @@ You can either add items one by one with the `add item` button or add all items 
 
 You can edit an item on the taxation table simply by adding it again. To delete the item press the delete button next to it or to delete all items in the program click on the delete all items button.
 
-**Market Groups**
+#### Market Groups
+
 When you add an market group each item inside that market group, the child of the market group and the child of the child group will be added to the item taxes (3 steps down)
 
 The easiest way to check which items are under which market group is to open the market window in-game or third party programs such as [https://evemarketer.com/](https://evemarketer.com/)
@@ -338,7 +342,8 @@ Market group `Minerals` is the bottom market group that includes the standard mi
 
 Market group `Standard ores` is a parent category and there are no direct items under this category. However this category has child categories such as Veldspar, Jaspet, Scordite which each includes multiple variations of the ores. Adding the `Standard ores` category will add each ore type to the special tax section.
 
-**Most Common Groups**
+#### Most Common Groups
+
 Name | Includes | Items
 -- | --
 Standard Ores | Normal ores from belts and anomalies | Veldspar, Hedbergite, Compressed Arkonor ...
