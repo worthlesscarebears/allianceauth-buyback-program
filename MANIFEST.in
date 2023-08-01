@@ -1,6 +1,0 @@
-include LICENSE
-include README.md
-include buybackprogram/swagger.json
-recursive-include buybackprogram *.py
-recursive-include buybackprogram/static *
-recursive-include buybackprogram/templates *
