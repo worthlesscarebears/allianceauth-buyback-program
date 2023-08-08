@@ -6,6 +6,7 @@
 
 ### Fixed
 - Fixes #66, adds Rogue Drone Infestation Data to red loot table
+- Fixes market groups missing for new installs that caused items to be disallowed.
 
 ## [1.12.0] - 2023-07-23
 
