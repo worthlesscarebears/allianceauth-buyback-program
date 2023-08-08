@@ -14,4 +14,5 @@ class Command(BaseCommand):
             "--types-enabled-sections",
             EveType.Section.DOGMAS,
             EveType.Section.TYPE_MATERIALS,
+            EveType.Section.MARKET_GROUPS,
         )
