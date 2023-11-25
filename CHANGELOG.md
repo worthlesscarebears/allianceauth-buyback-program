@@ -1,3 +1,13 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- A0 ores as refinable ores
+
+### Changed
+
+### Fixed
+- Fixes #70, typo in contract settings
+
 ## [1.12.1] - 2023-08-08
 
 If you are on a fresh insall since 1.12 and are having issues with prices generating for program (red hands and question marks) run the data load command `python manage.py buybackprogram_load_data` after installing this patch to get the missing market groups.
