@@ -1,9 +1,7 @@
-## [Unreleased] - yyyy-mm-dd
+## [1.12.2] - 2023-11-25
 
 ### Added
-- A0 ores as refinable ores
-
-### Changed
+- Closes #69, A0 ores as refinable ores
 
 ### Fixed
 - Fixes #70, typo in contract settings
