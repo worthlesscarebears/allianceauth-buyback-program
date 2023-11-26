@@ -4,6 +4,7 @@
 {% load bootstrap %}
 {% load static %}
 {% load price_formats %}
+{% load help_icons %}
 
 {% block body %}
 <div class="panel-heading">
@@ -111,14 +112,14 @@
         <table id="value" style="margin: 20px auto;" class="table table-condensed">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>{{price_source}} Buy / Sell</th>
-                    <th>Base Price</th>
-                    <th>Our Taxes</th>
-                    <th>Our Price</th>
-                    <th>Row Total</th>
-                    <th>Notes</th>
+                    <th>Name <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
+                    <th>Quantity <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
+                    <th>{{price_source}} Buy / Sell <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price_source' %}"></i></th>
+                    <th>Base Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
+                    <th>Our Taxes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
+                    <th>Our Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
+                    <th>Row Total <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
+                    <th>Notes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
                 </tr>
             </thead>
             <tbody>

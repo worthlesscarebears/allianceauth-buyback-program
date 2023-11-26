@@ -2,6 +2,7 @@
 
 ### Added
 - Closes #68, adds ability to select base price from buy, sell or split prices.
+- Added help icons and explanations for item sheet
 
 ### Changed
 
