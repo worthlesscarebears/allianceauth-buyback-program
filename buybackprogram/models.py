@@ -1016,6 +1016,11 @@ class Program(models.Model):
         WEEK2 = "2 Weeks", _("2 Weeks")
         WEEK4 = "4 Weeks", _("4 Weeks")
 
+    class PriceType(models.TextChoices):
+        BUY = "Buy", _("Buy")
+        SELL = "Sell", _("Sell")
+        SPLIT = "Split", _("Split")
+
     name = models.CharField(
         verbose_name="Name/description",
         max_length=64,
@@ -1048,6 +1053,13 @@ class Program(models.Model):
         choices=Expiration.choices,
         default=Expiration.WEEK2,
         help_text="Expiration time the contracts should bet set to.",
+    )
+
+    price_type = models.CharField(
+        max_length=7,
+        choices=PriceType.choices,
+        default=PriceType.BUY,
+        help_text="What prices should we use as the source for prices. Default: Buy",
     )
 
     tax = models.IntegerField(

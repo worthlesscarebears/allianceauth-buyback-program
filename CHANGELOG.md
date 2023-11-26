@@ -1,3 +1,13 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- Closes #68, adds ability to select base price from buy, sell or split prices.
+
+### Changed
+
+### Fixed
+- Fixed mistake in displaying total raw values for refined ore in calculation sheets.
+
 ## [1.12.2] - 2023-11-25
 
 ### Added

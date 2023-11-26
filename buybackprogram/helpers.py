@@ -1,5 +1,5 @@
 import uuid
-
+import statistics
 import requests
 
 from django.db import Error
@@ -439,7 +439,19 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["raw_prices"]["quantity"]
         sell = item_prices["raw_prices"]["sell"]
         buy = item_prices["raw_prices"]["buy"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+        elif program.price_type == "Sell":
+            price = sell
+        elif program.price_type == "Split":
+            price = split
+
+        logger.debug(
+            "Using price value type '%s' with value %s" % (program.price_type, price)
+        )
 
         if not item_type.volume <= 0:
             price_dencity = price / item_type.volume
@@ -567,7 +579,24 @@ def get_item_values(item_type, item_prices, program):
             quantity = material["quantity"]
             sell = material["sell"]
             buy = material["buy"]
-            price = buy
+            split = statistics.median([sell, buy])
+
+            # Determine what price type we should use
+            if program.price_type == "Buy":
+                price = buy
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
+            elif program.price_type == "Sell":
+                price = sell
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
+            elif program.price_type == "Split":
+                price = split
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
             program_tax = program.tax
             refining_rate = float(program.refining_rate) / 100
             tax_multiplier = (100 - (program_tax + item_tax + price_dencity_tax)) / 100
@@ -628,7 +657,24 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["compression_prices"]["quantity"]
         buy = item_prices["compression_prices"]["buy"]
         sell = item_prices["compression_prices"]["sell"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Sell":
+            price = sell
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Split":
+            price = split
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
         price_dencity = price / compressed_version.volume
 
         logger.debug("Getting price density for compressed variant")
@@ -690,7 +736,24 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["npc_prices"]["quantity"]
         sell = item_prices["npc_prices"]["sell"]
         buy = item_prices["npc_prices"]["buy"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Sell":
+            price = sell
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Split":
+            price = split
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
 
         if not item_type.volume <= 0:
             price_dencity = price / item_type.volume
