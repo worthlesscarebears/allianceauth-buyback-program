@@ -1,3 +1,8 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Fixed
+- Fixes #72, Fixes issues with quantities with different localizations.
+
 ## [1.12.2] - 2023-11-25
 
 ### Added
