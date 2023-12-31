@@ -1,4 +1,4 @@
-## [Unreleased] - yyyy-mm-dd
+## [1.12.3] - 2023-12-31
 
 ### Fixed
 - Fixes #72, Fixes issues with quantities with different localizations.
