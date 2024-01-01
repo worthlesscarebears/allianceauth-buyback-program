@@ -17,6 +17,7 @@ from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.models import ItemPrices, Owner, Tracking
 
@@ -92,8 +93,14 @@ def get_bulk_prices(type_ids):
         output = {}
         for item in r:
             output[str(item["itemType"]["eid"])] = {
-                "buy": {"max": str(item["top5AveragePrices"]["buyPrice5DayMedian"])},
-                "sell": {"min": str(item["top5AveragePrices"]["sellPrice5DayMedian"])},
+                "buy": {
+                    "max": str(item["immediatePrices"]["buyPrice5DayMedian"]),
+                    "percentile": str(item["top5AveragePrices"]["buyPrice5DayMedian"]),
+                },
+                "sell": {
+                    "min": str(item["immediatePrices"]["sellPrice5DayMedian"]),
+                    "percentile": str(item["top5AveragePrices"]["sellPrice5DayMedian"]),
+                },
             }
         r = output
     else:
@@ -154,9 +161,21 @@ def update_all_prices():
         for price in prices:
             # Check if we received data from the API for the item. This will fix errors when using Janice as the POST endpoint does not return anything when there are no prices.
             if str(price.eve_type_id) in market_data:
-                # Get the price values from the API data
-                buy = int(float(market_data[str(price.eve_type_id)]["buy"]["max"]))
-                sell = int(float(market_data[str(price.eve_type_id)]["sell"]["min"]))
+                # Check what prices we should use either instant prices or top 5% percentile
+                if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
+                    # Get the price values from the API data
+                    buy = int(
+                        float(market_data[str(price.eve_type_id)]["buy"]["percentile"])
+                    )
+                    sell = int(
+                        float(market_data[str(price.eve_type_id)]["sell"]["percentile"])
+                    )
+                else:
+                    # Get the price values from the API data
+                    buy = int(float(market_data[str(price.eve_type_id)]["buy"]["max"]))
+                    sell = int(
+                        float(market_data[str(price.eve_type_id)]["sell"]["min"])
+                    )
 
             # If API did not return any values we remove prices for the item
             else:

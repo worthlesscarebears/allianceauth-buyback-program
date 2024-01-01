@@ -9,6 +9,7 @@ from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.models import ItemPrices
 from buybackprogram.tasks import get_bulk_prices, valid_janice_api_key
@@ -32,18 +33,24 @@ class Command(BaseCommand):
 
         if BUYBACKPROGRAM_PRICE_METHOD == "Fuzzwork":
             print(
-                "Price setup starting for %s items from Fuzzworks API from station id %s (%s), this may take up to 30 seconds..."
+                "Price setup starting for %s items from Fuzzworks API from station id %s (%s). Use instant prices instead of average is set to %s, this may take up to 30 seconds..."
                 % (
                     len(typeids),
                     BUYBACKPROGRAM_PRICE_SOURCE_ID,
                     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
+                    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
                 )
             )
         elif BUYBACKPROGRAM_PRICE_METHOD == "Janice":
             if valid_janice_api_key():
                 print(
-                    "Price setup starting for %s items from Janice API for Jita 4-4, this may take up to 30 seconds..."
-                    % (len(typeids))
+                    "Price setup starting for %s items from Janice API from station id %s (%s). Use instant prices instead of average is set to %s, this may take up to 30 seconds..."
+                    % (
+                        len(typeids),
+                        BUYBACKPROGRAM_PRICE_SOURCE_ID,
+                        BUYBACKPROGRAM_PRICE_SOURCE_NAME,
+                        BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
+                    )
                 )
             else:
                 print(
@@ -74,12 +81,20 @@ class Command(BaseCommand):
             for key, value in market_data.items():
                 item_count += 1
 
-                item = ItemPrices(
-                    eve_type_id=key,
-                    buy=int(float(value["buy"]["max"])),
-                    sell=int(float(value["sell"]["min"])),
-                    updated=timezone.now(),
-                )
+                if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
+                    item = ItemPrices(
+                        eve_type_id=key,
+                        buy=int(float(value["buy"]["percentile"])),
+                        sell=int(float(value["sell"]["percentile"])),
+                        updated=timezone.now(),
+                    )
+                else:
+                    item = ItemPrices(
+                        eve_type_id=key,
+                        buy=int(float(value["buy"]["max"])),
+                        sell=int(float(value["sell"]["min"])),
+                        updated=timezone.now(),
+                    )
 
                 objs.append(item)
             try:

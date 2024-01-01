@@ -1,6 +1,6 @@
 # Buyback Program
 
-An Alliance Auth app for creating buyback programs and to allow users calculate prices for buyback contracts.
+An Alliance Auth app for creating buyback programs and to allow users calculate prices for buyback contracts. Designed to be very transparent for the user and fast to use for the managers.
 
 [![pipeline](https://gitlab.com/paulipa/allianceauth-buyback-program/badges/master/pipeline.svg)](https://gitlab.com/paulipa/allianceauth-buyback-program/-/commits/master)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -57,10 +57,13 @@ An Alliance Auth app for creating buyback programs and to allow users calculate 
   - Check if contract is made incorrectly to corporation or character
   - Check extra characters in contract title
   - Check if contract contains donations
+  - Check for scam contracts mimicing buyback contracts
 - Contract tracking history
 - Supports base price sources from:
   - [Fuzzwork API](https://market.fuzzwork.co.uk/api/)
   - [Janice API](https://janice.e-351.com/api/rest/docs/index.html)
+  - Use buy, sell or split price as source
+  - Use 5% top average or instant prices for source
 - Supports discord notifications
   - Notifications for accepted contracts
   - Notifications for new contracts
@@ -93,13 +96,13 @@ Update the Eve Online API app used for authentication in your AA installation to
 
 ### Step 4 - Data Preload
 
-Buybackprogram requires a lot of data to function as it is designed to allow your clients to sell you any items that exists in EVE. For this reason pre-loading all the date will take a while.
+Buybackprogram requires a lot of data to function as it is designed to allow your clients to sell you any items that exists in EVE. For this reason pre-loading all the date will take a while. Data pre-loading is used to decrease the amount of API calls made to type and price fetches.
 
 #### Preload Load Type Data
 
 To load type data run the command ```python manage.py buybackprogram_load_data```. This will start the preload of all `EveType`, `SolarSystem`, `EveMarketGroup` and `EveTypeMaterial` objects.
 
-You can follow the progress of the load from your auth da
+You can follow the progress of the load from your auth dashboard. This task can spike up easily over 100.000 tasks at a time so it is very normal that the queue grows very large while running this task.
 
 > :warning: You will need to wait for the type data to load up before you can start to use the plugin. Trying to adjust program settings while the required data has not been yet loaded may result in failure of adjusting the settings.
 
@@ -137,20 +140,21 @@ CELERYBEAT_SCHEDULE['buybackprogram_update_all_contracts'] = {
 
 You may change the following settings by adding the lines in your `local.py` setting files
 
-Name | Description | Default
+Name | Description | Default | Options
 -- | -- | --
-BUYBACKPROGRAM_TRACKING_PREFILL | This is the prefill tag you will have on the tracking description for your contracts | aa-bbp.
-BUYBACKPROGRAM_PRICE_SOURCE_ID | Station ID for fetching base prices. Supports IDs listed on [Fuzzwork API](https://market.fuzzwork.co.uk/api/). Does not work with Janice API!| 60003760
-BUYBACKPROGRAM_PRICE_SOURCE_NAME | Display name of your price source. Has no effect on the actual price fetch which uses the ID. | Jita
+BUYBACKPROGRAM_TRACKING_PREFILL | This is the prefill tag you will have on the tracking description for your contracts | aa-bbp. | Free text imput
+BUYBACKPROGRAM_PRICE_SOURCE_ID | Station ID for fetching base prices. Supports IDs listed on [Fuzzwork API](https://market.fuzzwork.co.uk/api/). Does not work with Janice API!| 60003760 | See ID list
+BUYBACKPROGRAM_PRICE_SOURCE_NAME | Display name of your price source. Has no effect on the actual price fetch which uses the ID. | Jita | Free text imput
 BUYBACKPROGRAM_PRICE_AGE_WARNING_LIMIT | Limit in hours when an item price is considered as outdated | 48
-BUYBACKPROGRAM_PRICE_METHOD | By default Fuzzwork API will be used for pricing, if this is set to "Janice" then the Janice API will be used. | Fuzzwork
-BUYBACKPROGRAM_PRICE_JANICE_API_KEY | The API key to access Janice API. |
-BUYBACKPROGRAM_UNUSED_TRACKING_PURGE_LIMIT | Time limit to remove unlinked tracking objects from the database. Set to 0 to never purge any tracking objects. | 48 hours
-BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS | Determines if we will track and store contracts that starts with the prefill phrase but do not have any actual tracking hits in database | True
+BUYBACKPROGRAM_PRICE_METHOD | By default Fuzzwork API will be used for pricing, if this is set to "Janice" then the Janice API will be used. | Fuzzwork | `Fuzzwork`, `Janice`
+BUYBACKPROGRAM_PRICE_INSTANT_PRICES | On default we use top 5% average prices. Set to `true` to change to instant prices | False | `False`, `True`
+BUYBACKPROGRAM_PRICE_JANICE_API_KEY | The API key to access Janice API. | `null` | `G9KwKq3465588VPd6747t95Zh94q3W2E`
+BUYBACKPROGRAM_UNUSED_TRACKING_PURGE_LIMIT | Time limit to remove unlinked tracking objects from the database. Set to 0 to never purge any tracking objects. | 48 | Any number in hours
+BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS | Determines if we will track and store contracts that starts with the prefill phrase but do not have any actual tracking hits in database | True | `True`, `False`
 
 Note: If you change your price source for an old install you need to wait for the price update task to run or manually run it to update your current database prices.
 
-Note: Using Janice API, Jita 4-4 prices will be used with the top 5% average price of the 5 day median price for buy and sell orders.
+Note: Using Janice API, Jita 4-4 prices will be used with the top 5% average price of the 5 day median price for buy and sell orders. No other price sources can be used with Janice
 
 ### Step 6 - Adjust Permissions
 
@@ -206,7 +210,11 @@ Once you have created a location and added at least one manager you can setup th
 
 Each program can be customized based on your needs. When setting up select the settings you wish to use.
 
-##### Owner
+##### Name/Description
+
+A display name for your program
+
+##### Manager
 
 This is the character or the characters corporation which will be used as the assign to target for buyback contracts at this location. To add more owners use the `add manager` button. You can only see your own characters.
 
@@ -214,7 +222,19 @@ This is the character or the characters corporation which will be used as the as
 
 If you wish that the contracts are assigned to the owners corporation instead of the character tick this box.
 
-##### Tax
+##### Location
+
+The location where contracts should be created at. Only these locations are accepted
+
+##### Expiration
+
+Expiration time the contracts should bet set to.
+
+##### Price type
+
+You can select what price type is used as the base price for your calculations. You can select from either buy, sell or split prices.
+
+##### Default tax
 
 This is a general tax which is applied on all items in this program. If you wish to not allow all items in this program you can leave this to 0.
 

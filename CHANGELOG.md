@@ -1,3 +1,16 @@
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- Closes #68, adds ability to select base price from buy, sell or split prices.
+- Added help icons and explanations for item sheet
+- Closes #71, Ability to select Immediate pricing over top 5% average
+
+### Changed
+- Updated some readme text
+
+### Fixed
+- Fixed mistake in displaying total raw values for refined ore in calculation sheets.
+
 ## [1.12.3] - 2023-12-31
 
 ### Fixed

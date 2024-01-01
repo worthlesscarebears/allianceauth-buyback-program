@@ -4,6 +4,7 @@
 {% load bootstrap %}
 {% load static %}
 {% load price_formats %}
+{% load help_icons %}
 
 {% block body %}
 <div class="panel-heading">
@@ -70,6 +71,10 @@
             <p class="text-muted">List of expenses applied on your contract</p>
         <table id="contract" style="margin: 20px auto;" class="table table-striped table-condensed">
             <tr>
+                <th>Prices based on</th>
+                <td>{{price_source}} {{program.price_type}} price <i class="fas fa-light fa-question" title="{% help 'price_type' %}"></i></td>
+            </tr>
+            <tr>
                 <th>Price before expenses</th>
                 <td>{{contract_price_data.total_all_items_raw|floatformat:0|intcomma}} ISK</td>
             </tr>
@@ -107,14 +112,14 @@
         <table id="value" style="margin: 20px auto;" class="table table-condensed">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>{{price_source}} sell</th>
-                    <th>{{price_source}} buy</th>
-                    <th>Our taxes</th>
-                    <th>Our price</th>
-                    <th>Row total</th>
-                    <th>Notes</th>
+                    <th>Name <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
+                    <th>Quantity <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
+                    <th>{{price_source}} Buy / Sell <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price_source' %}"></i></th>
+                    <th>Base Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
+                    <th>Our Taxes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
+                    <th>Our Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
+                    <th>Row Total <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
+                    <th>Notes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
                 </tr>
             </thead>
             <tbody>
@@ -133,8 +138,8 @@
 
                             </td>
                             <td>{{ item.item_values.quantity|intcomma }}</td>
-                            <td>{{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
-                            <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma|price }}</td>
+                            <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma}} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
+                            <td>{{ item.item_values.raw_value|floatformat:0|intcomma|price }}</td>
                             <td>{{ item.item_values.tax_value|floatformat:2|tax }}</td>
                             <td>{{ item.item_values.unit_value|floatformat:0|intcomma|price }}</td>
                             <td>{{ item.item_values.buy_value|floatformat:0|intcomma|price }}</td>
@@ -155,8 +160,8 @@
                             <tr class="collapse" id="{{ item.item_values.normal.id }}-raw">
                                 <td style="padding-left: 30px;">{{ item.item_values.name }}</td>
                                 <td>{{ item.item_values.quantity|intcomma }}</td>
-                                <td>{{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
-                                <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma|price }}</td>
+                                <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma }} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
+                                <td>{{ item.item_values.normal.raw_value|floatformat:0|intcomma|price }}</td>
                                 <td>{{ item.item_values.normal.total_tax|floatformat:2|tax }}</td>
                                 <td>{{ item.item_values.normal.unit_value|floatformat:0|intcomma|price }}</td>
                                 <td class="buy-value-{{item.item_values.normal.is_buy_value}}">{{ item.item_values.normal.value|floatformat:0|intcomma|price }}</td>
@@ -178,8 +183,8 @@
                             <tr class="collapse" id="{{ item.item_values.normal.id }}-npc">
                                 <td style="padding-left: 30px;">{{item.item_values.npc.name}}</td>
                                 <td>{{item.item_values.npc.quantity|intcomma}}</td>
-                                <td>{{item.item_values.npc.sell|floatformat:0|intcomma|price}}</td>
-                                <td>{{item.item_values.npc.buy|floatformat:0|intcomma|price}}</td>
+                                <td>{{item.item_values.npc.buy|floatformat:0|intcomma}} / {{item.item_values.npc.sell|floatformat:0|intcomma|price}}</td>
+                                <td>{{ item.item_values.npc.raw_value|floatformat:0|intcomma|price }}</td>
                                 <td>{{item.item_values.npc.total_tax|floatformat:2|tax}}</td>
                                 <td>{{item.item_values.npc.unit_value|floatformat:0|intcomma|price}}</td>
                                 <td class="buy-value-{{item.item_values.npc.is_buy_value}}">{{item.item_values.npc.value|floatformat:0|intcomma|price}}</td>
@@ -201,8 +206,8 @@
                             <tr class="collapse" id="{{ item.item_values.normal.id }}-compressed">
                                 <td style="padding-left: 30px;">{{item.item_values.compressed.name}}</td>
                                 <td>{{item.item_values.compressed.quantity|intcomma}}</td>
-                                <td>{{item.item_values.compressed.sell|floatformat:0|intcomma|price}}</td>
-                                <td>{{item.item_values.compressed.buy|floatformat:0|intcomma|price}}</td>
+                                <td>{{item.item_values.compressed.buy|floatformat:0|intcomma}} / {{item.item_values.compressed.sell|floatformat:0|intcomma|price}}</td>
+                                <td>{{item.item_values.compressed.raw_value|floatformat:0|intcomma|price}}</td>
                                 <td>{{item.item_values.compressed.total_tax|floatformat:2|tax}}</td>
                                 <td>{{item.item_values.compressed.unit_value|floatformat:0|intcomma|price}}</td>
                                 <td class="buy-value-{{item.item_values.compressed.is_buy_value}}">{{item.item_values.compressed.value|floatformat:0|intcomma|price}}</td>
@@ -225,9 +230,9 @@
                                 <tr class="collapse" id="{{ item.item_values.normal.id }}-refined{{ forloop.counter }}">
                                     <td style="padding-left: 30px;">{{material.name}}</td>
                                     <td>{{material.quantity|floatformat:2}}</td>
-                                    <td>{{material.sell|floatformat:0|intcomma|price}}</td>
-                                    <td>{{material.buy|floatformat:0|intcomma|price}}</td>
-                                    <td></td>
+                                    <td>{{material.buy|floatformat:0|intcomma}} / {{material.sell|floatformat:0|intcomma|price}}</td>
+                                    <td>{{material.raw_value|floatformat:0|intcomma|price}}</td>
+                                    <td>{{material.total_tax|floatformat:2|tax}}</td>
                                     <td>{{material.unit_value|floatformat:0|intcomma|price}}</td>
                                     <td>{{material.value|floatformat:0|intcomma|price}}</td>
                                     <td>
@@ -239,7 +244,7 @@
                             {% endfor %}
                             <tr class="collapse" id="{{ item.item_values.normal.id }}-refined-total">
                                 <td colspan="3" style="padding-left: 30px;border-top:1px dotted grey;">Total value <i>@ {{program.refining_rate}} refining rate</i></td>
-                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.buy|floatformat:0|intcomma|price}}</td>
+                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.raw_value|floatformat:0|intcomma|price}}</td>
                                 <td style="border-top:1px dotted grey;">{{item.item_values.refined.total_tax|floatformat:2|tax}}</td>
                                 <td style="border-top:1px dotted grey;">{{item.item_values.refined.unit_value|floatformat:0|intcomma|price}}</td>
                                 <td class="buy-value-{{item.item_values.refined.is_buy_value}}" style="border-top:1px dotted grey;">{{item.item_values.refined.value|floatformat:0|intcomma|price}}</td>

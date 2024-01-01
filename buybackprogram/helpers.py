@@ -1,5 +1,5 @@
 import uuid
-
+import statistics
 import requests
 
 from django.db import Error
@@ -14,6 +14,7 @@ from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_TRACKING_PREFILL,
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.constants import (
     BLUE_LOOT_TYPE_IDS,
@@ -86,6 +87,10 @@ def get_or_create_prices(item_id):
 
             buy = int(float(items_fuzzwork[str(item_id)]["buy"]["max"]))
             sell = int(float(items_fuzzwork[str(item_id)]["sell"]["min"]))
+            buy_average = int(float(items_fuzzwork[str(item_id)]["buy"]["percentile"]))
+            sell_average = int(
+                float(items_fuzzwork[str(item_id)]["sell"]["percentile"])
+            )
 
         elif BUYBACKPROGRAM_PRICE_METHOD == "Janice":
             if valid_janice_api_key():
@@ -100,8 +105,12 @@ def get_or_create_prices(item_id):
 
                 item_janice = response_janice.json()
 
-                buy = int(float(item_janice["top5AveragePrices"]["buyPrice5DayMedian"]))
-                sell = int(
+                buy = int(float(item_janice["immediatePrices"]["buyPrice5DayMedian"]))
+                sell = int(float(item_janice["immediatePrices"]["sellPrice5DayMedian"]))
+                buy_average = int(
+                    float(item_janice["top5AveragePrices"]["buyPrice5DayMedian"])
+                )
+                sell_average = int(
                     float(item_janice["top5AveragePrices"]["sellPrice5DayMedian"])
                 )
             else:
@@ -118,9 +127,22 @@ def get_or_create_prices(item_id):
         updated = timezone.now()
 
         try:
-            price = ItemPrices.objects.create(
-                eve_type_id=item_id, buy=buy, sell=sell, updated=updated
+            # Check what prices we should use either instant prices or top 5% percentile
+            logger.debug(
+                "Price type instant price is set to %s"
+                % BUYBACKPROGRAM_PRICE_INSTANT_PRICES
             )
+            if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
+                price = ItemPrices.objects.create(
+                    eve_type_id=item_id,
+                    buy=buy_average,
+                    sell=sell_average,
+                    updated=updated,
+                )
+            else:
+                price = ItemPrices.objects.create(
+                    eve_type_id=item_id, buy=buy, sell=sell, updated=updated
+                )
 
             return price
         except Error as e:
@@ -439,7 +461,19 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["raw_prices"]["quantity"]
         sell = item_prices["raw_prices"]["sell"]
         buy = item_prices["raw_prices"]["buy"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+        elif program.price_type == "Sell":
+            price = sell
+        elif program.price_type == "Split":
+            price = split
+
+        logger.debug(
+            "Using price value type '%s' with value %s" % (program.price_type, price)
+        )
 
         if not item_type.volume <= 0:
             price_dencity = price / item_type.volume
@@ -567,7 +601,24 @@ def get_item_values(item_type, item_prices, program):
             quantity = material["quantity"]
             sell = material["sell"]
             buy = material["buy"]
-            price = buy
+            split = statistics.median([sell, buy])
+
+            # Determine what price type we should use
+            if program.price_type == "Buy":
+                price = buy
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
+            elif program.price_type == "Sell":
+                price = sell
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
+            elif program.price_type == "Split":
+                price = split
+                logger.debug(
+                    "Using price type '%s' with value %s" % (program.price_type, price)
+                )
             program_tax = program.tax
             refining_rate = float(program.refining_rate) / 100
             tax_multiplier = (100 - (program_tax + item_tax + price_dencity_tax)) / 100
@@ -628,7 +679,24 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["compression_prices"]["quantity"]
         buy = item_prices["compression_prices"]["buy"]
         sell = item_prices["compression_prices"]["sell"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Sell":
+            price = sell
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Split":
+            price = split
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
         price_dencity = price / compressed_version.volume
 
         logger.debug("Getting price density for compressed variant")
@@ -690,7 +758,24 @@ def get_item_values(item_type, item_prices, program):
         quantity = item_prices["npc_prices"]["quantity"]
         sell = item_prices["npc_prices"]["sell"]
         buy = item_prices["npc_prices"]["buy"]
-        price = buy
+        split = statistics.median([sell, buy])
+
+        # Determine what price type we should use
+        if program.price_type == "Buy":
+            price = buy
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Sell":
+            price = sell
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
+        elif program.price_type == "Split":
+            price = split
+            logger.debug(
+                "Using price type '%s' with value %s" % (program.price_type, price)
+            )
 
         if not item_type.volume <= 0:
             price_dencity = price / item_type.volume
