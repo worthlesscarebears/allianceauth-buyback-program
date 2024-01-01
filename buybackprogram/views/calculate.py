@@ -106,13 +106,7 @@ def program_calculate(request, program_pk):
                         # Get item quantity.
                         if not parts[1] == "\r":
                             # Get quantities and format the different localization imputs
-                            quantity = int(
-                                parts[1]
-                                .replace(" ", "")
-                                .replace(".", "")
-                                .replace(",", "")
-                                .replace("\xa0", "")
-                            )
+                            quantity = int("".join(filter(str.isdigit, parts[1])))
 
                         elif program.allow_unpacked_items:
                             quantity = 1
@@ -135,13 +129,7 @@ def program_calculate(request, program_pk):
                         # Get item quantity.
                         if parts[1]:
                             # Get quantities and format the different localization imputs
-                            quantity = int(
-                                parts[1]
-                                .replace(" ", "")
-                                .replace(".", "")
-                                .replace(",", "")
-                                .replace("\xa0", "")
-                            )
+                            quantity = int("".join(filter(str.isdigit, parts[1])))
 
                         elif program.allow_unpacked_items:
                             quantity = 1

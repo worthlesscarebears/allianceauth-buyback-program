@@ -11,6 +11,11 @@
 ### Fixed
 - Fixed mistake in displaying total raw values for refined ore in calculation sheets.
 
+## [1.12.3] - 2023-12-31
+
+### Fixed
+- Fixes #72, Fixes issues with quantities with different localizations.
+
 ## [1.12.2] - 2023-11-25
 
 ### Added
