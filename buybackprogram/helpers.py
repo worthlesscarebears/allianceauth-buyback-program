@@ -14,6 +14,7 @@ from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_TRACKING_PREFILL,
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.constants import (
     BLUE_LOOT_TYPE_IDS,
@@ -86,6 +87,10 @@ def get_or_create_prices(item_id):
 
             buy = int(float(items_fuzzwork[str(item_id)]["buy"]["max"]))
             sell = int(float(items_fuzzwork[str(item_id)]["sell"]["min"]))
+            buy_average = int(float(items_fuzzwork[str(item_id)]["buy"]["percentile"]))
+            sell_average = int(
+                float(items_fuzzwork[str(item_id)]["sell"]["percentile"])
+            )
 
         elif BUYBACKPROGRAM_PRICE_METHOD == "Janice":
             if valid_janice_api_key():
@@ -100,8 +105,12 @@ def get_or_create_prices(item_id):
 
                 item_janice = response_janice.json()
 
-                buy = int(float(item_janice["top5AveragePrices"]["buyPrice5DayMedian"]))
-                sell = int(
+                buy = int(float(item_janice["immediatePrices"]["buyPrice5DayMedian"]))
+                sell = int(float(item_janice["immediatePrices"]["sellPrice5DayMedian"]))
+                buy_average = int(
+                    float(item_janice["top5AveragePrices"]["buyPrice5DayMedian"])
+                )
+                sell_average = int(
                     float(item_janice["top5AveragePrices"]["sellPrice5DayMedian"])
                 )
             else:
@@ -118,9 +127,22 @@ def get_or_create_prices(item_id):
         updated = timezone.now()
 
         try:
-            price = ItemPrices.objects.create(
-                eve_type_id=item_id, buy=buy, sell=sell, updated=updated
+            # Check what prices we should use either instant prices or top 5% percentile
+            logger.debug(
+                "Price type instant price is set to %s"
+                % BUYBACKPROGRAM_PRICE_INSTANT_PRICES
             )
+            if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
+                price = ItemPrices.objects.create(
+                    eve_type_id=item_id,
+                    buy=buy_average,
+                    sell=sell_average,
+                    updated=updated,
+                )
+            else:
+                price = ItemPrices.objects.create(
+                    eve_type_id=item_id, buy=buy, sell=sell, updated=updated
+                )
 
             return price
         except Error as e:
