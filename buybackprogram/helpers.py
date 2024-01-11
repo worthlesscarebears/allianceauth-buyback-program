@@ -1,5 +1,6 @@
-import uuid
 import statistics
+import uuid
+
 import requests
 
 from django.db import Error
@@ -10,11 +11,11 @@ from allianceauth.services.hooks import get_extension_logger
 
 from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_AGE_WARNING_LIMIT,
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
     BUYBACKPROGRAM_PRICE_JANICE_API_KEY,
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_TRACKING_PREFILL,
-    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.constants import (
     BLUE_LOOT_TYPE_IDS,

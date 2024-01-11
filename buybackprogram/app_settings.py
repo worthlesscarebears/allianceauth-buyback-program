@@ -1,5 +1,6 @@
-from django.conf import settings
 import re
+
+from django.conf import settings
 
 from .utils import clean_setting
 

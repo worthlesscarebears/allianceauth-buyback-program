@@ -2,8 +2,9 @@
 notifications helper
 """
 import requests
-from django.contrib.humanize.templatetags.humanize import intcomma
+
 from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 from allianceauth.notifications import notify
 from allianceauth.services.hooks import get_extension_logger

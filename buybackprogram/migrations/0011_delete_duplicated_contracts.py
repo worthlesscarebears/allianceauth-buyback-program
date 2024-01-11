@@ -1,9 +1,10 @@
 """Delete contract duplicates."""
 
-from django.db import migrations
-from collections import Counter
 import logging
+from collections import Counter
 from typing import Set
+
+from django.db import migrations
 
 logger = logging.getLogger(__name__)
 

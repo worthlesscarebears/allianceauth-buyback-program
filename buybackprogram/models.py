@@ -23,11 +23,10 @@ from buybackprogram.notification import (
 )
 
 from .app_settings import (
-    BUYBACKPROGRAM_TRACKING_PREFILL,
     BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS,
+    BUYBACKPROGRAM_TRACKING_PREFILL,
     get_site_url,
 )
-
 from .decorators import fetch_token_for_owner
 from .providers import esi
 

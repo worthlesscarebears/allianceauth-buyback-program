@@ -1,8 +1,6 @@
 from django import template
 
-from buybackprogram.app_settings import (
-    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
-)
+from buybackprogram.app_settings import BUYBACKPROGRAM_PRICE_INSTANT_PRICES
 
 register = template.Library()
 

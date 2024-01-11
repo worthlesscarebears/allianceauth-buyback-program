@@ -1,11 +1,14 @@
 import unittest
 from importlib import import_module
 
-from buybackprogram.models import Contract
 from django.apps import apps
 from django.db import connection
 from django.test import TestCase
+
 from app_utils.testing import set_test_logger
+
+from buybackprogram.models import Contract
+
 from .testdata.factories import ContractFactory, ProgramFactory, TrackingFactory
 from .testdata.load_eveuniverse import load_eveuniverse
 

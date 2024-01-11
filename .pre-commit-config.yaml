@@ -3,23 +3,17 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-      - id: check-case-conflict
-      - id: check-json
-      - id: check-xml
-      - id: check-yaml
-      - id: fix-byte-order-marker
       - id: trailing-whitespace
-        exclude: \.(min\.css|min\.js|po|mo)$
       - id: end-of-file-fixer
-        exclude: \.(min\.css|min\.js|po|mo)$
-      - id: mixed-line-ending
-        args: [ '--fix=lf' ]
-      - id: fix-encoding-pragma
-        args: [ '--remove' ]
+        exclude: \.(min\.css|min\.js|po|mo|txt)$
   - repo: https://github.com/psf/black
     rev: 23.1.0
     hooks:
       - id: black
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: "v5.10.1"
+    hooks:
+      - id: isort
   - repo: https://github.com/pycqa/flake8
     rev: "6.0.0"
     hooks:

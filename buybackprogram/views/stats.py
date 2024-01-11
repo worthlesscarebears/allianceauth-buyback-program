@@ -10,6 +10,7 @@ from eveuniverse.models import EveEntity
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.services.hooks import get_extension_logger
 
+from buybackprogram.app_settings import BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS
 from buybackprogram.notes import (
     note_missing_from_contract,
     note_missing_from_tracking,
@@ -23,10 +24,6 @@ from ..models import (
     ContractNotification,
     Tracking,
     TrackingItem,
-)
-
-from buybackprogram.app_settings import (
-    BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS,
 )
 
 logger = get_extension_logger(__name__)

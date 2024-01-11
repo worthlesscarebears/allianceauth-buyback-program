@@ -6,10 +6,10 @@ from eveuniverse.models import EveMarketPrice, EveType
 from allianceauth.services.hooks import get_extension_logger
 
 from buybackprogram.app_settings import (
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
-    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.models import ItemPrices
 from buybackprogram.tasks import get_bulk_prices, valid_janice_api_key

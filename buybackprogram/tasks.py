@@ -6,18 +6,18 @@ from celery import shared_task
 
 from django.db import Error
 from django.utils import timezone
-from eveuniverse.models import EveMarketPrice
 from esi.errors import TokenError
+from eveuniverse.models import EveMarketPrice
 
 from allianceauth.services.hooks import get_extension_logger
 from allianceauth.services.tasks import QueueOnce
 
 from buybackprogram.app_settings import (
+    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
     BUYBACKPROGRAM_PRICE_JANICE_API_KEY,
     BUYBACKPROGRAM_PRICE_METHOD,
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
-    BUYBACKPROGRAM_PRICE_INSTANT_PRICES,
 )
 from buybackprogram.models import ItemPrices, Owner, Tracking
 
