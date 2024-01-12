@@ -1,4 +1,4 @@
-## [Unreleased] - yyyy-mm-dd
+## [1.13.0] - 2024-01-12
 
 ### Added
 - Closes #68, adds ability to select base price from buy, sell or split prices.
