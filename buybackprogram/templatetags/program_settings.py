@@ -75,6 +75,24 @@ def setting_icons(option, program):
             "message": "Only users in the following states can access this program: %s"
             % ", ".join(restriction_states),
         },
+        "buy_value_buy": {
+            "icon": "fa-arrow-down",
+            "color": False,
+            "message": "Prices are based on %s %s prices"
+            % (BUYBACKPROGRAM_PRICE_SOURCE_NAME, program.price_type),
+        },
+        "buy_value_sell": {
+            "icon": "fa-arrow-up",
+            "color": False,
+            "message": "Prices are based on %s %s prices"
+            % (BUYBACKPROGRAM_PRICE_SOURCE_NAME, program.price_type),
+        },
+        "buy_value_split": {
+            "icon": "fa-expand-alt",
+            "color": False,
+            "message": "Prices are based on %s %s prices"
+            % (BUYBACKPROGRAM_PRICE_SOURCE_NAME, program.price_type),
+        },
     }
 
     return icons[option]
@@ -142,6 +160,21 @@ def program_setting(program):
 
     if program.restricted_to_state.all():
         setting = setting_icons("restricted_to_state", program)
+
+        settings.append(setting)
+
+    if program.price_type == "Buy":
+        setting = setting_icons("buy_value_buy", program)
+
+        settings.append(setting)
+
+    if program.price_type == "Sell":
+        setting = setting_icons("buy_value_sell", program)
+
+        settings.append(setting)
+
+    if program.price_type == "Split":
+        setting = setting_icons("buy_value_split", program)
 
         settings.append(setting)
 

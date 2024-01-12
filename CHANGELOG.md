@@ -1,3 +1,11 @@
+## [1.13.1] - 2024-01-12
+
+### Added
+- Added icons for price types for programs
+
+### Fixed
+- Readme typos
+
 ## [1.13.0] - 2024-01-12
 
 ### Added

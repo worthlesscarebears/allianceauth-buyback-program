@@ -141,10 +141,10 @@ CELERYBEAT_SCHEDULE['buybackprogram_update_all_contracts'] = {
 You may change the following settings by adding the lines in your `local.py` setting files
 
 Name | Description | Default | Options
--- | -- | --
-BUYBACKPROGRAM_TRACKING_PREFILL | This is the prefill tag you will have on the tracking description for your contracts | aa-bbp. | Free text imput
+-- | -- | -- | --
+BUYBACKPROGRAM_TRACKING_PREFILL | This is the prefill tag you will have on the tracking description for your contracts | aa-bbp. | Free text input
 BUYBACKPROGRAM_PRICE_SOURCE_ID | Station ID for fetching base prices. Supports IDs listed on [Fuzzwork API](https://market.fuzzwork.co.uk/api/). Does not work with Janice API!| 60003760 | See ID list
-BUYBACKPROGRAM_PRICE_SOURCE_NAME | Display name of your price source. Has no effect on the actual price fetch which uses the ID. | Jita | Free text imput
+BUYBACKPROGRAM_PRICE_SOURCE_NAME | Display name of your price source. Has no effect on the actual price fetch which uses the ID. | Jita | Free text input
 BUYBACKPROGRAM_PRICE_AGE_WARNING_LIMIT | Limit in hours when an item price is considered as outdated | 48
 BUYBACKPROGRAM_PRICE_METHOD | By default Fuzzwork API will be used for pricing, if this is set to "Janice" then the Janice API will be used. | Fuzzwork | `Fuzzwork`, `Janice`
 BUYBACKPROGRAM_PRICE_INSTANT_PRICES | On default we use top 5% average prices. Set to `true` to change to instant prices | False | `False`, `True`
