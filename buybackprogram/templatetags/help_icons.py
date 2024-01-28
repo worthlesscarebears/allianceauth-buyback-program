@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.simple_tag
 def help(option):
-    if BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
+    if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
         source = "average top 5 %"
     else:
         source = "instant"

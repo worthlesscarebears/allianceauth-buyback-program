@@ -1,3 +1,8 @@
+## [1.13.2] - 2024-01-28
+
+### Fixed
+- Tooltip showing wrong price type
+
 ## [1.13.1] - 2024-01-12
 
 ### Added
