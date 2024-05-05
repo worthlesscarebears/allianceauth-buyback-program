@@ -1,4 +1,27 @@
+## [Unreleased] - yyyy-mm-dd
+
+> \[!NOTE\]
+>
+> **This version needs at least Alliance Auth v4.0.0!**
+>
+> Please make sure to update your Alliance Auth instance **before**
+> you install this version, otherwise, an update to Alliance Auth will
+> be pulled in unsupervised.
+
+### removed
+- Dropped support for alliance Auth 3
+
+### Added
+
+### Changed
+
+### Fixed
+- Fixed templates to work with AA4
+
 ## [1.13.2] - 2024-01-28
+> \[!NOTE\]
+>
+> **This is the last version compatible with Alliance Auth v3.**
 
 ### Fixed
 - Tooltip showing wrong price type
