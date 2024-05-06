@@ -264,13 +264,7 @@ var hscaling;
 
 {% block extra_css %}
 
-{% if NIGHT_MODE %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/billboards_dark.css' %}">
-{% else %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/billboards_light.css' %}">
-{% endif %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 
 {% endblock %}
 

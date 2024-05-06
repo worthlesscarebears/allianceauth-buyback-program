@@ -2,16 +2,6 @@
 {% load i18n %}
 {% load static %}
 {% load navactive %}
-{% block extra_css %}
-
-    {% if NIGHT_MODE %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-        {% else %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-    {% endif %}
-
-
-{% endblock extra_css %}
 
 {% block page_title %}
     {% translate "Buyback Program" %}
@@ -32,8 +22,8 @@
 {% endif %}
 
 {% block content %}
-    <div class="allianceauth-buyback-program-plugin">
-        <div class="card">
+    <div class="card">
+        <div class="allianceauth-buyback-program-plugin">
             {% block details %}{% endblock %}
         </div>
     </div>

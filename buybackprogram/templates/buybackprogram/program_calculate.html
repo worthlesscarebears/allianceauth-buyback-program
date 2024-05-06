@@ -295,11 +295,7 @@ document.querySelectorAll('button[data-type="copy"]')
 {% endblock %}
 
 {% block extra_css %}
-    {% if NIGHT_MODE %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-        {% else %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-    {% endif %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}

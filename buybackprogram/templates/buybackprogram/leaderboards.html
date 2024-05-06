@@ -85,11 +85,7 @@ function render() {
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.5.1/billboard.min.css" integrity="sha512-RMOXiaUbYERixbCxwbAyhJcq/KDpbXMZGLLUbexHB5JWdXsZONmsv2tLycOcTnAGCDZ9qPGG5pbd6bnL8YRhSw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-{% if NIGHT_MODE %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-{% else %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-{% endif %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}
