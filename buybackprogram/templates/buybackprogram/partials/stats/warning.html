@@ -1,0 +1,4 @@
+            {% if values.untracked_count > 0 %}
+                <div class="alert alert-warning alert-dismissible" role="alert"> <i class="fas fa-exclamation-triangle"></i>  <b>Warning:</b>You have {{values.untracked_count}} outstanding contracts that start with the buyback prefill text but do not match any tracking objects in your programs! These contracts are possibly scam contracts trying to identify as valid buyback contracts.</div>
+
+            {% endif %}

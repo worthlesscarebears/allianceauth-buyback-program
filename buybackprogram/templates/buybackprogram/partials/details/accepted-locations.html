@@ -1,0 +1,11 @@
+    <table class="table">
+        <tbody>
+            {% for location in tracking.program.location.all %}
+                <tr>
+                    <td>
+                        <div>{{location.location_display_name}}</div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
