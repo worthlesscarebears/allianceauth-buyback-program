@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buybackprogram', '0014_program_price_type'),
+        ("buybackprogram", "0014_program_price_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contractnotification',
-            name='title',
+            model_name="contractnotification",
+            name="title",
             field=models.CharField(blank=True, max_length=1024, null=True),
         ),
     ]

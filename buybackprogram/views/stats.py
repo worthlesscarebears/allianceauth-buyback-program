@@ -34,6 +34,7 @@ logger = get_extension_logger(__name__)
 def my_stats(request):
     # List for valid contracts to be displayed
     valid_contracts = []
+    contract_notes = []
 
     # Tracker values
     values = {
@@ -83,9 +84,11 @@ def my_stats(request):
 
         # Add contract to the valid contract list
         valid_contracts.append(tracking)
+        contract_notes.append(tracking.contract.notes)
 
     context = {
         "contracts": valid_contracts,
+        "contract_notes": contract_notes,
         "values": values,
         "mine": True,
     }

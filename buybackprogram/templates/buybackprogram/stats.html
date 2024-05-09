@@ -5,24 +5,39 @@
 
 {% block body %}
 
-<div class="panel-heading">
-    <h3 class="panel-title">Program statistics</h3>
-</div>
+    <div class="card">
+        <div class="card-header">{% trans "Summary" %}</div>
+        <div class="card-body">
+            {% include "buybackprogram/partials/stats/summary.html" %}
+        </div>
+    </div>
 
-{% include "buybackprogram/partials/stats/summary.html" %}
+    {% if values.untracked_count > 0 %}
+        <div class="card" style="margin-top:10px">
+            <div class="card-header">{% trans "Notes" %}</div>
+            <div class="card-body">
+                {% include "buybackprogram/partials/stats/warning.html" %}
+            </div>
+        </div>
+    {% endif %}
 
-{% include "buybackprogram/partials/stats/warning.html" %}
+    <div class="card" style="margin-top:10px">
+        <div class="card-header">{% trans "Contracts" %}</div>
+        <div class="card-body">
+            <!-- Nav tabs -->
+            {% include "buybackprogram/partials/stats/tabs/tabs-navigation.html" %}
 
-<!-- Nav tabs -->
-{% include "buybackprogram/partials/stats/tabs/tabs-navigation.html" %}
+            <div class="tab-content" id="nav-tabContent">
 
-<div class="tab-content" id="nav-tabContent">
+                {% include "buybackprogram/partials/stats/tabs/outstanding.html" %}
+                {% include "buybackprogram/partials/stats/tabs/finished.html" %}
+                {% include "buybackprogram/partials/stats/tabs/untracked.html" %}
 
-    {% include "buybackprogram/partials/stats/tabs/outstanding.html" %}
-    {% include "buybackprogram/partials/stats/tabs/finished.html" %}
-    {% include "buybackprogram/partials/stats/tabs/untracked.html" %}
+            </div>
+        </div>
+    </div>
 
-</div>
+
 
 {% endblock %}
 

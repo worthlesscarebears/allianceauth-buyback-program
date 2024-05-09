@@ -29,23 +29,22 @@
                     {% for contract in untracked_contracts %}
                         {% if contract.status == 'outstanding' %}
                             <tr>
-                                <td>{{tracking.contract.issuer_name}}</td>
-                                <td>{{tracking.contract.assignee_name}}</td>
-                                <td>{{tracking.contract.location_name}}</td>
-                                <td>{{tracking.contract.date_issued}}</td>
-                                <td>{{tracking.contract.date_issued|timesince }}</td>
-                                <td>{{tracking.contract.status}}</td>
-                                <td>{{tracking.tracking_number}}</td>
-                                <td>{{tracking.contract.price|floatformat:0|intcomma|price}}</td>
+                                <td>{{contract.issuer_name}}</td>
+                                <td>{{contract.assignee_name}}</td>
+                                <td>{{contract.location_name}}</td>
+                                <td>{{contract.date_issued}}</td>
+                                <td>{{contract.date_issued|timesince }}</td>
+                                <td>{{contract.status}}</td>
+                                <td>{{contract.title}}</td>
+                                <td>{{contract.price|floatformat:0|intcomma|price}}</td>
 
-                                <td>
-                                    {% for note in tracking.contract.notes %}
-                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                                    {% endfor %}
+                                <td colspan="2">
+                                    {% for note in contract.notes %}
+                                    <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                    {% endfor %}
                                 </td>
 
-                                <td><a class="btn btn-info btn-sm" href="{% url 'buybackprogram:contract_details' contract_title=tracking.tracking_number %}">
-                                                {% translate "Details" %}</a></td>
+
                             </tr>
                         {% endif %}
                     {% endfor %}
