@@ -746,7 +746,7 @@ class Owner(models.Model):
             contract=contract,
             icon="fa-theater-masks",
             color="red",
-            title="Suspicious Contract",
+            header="Suspicious Contract",
             message="Contract has no tracking object but is has a buyback prefill text! Possibly a scam contract.",
         )
 
@@ -804,7 +804,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-unlink",
                 color="red",
-                title="Item missmatch",
+                header="Item missmatch",
                 message="Tracked items do not match the actual items in the contract. See details for more info.",
             )
 
@@ -818,7 +818,7 @@ class Owner(models.Model):
                     contract=contract,
                     icon="fa-dollar-sign",
                     color="red",
-                    title="High ask price",
+                    header="High ask price",
                     message="Ask price is above the calculated price for this contract",
                 )
 
@@ -829,7 +829,7 @@ class Owner(models.Model):
                     contract=contract,
                     icon="fa-dollar-sign",
                     color="orange",
-                    title="low ask price",
+                    header="low ask price",
                     message="Ask price is bellow the calculated price for this contract",
                 )
 
@@ -840,7 +840,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-compass",
                 color="red",
-                title="Location missmatch",
+                header="Location missmatch",
                 message="Contract location does not match program location",
             )
 
@@ -851,7 +851,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-home",
                 color="orange",
-                title="Receiver missmatch",
+                header="Receiver missmatch",
                 message="Contract is made for corporation while it should be made directly to the program managers character",
             )
 
@@ -862,7 +862,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-user",
                 color="orange",
-                title="Receiver missmatch",
+                header="Receiver missmatch",
                 message="Contract is made for the program managers character while it should be made to the managers corporation",
             )
 
@@ -873,7 +873,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-exclamation",
                 color="orange",
-                title="Title variation",
+                header="Title variation",
                 message="Contract description contains extra characterse besides the tracking number. The description should be: '%s', instead it is: '%s'"
                 % (tracking.tracking_number, contract.title),
             )
@@ -885,7 +885,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-hand-holding-usd",
                 color="green",
-                title="Donation",
+                header="Donation",
                 message="Contact contains a donation",
             )
 
@@ -1331,7 +1331,7 @@ class ContractNotification(models.Model):
         max_length=32,
     )
 
-    title = models.CharField(
+    header = models.CharField(
         max_length=1024,
         null=True,
         blank=True,
