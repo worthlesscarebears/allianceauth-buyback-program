@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Contract, Location, Owner, Program
+from .models import Contract, Faq, Location, Owner, Program
 
 # Register your models here.
 
@@ -36,6 +36,15 @@ class ProgramAdmin(admin.ModelAdmin):
     _location.admin_order_field = "location__name"
 
 
+class FaqAdmin(admin.ModelAdmin):
+    model = Program
+
+    list_display = (
+        "header",
+        "body",
+    )
+
+
 admin.site.register(Program, ProgramAdmin)
 
 admin.site.register(Owner)
@@ -43,3 +52,5 @@ admin.site.register(Owner)
 admin.site.register(Contract)
 
 admin.site.register(Location)
+
+admin.site.register(Faq, FaqAdmin)

@@ -1413,3 +1413,11 @@ class UserSettings(models.Model):
         default_permissions = ()
         verbose_name = _("User Settings")
         verbose_name_plural = _("User Settings")
+
+
+class Faq(models.Model):
+    header = models.CharField(
+        max_length=1024,
+    )
+
+    body = models.TextField()
