@@ -11,35 +11,35 @@
 
 {% if buyback_data %}
 <div class="card text-white bg-success">
-  <div class="card-header">Calculation Succesfull</div>
+  <div class="card-header">{% trans "Calculation Succesfull" %}</div>
   <div class="card-body">
     {% include "buybackprogram/partials/calculate/calculation_success.html" %}
   </div>
 </div>
 
 <div class="card" style="margin-top:10px;">
-  <div class="card-header"><h5>Accepted location(s) <i class="fas fa-light fa-question" title="{% help 'accepted_locations' %}"></i></h5></div>
+  <div class="card-header"><h5>{% trans "Accepted location(s)" %} <i class="fas fa-light fa-question" title="{% help 'accepted_locations' %}"></i></h5></div>
   <div class="card-body">
     {% include "buybackprogram/partials/calculate/accepted_locations.html" %}
   </div>
 </div>
 
 <div class="card" style="margin-top:10px;">
-  <div class="card-header"><h5>Contact Settings <i class="fas fa-light fa-question" title="{% help 'contract_settings' %}"></i></h5></div>
+  <div class="card-header"><h5>{% trans "Contact Settings" %} <i class="fas fa-light fa-question" title="{% help 'contract_settings' %}"></i></h5></div>
   <div class="card-body">
     {% include "buybackprogram/partials/calculate/contract_settings.html" %}
   </div>
 </div>
 
 <div class="card" style="margin-top:10px;">
-  <div class="card-header"><h5>Invoice <i class="fas fa-light fa-question" title="{% help 'invoice' %}"></i></h5></div>
+  <div class="card-header"><h5>{% trans "Invoice" %} <i class="fas fa-light fa-question" title="{% help 'invoice' %}"></i></h5></div>
   <div class="card-body">
     {% include "buybackprogram/partials/calculate/invoice.html" %}
   </div>
 </div>
 
 <div class="card" style="margin-top:10px;">
-  <div class="card-header"><h5>Item Details <i class="fas fa-light fa-question" title="{% help 'item_details' %}"></i></h5></div>
+  <div class="card-header"><h5>{% trans "Item Details" %} <i class="fas fa-light fa-question" title="{% help 'item_details' %}"></i></h5></div>
   <div class="card-body">
     {% include "buybackprogram/partials/calculate/item_details.html" %}
   </div>
@@ -47,16 +47,16 @@
     {% endif %}
 
 <div class="card" style="margin-top:10px;">
-    <h5 class="card-header">Contract calculator</h5>
+    <h5 class="card-header">{% trans "Contract calculator" %}</h5>
     <div class="card-body">
         <form class="form" action="{% url 'buybackprogram:program_calculate' program_pk=program.id %}" method="POST">
             {% csrf_token %}
             {{ form|bootstrap }}
-            <button type="submit" class="btn btn-primary">Calculate</button>
+            <button type="submit" class="btn btn-primary">{% trans "Calculate" %}</button>
             </form>
     </div>
     <div class="card-footer text-muted" >
-        <b>Selected Program: </b>{% if program.name %}{{program.name}},{% endif %} managed by {% if program.is_corporation %}{{ program.owner.corporation }}{% else %}{{ program.owner.character.character }}{% endif %}
+        <b>{% trans "Selected Program:" %} </b>{% if program.name %}{{program.name}},{% endif %} managed by {% if program.is_corporation %}{{ program.owner.corporation }}{% else %}{{ program.owner.character.character }}{% endif %}
     </div>
 </div>
 

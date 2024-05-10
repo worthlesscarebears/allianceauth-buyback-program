@@ -5,7 +5,7 @@
 
 {% block body %}
 <div class="card">
-  <h5 class="card-header">{% "Create New Program" %}</h5>
+  <h5 class="card-header">{% trans "Create New Program" %}</h5>
   <div class="card-body">
       <form class="form" action="{{ url }}" method="POST">
       {% csrf_token %}

@@ -14,7 +14,7 @@
 
 <div class="card">
     <div class="card-header">
-        Buyback Programs
+        {% trans "Buyback Programs" %}
     </div>
     <table style="width: 100%; margin: auto;" class="table table-striped table-hover no-footer w-100">
         <thead>
@@ -55,23 +55,23 @@
 
                 <td class="text-center">
                     <a class="btn btn-success btn-sm" href="{% url 'buybackprogram:program_calculate' program_pk=program.id %}">
-                        Use
+                        {% trans "Use" %}
                     </a>
 
                     {% if perms.buybackprogram.see_leaderboard %}
-                        <a class="btn btn-sm btn-info" href="{% url 'buybackprogram:program_leaderboard' program_pk=program.id %}">Leaderboard</a>
+                        <a class="btn btn-sm btn-info" href="{% url 'buybackprogram:program_leaderboard' program_pk=program.id %}">{% trans "Leaderboard" %}</a>
                     {% endif %}
 
                     {% if program.owner.user == request.user or perms.buybackprogram.see_performance %}
-                        <a class="btn btn-sm btn-info" href="{% url 'buybackprogram:program_performance' program_pk=program.id %}">Performance</a>
+                        <a class="btn btn-sm btn-info" href="{% url 'buybackprogram:program_performance' program_pk=program.id %}">{% trans "Performance" %}</a>
                     {% endif %}
 
-                    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}">Special taxes</a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}">{% trans "Special taxes" %}</a>
 
                     {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
-                        <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit' program_pk=program.id %}">Edit program</a>
+                        <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit' program_pk=program.id %}">{% trans "Edit program" %}</a>
                         <a class="btn btn-danger btn-sm" href="{% url 'buybackprogram:program_remove' program_pk=program.id %}">
-                        Delete
+                        {% trans "Delete" %}
                     </a>
                     {% endif %}
 

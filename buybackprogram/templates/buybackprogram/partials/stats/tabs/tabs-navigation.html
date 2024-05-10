@@ -10,7 +10,7 @@
             aria-controls="home"
             aria-selected="true"
         >
-            Outstanding ({{values.outstanding_count}})
+            {% trans "Outstanding" %} ({{values.outstanding_count}})
         </a>
     </li>
 
@@ -24,7 +24,7 @@
             aria-controls="home"
             aria-selected="false"
         >
-            Finished ({{values.finished_count}})
+            {% trans "Finished" %} ({{values.finished_count}})
         </a>
     </li>
     <li>
@@ -37,7 +37,7 @@
             aria-controls="home"
             aria-selected="false"
         >
-            Untracked ({{values.untracked_count}})
+            {% trans "Untracked" %} ({{values.untracked_count}})
         </a>
     </li>
 </ul>

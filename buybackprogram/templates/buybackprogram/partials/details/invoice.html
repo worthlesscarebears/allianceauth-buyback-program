@@ -5,19 +5,19 @@
 
             <table id="contract" class="table">
                 <tr>
-                    <th>Price before expenses</th>
+                    <th>{% trans "Price before expenses" %}</th>
                     <td>{{tracking.value|floatformat:0|intcomma}} ISK</td>
                 </tr>
                 <tr>
-                    <th>Program taxes</th>
+                    <th>{% trans "Program taxes" %}</th>
                   <td>{{tracking.taxes|floatformat:0|intcomma}} ISK</td>
                 </tr>
                 <tr>
-                    <th>Hauling cost</th>
+                    <th>{% trans "Hauling cost" %}</th>
                     <td>{{tracking.hauling_cost|floatformat:0|intcomma}} ISK</td>
                 </tr>
                 <tr>
-                    <th>Donation amount</th>
+                    <th>{% trans "Donation amount" %}</th>
                     <td>{{tracking.donation|floatformat:0|intcomma}} ISK <i></i></td>
                 </tr>
                 <tr>

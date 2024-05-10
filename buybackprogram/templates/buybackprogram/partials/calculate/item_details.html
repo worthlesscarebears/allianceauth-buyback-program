@@ -2,17 +2,18 @@
 {% load price_formats %}
 {% load help_icons %}
 {% load static %}
+{% load i18n %}
 <table id="value" class="table table-hover no-footer w-100">
             <thead>
                 <tr>
-                    <th>Name <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
-                    <th>Quantity <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
+                    <th>{% trans "Name" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
+                    <th>{% trans "Quantity" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
                     <th>{{price_source}} Buy / Sell <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price_source' %}"></i></th>
-                    <th>Base Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
-                    <th>Our Taxes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
-                    <th>Our Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
-                    <th>Row Total <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
-                    <th>Notes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
+                    <th>{% trans "Base Price" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
+                    <th>{% trans "Our Taxes" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
+                    <th>{% trans "Our Price" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
+                    <th>{% trans "Row Total" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
+                    <th>{% trans "Notes" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
                 </tr>
             </thead>
             <tbody>

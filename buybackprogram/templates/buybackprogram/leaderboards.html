@@ -5,16 +5,17 @@
 {% load static %}
 
 {% block body %}
+{% load i18n %}
 <div class="card">
 	<div class="card-header">
-    Leaderboard for: {{program.name}}
+    {% trans "Leaderboard for:" %} {{program.name}}
   </div>
   <div class='row'>
     <div class='col-md-1'>
 	    <button class="btn btn-default" onclick="prior()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
     </div>
     <div class='col-md-7 col-md-offset-3'>
-	    <h3>Month: <span id="month"></span></h3>
+	    <h3>{% trans "Month:" %} <span id="month"></span></h3>
     </div>
     <div class='col-md-1'>
 	    <button class="btn btn-default" onclick="next()"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
@@ -22,7 +23,7 @@
   </div>
   <div class='row'>
     <div class='col-md-12'>
-	    <table id="leaderboard" class="table table-striped"><thead><tr><th>Name</th><th>Contract Total (ISK)</th><th>Donation Total (ISK)</th></tr></thead>
+	    <table id="leaderboard" class="table table-striped"><thead><tr><th>{% trans "Name" %}</th><th>{% trans "Contract Total (ISK)" %}</th><th>{% trans "Donation Total (ISK)" %}</th></tr></thead>
 		    <tbody id="data"></tbody>
 	    </table>
     </div>

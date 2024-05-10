@@ -6,22 +6,22 @@
 
 {% block body %}
 <div class="panel-heading">
-  <h3 class="panel-title">Buyback locations</h3>
+  <h3 class="panel-title">{% trans "Buyback locations" %}</h3>
 </div>
 <div class="panel-body" style="min-height: 100px;">
   <div>
     <form class="form" action="{% url 'buybackprogram:location_add' %}" method="POST">
       {% csrf_token %}
       {{ form|bootstrap }}
-      <button type="submit" class="btn btn-primary">Add location</button>
+      <button type="submit" class="btn btn-primary">{% trans "Add location" %}</button>
     </form>
   </div>
   <div class="table-responsive" style="margin: 20px 0;">
     <table id="locations" style="margin: 20px auto;" class="table table-striped table-condensed">
       <thead>
-        <th>Solar System</th>
-        <th style="text-align: center;">Name</th>
-        <th style="text-align: center;">Structure ID</th>
+        <th>{% trans "Solar System" %}</th>
+        <th style="text-align: center;">{% trans "Name" %}</th>
+        <th style="text-align: center;">{% trans "Structure ID" %}</th>
       </thead>
       <tbody>
         {% for location in locations %}
@@ -30,7 +30,7 @@
               <td>{{location.eve_solar_system.name}}</td>
               <td style="text-align: center;">{{location.name}}</td>
               <td style="text-align: center;">{{location.structure_id}}</td>
-              <td><a class="btn btn-sm btn-danger" href="{% url 'buybackprogram:location_remove' location_pk=location.id %}">Delete</a></td>
+              <td><a class="btn btn-sm btn-danger" href="{% url 'buybackprogram:location_remove' location_pk=location.id %}">{% trans "Delete" %}</a></td>
             </tr>
           {% endif %}
         {% endfor %}
