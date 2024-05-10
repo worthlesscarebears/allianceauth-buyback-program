@@ -1,0 +1,38 @@
+{% load humanize %}
+        <table id="contract" class="table table-striped table-hover no-footer w-100">
+            <tr>
+                <th>Contract type:</th>
+                <td colspan="2">Item Exchange</td>
+
+            </tr>
+            <tr>
+                <th>Availability:</th>
+                {% if program.is_corporation %}
+                    <td data-type="copy_value">{{program.owner.corporation}}</td>
+                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
+                {% else %}
+                    <td data-type="copy_value">{{program.owner.character.character}}</td>
+                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
+                {% endif %}
+            </tr>
+            <tr>
+                <th>I will receive:</th>
+                {% if contract_price_data.contract_net_total >= 0%}
+                    <td data-type="copy_value">{{contract_price_data.contract_net_total|floatformat:0|intcomma}}</td>
+                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
+                {% else %}
+                    <td>0 ISK <i><s>{{contract_price_data.contract_net_total|floatformat:0|intcomma}} ISK</s></i><td>
+                {% endif %}
+
+
+            </tr>
+            <tr>
+                <th>Expiration:</th>
+                <td colspan="2">{{program.expiration}}</td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td data-type="copy_value">{{tracking_number}}</td>
+                <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
+            </tr>
+        </table>

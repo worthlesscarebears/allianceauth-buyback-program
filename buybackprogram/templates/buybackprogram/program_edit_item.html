@@ -5,21 +5,20 @@
 {% load static %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Program Special Taxes</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
-  {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
-  <div>
-    <form class="form" action="{% url 'buybackprogram:program_edit_item' program_pk=program.id %}" method="POST">
-      {% csrf_token %}
-      {{ form|bootstrap }}
-      <button type="submit" class="btn btn-primary">Add item</button>
-    </form>
-    <a class="btn btn-default navbar-btn btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}"><i class="fas fa-long-arrow-alt-left">Item taxes</i></a>
+<div class="card">
+  <h5 class="card-header">{% trans "Add Special Item Tax to Program" %}</h5>
+  <div class="card-body">
+    {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
+      <form class="form" action="{% url 'buybackprogram:program_edit_item' program_pk=program.id %}" method="POST">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit" class="btn btn-primary">{% trans "Add item" %}</button>
+      </form>
+    {% endif %}
   </div>
-  {% endif %}
-
+  <div class="card-footer text-muted">
+    <a class="btn btn-default navbar-btn btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}"><i class="fas fa-long-arrow-alt-left"></i> {% trans "Back to item taxes" %}</a>
+  </div>
 </div>
 {% endblock %}
 

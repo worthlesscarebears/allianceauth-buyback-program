@@ -4,18 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buybackprogram', '0016_rename_title_contractnotification_header'),
+        ("buybackprogram", "0016_rename_title_contractnotification_header"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Faq',
+            name="Faq",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('header', models.CharField(max_length=1024)),
-                ('body', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("header", models.CharField(max_length=1024)),
+                ("body", models.TextField()),
             ],
         ),
     ]

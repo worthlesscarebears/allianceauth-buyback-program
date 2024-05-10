@@ -5,19 +5,21 @@
 {% load static %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Edit program</h3>
+<div class="card">
+  <div class="card-header">
+    Featured
+  </div>
+  <div class="card-body">
+    <form class="form" action="{% url 'buybackprogram:program_edit' program_pk=program.id %}" method="POST">
+      {% csrf_token %}
+      {{ form|bootstrap }}
+      <button type="submit" class="btn btn-primary">{% trans "Edit Program" %}</button>
+    </form>
+  </div>
 </div>
-<div class="panel-body" style="min-height: 100px;">
-  <form class="form" action="{% url 'buybackprogram:program_edit' program_pk=program.id %}" method="POST">
-    {% csrf_token %}
-    {{ form|bootstrap }}
-    <button type="submit" class="btn btn-primary">Edit Program</button>
-  </form>
-  {% endblock %}
+{% endblock %}
 
-
-  {% block extra_javascript %}
+{% block extra_javascript %}
   <script type="text/javascript" src="{% static 'buybackprogram/js/bootstrap-autocomplete.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'buybackprogram/js/autocomplete.js' %}"></script>
 </div>

@@ -22,6 +22,7 @@ from ..models import (
     Contract,
     ContractItem,
     ContractNotification,
+    Program,
     Tracking,
     TrackingItem,
 )
@@ -99,6 +100,8 @@ def my_stats(request):
 @login_required
 @permission_required("buybackprogram.basic_access")
 def leaderboard(request, program_pk):
+    program = Program.objects.get(pk=program_pk)
+
     # Tracker values
     monthstats = {
         "users": {},  # monthly stats per user
@@ -139,6 +142,7 @@ def leaderboard(request, program_pk):
     monthstats["months"] = sorted(list(monthstats["users"].keys()))
     context = {
         "stats": json.dumps(monthstats),
+        "program": program,
     }
 
     return render(request, "buybackprogram/leaderboards.html", context)
