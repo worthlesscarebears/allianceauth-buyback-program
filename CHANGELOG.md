@@ -37,18 +37,27 @@ Section Order:
 
 ## [2.0.0b1] - 2024-05-11
 
-> \[!NOTE\]
+> **IMPORTANT**
 >
 > **This is a beta version it should not be installed on production**
 
 
-> \[!NOTE\]
+> **IMPORTANT**
 >
 > **This version needs at least Alliance Auth v4.0.0!**
 >
 > Please make sure to update your Alliance Auth instance **before**
 > you install this version, otherwise, an update to Alliance Auth will
 > be pulled in unsupervised.
+
+Program Performance has been changed from on demand to cache file. Add the following code to your `settings.py` file to update program performances once per day.
+```python
+# Buybackprogram program performance updates, updates performance at midnight
+CELERYBEAT_SCHEDULE['buybackprogram_update_program_performance'] = {
+    'task': 'buybackprogram.tasks.update_program_performance',
+    'schedule': crontab(minute=0, hour='0'),
+}
+```
 
 ### Removed
 - Dropped support for alliance Auth 3
@@ -64,7 +73,7 @@ Section Order:
 
 ## [1.13.2] - 2024-01-28
 
-> \[!NOTE\]
+> **NOTE**
 >
 > **This is the last version compatible with Alliance Auth v3.**
 
