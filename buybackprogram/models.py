@@ -891,6 +891,16 @@ class Owner(models.Model):
 
             notes.append(note)
 
+        if tracking.additional_notes:
+            note = ContractNotification(
+                contract=contract,
+                icon="fa-message",
+                header="Additional notes",
+                message="Extra notes provided by the seller",
+            )
+
+            notes.append(note)
+
         try:
             ContractNotification.objects.bulk_create(notes)
 
@@ -1367,6 +1377,7 @@ class Tracking(models.Model):
     net_price = models.BigIntegerField(null=False)
     tracking_number = models.CharField(max_length=32)
     created_at = models.DateTimeField(null=True, blank=True)
+    additional_notes = models.TextField(null=True, blank=True)
 
 
 class TrackingItem(models.Model):

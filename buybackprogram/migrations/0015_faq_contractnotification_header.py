@@ -4,23 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buybackprogram', '0014_program_price_type'),
+        ("buybackprogram", "0014_program_price_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Faq',
+            name="Faq",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('header', models.CharField(max_length=1024)),
-                ('body', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("header", models.CharField(max_length=1024)),
+                ("body", models.TextField()),
             ],
         ),
         migrations.AddField(
-            model_name='contractnotification',
-            name='header',
+            model_name="contractnotification",
+            name="header",
             field=models.CharField(blank=True, max_length=1024, null=True),
         ),
     ]

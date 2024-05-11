@@ -27,6 +27,7 @@ def program_calculate(request, program_pk):
     program = Program.objects.filter(pk=program_pk).first()
 
     buyback_data = []
+    additional_notes = False
 
     form_donation = False
 
@@ -42,6 +43,9 @@ def program_calculate(request, program_pk):
         if form.is_valid():
             form_items = form.cleaned_data["items"]
             form_donation = form.cleaned_data["donation"]
+            additional_notes = form.cleaned_data[
+                "additional_notes"
+            ]  # Capture additional notes
 
             # If we have an ingame copy paste
             if "\t" in form_items:
@@ -210,7 +214,12 @@ def program_calculate(request, program_pk):
 
     # Get item values after other expenses and the total value for the contract
     tracking = get_tracking_number(
-        request.user, program, form_donation, buyback_data, contract_price_data
+        request.user,
+        program,
+        form_donation,
+        buyback_data,
+        contract_price_data,
+        additional_notes,
     )
 
     context = {

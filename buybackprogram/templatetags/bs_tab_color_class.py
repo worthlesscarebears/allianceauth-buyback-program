@@ -12,4 +12,4 @@ def BsTabColorClass(color):
     elif color == "green":
         return "bg-success"
     else:
-        return False
+        return "bg-primary"

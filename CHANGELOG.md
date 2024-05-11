@@ -58,6 +58,7 @@ Section Order:
 	- Bootstrap 5
 - Translation tags
 - Command to generate dummy entries (ONLY FOR DEVELOPMENT USE)
+- Added extra field for open text comments, Closes #73
 ### Changed
 - Program performance will now be a scheduled task and cached as a file
 
