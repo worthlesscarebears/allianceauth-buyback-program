@@ -2,5 +2,5 @@
 
 default_app_config = "buybackprogram.apps.BuybackProgramConfig"
 
-__version__ = "1.13.2"
+__version__ = "2.0.0b1"
 __title__ = "Buyback Program"

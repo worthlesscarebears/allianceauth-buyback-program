@@ -35,7 +35,12 @@ Section Order:
 ### Security
 -->
 
-## [Unreleased] - yyyy-mm-dd
+## [2.0.0b1] - 2024-05-11
+
+> \[!NOTE\]
+>
+> **This is a beta version it should not be installed on production**
+
 
 > \[!NOTE\]
 >
@@ -52,6 +57,7 @@ Section Order:
 - Compatibility to Alliance Auth v4
 	- Bootstrap 5
 - Translation tags
+- Command to generate dummy entries (ONLY FOR DEVELOPMENT USE)
 ### Changed
 - Program performance will now be a scheduled task and cached as a file
 
