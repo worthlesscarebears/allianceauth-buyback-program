@@ -3,53 +3,74 @@
 {% load humanize %}
 {% load bootstrap %}
 {% load static %}
+{% load i18n %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">{% trans "Program Performance" %}</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
-  <div class='row'>
-    <div class='col-md-12'>
-       <div class="pull-right">
-         <button type="button" class="btn btn-link float-right" id="export" onclick="exportdata()">Export</button>
-       </div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-3'>
-	    <div id="lastthree"></div>
-    </div>
-    <div class='col-md-9'>
-	    <div id="isk"></div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-12'>
-	    <div id="donations"></div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-6'>
-	    <div id="categoryisk"></div>
-    </div>
-    <div class='col-md-6'>
-	    <div id="categoryq"></div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-12'>
-      <div id='categories' class="btn-group-sm" role="group" aria-label="..."></div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-6'>
-	    <div id="itemisk"></div>
-    </div>
-    <div class='col-md-6'>
-	    <div id="itemq"></div>
-    </div>
-  </div>
+<div class="row">
+	<div class="col-sm-3">
+		<div class="card">
+    		<div class="card-header">{% trans "Most common items last 3 Months" %}</div>
+      		<div class="card-body">
+	    		<div id="lastthree"></div>
+      		</div>
+    	</div>
+	</div>
+	<div class="col-sm-9">
+		<div class="card">
+    		<div class="card-header">{% trans "12 Months ISK and fonation performance" %}</div>
+      		<div class="card-body">
+	    		<div id="isk"></div>
+      		</div>
+    	</div>
+	</div>
+	<div class="col-sm-12" style="margin-top:10px;">
+		<div class="card">
+    		<div class="card-header">{% trans "12 Months contract and donation count" %}</div>
+      		<div class="card-body">
+	    		<div id="donations"></div>
+      		</div>
+    	</div>
+	</div>
+	<div class="col-sm-6" style="margin-top:10px;">
+		<div class="card">
+    		<div class="card-header">{% trans "12 Months ISK per item category" %}</div>
+      		<div class="card-body">
+	    		<div id="categoryisk"></div>
+      		</div>
+    	</div>
+	</div>
+	<div class="col-sm-6" style="margin-top:10px;">
+		<div class="card">
+    		<div class="card-header">{% trans "12 Months quantity per item category" %}</div>
+      		<div class="card-body">
+	    		<div id="categoryq"></div>
+      		</div>
+    	</div>
+	</div>
+	<div class="col-sm-12" style="margin-top:10px;">
+		<div class="card">
+    		<div class="card-header">{% trans "12 Month statistics per item category" %}</div>
+      		<div class="card-body">
+	    		<div id='categories' class="btn-group-sm" role="group" aria-label="..."></div>
+      		</div>
+      		<div class="col-sm-12" style="padding:10px;">
+				<div class="card">
+		    		<div class="card-header">{% trans "12 Months ISK per category" %}</div>
+		      		<div class="card-body">
+			    		<div id="itemisk"></div>
+		      		</div>
+		    	</div>
+			</div>
+			<div class="col-sm-12" style="padding:10px;">
+				<div class="card">
+		    		<div class="card-header">{% trans "12 Months quantity per category" %}</div>
+		      		<div class="card-body">
+			    		<div id="itemq"></div>
+		      		</div>
+		    	</div>
+			</div>
+    	</div>
+	</div>
 </div>
 {% endblock %}
 
@@ -243,7 +264,7 @@ var hscaling;
 	    columns: {{lastthree}},
 	    type: "donut", // for ESM specify as: donut()
 	  },
-	  donut: { title: "Last 3 months", },
+	  donut: { title: "", },
 	  bindto: "#lastthree"
 	});
 
