@@ -68,6 +68,8 @@ CELERYBEAT_SCHEDULE['buybackprogram_update_program_performance'] = {
 - Translation tags
 - Command to generate dummy entries (ONLY FOR DEVELOPMENT USE)
 - Added extra field for open text comments, Closes #73
+- Added ability to write extra FAQ entries
+
 ### Changed
 - Program performance will now be a scheduled task and cached as a file
 
