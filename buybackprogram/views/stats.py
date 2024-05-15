@@ -153,7 +153,7 @@ def leaderboard(request, program_pk):
 @login_required
 @permission_required("buybackprogram.manage_programs")
 def program_performance(request, program_pk):
-    static_path = os.path.join(settings.STATIC_ROOT, "performance_data")
+    static_path = os.path.join(settings.STATIC_ROOT, "buybackprogram/performance_data")
     filename = f"program_performance_{program_pk}.json"
     file_path = os.path.join(static_path, filename)
 
