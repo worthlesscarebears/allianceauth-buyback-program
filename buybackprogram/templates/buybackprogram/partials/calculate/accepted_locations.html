@@ -1,0 +1,9 @@
+        <table id="contract" class="table table-striped table-hover no-footer w-100">
+            {% for location in program.location.all %}
+                <tr>
+                    <td>
+                        <div>{{location.location_display_name}}</div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>

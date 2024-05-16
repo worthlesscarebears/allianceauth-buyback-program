@@ -5,16 +5,17 @@
 {% load static %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Buyback Leaderboards</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
+{% load i18n %}
+<div class="card">
+	<div class="card-header">
+    {% trans "Leaderboard for:" %} {{program.name}}
+  </div>
   <div class='row'>
     <div class='col-md-1'>
 	    <button class="btn btn-default" onclick="prior()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
     </div>
     <div class='col-md-7 col-md-offset-3'>
-	    <h3>Month: <span id="month"></span></h3>
+	    <h3>{% trans "Month:" %} <span id="month"></span></h3>
     </div>
     <div class='col-md-1'>
 	    <button class="btn btn-default" onclick="next()"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
@@ -22,7 +23,7 @@
   </div>
   <div class='row'>
     <div class='col-md-12'>
-	    <table id="leaderboard" class="table table-striped"><thead><tr><th>Name</th><th>Contract Total (ISK)</th><th>Donation Total (ISK)</th></tr></thead>
+	    <table id="leaderboard" class="table table-striped"><thead><tr><th>{% trans "Name" %}</th><th>{% trans "Contract Total (ISK)" %}</th><th>{% trans "Donation Total (ISK)" %}</th></tr></thead>
 		    <tbody id="data"></tbody>
 	    </table>
     </div>
@@ -85,11 +86,7 @@ function render() {
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.5.1/billboard.min.css" integrity="sha512-RMOXiaUbYERixbCxwbAyhJcq/KDpbXMZGLLUbexHB5JWdXsZONmsv2tLycOcTnAGCDZ9qPGG5pbd6bnL8YRhSw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-{% if NIGHT_MODE %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-{% else %}
-	<link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-{% endif %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}

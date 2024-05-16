@@ -120,19 +120,25 @@ Buyback program requires a few periodic tasks to operate and update its data.
 
 Buybackprogram is designed to use locally stored prices to speed up the price calculations. It is important that you have the price update task in your periodic tasks so that your prices will update.
 
-By adding the following lines in your `local.py` setting file the program will update the stored item prices at midnight. This same task is also responsible for maintenance tasks such as removing unlinked tracking objects. It will also check for any new contracts and update the statistics page with them every 15 minutes:
+By adding the following lines in your `local.py` setting file the program will update the stored item prices at midnight. This same task is also responsible for maintenance tasks such as removing unlinked tracking objects. It will also check for any new contracts and update the statistics page with them every 30 minutes:
 
 ```python
-# Buybackprogram price updates
+# Buybackprogram price updates, updates prices at midnight
 CELERYBEAT_SCHEDULE['buybackprogram_update_all_prices'] = {
     'task': 'buybackprogram.tasks.update_all_prices',
     'schedule': crontab(minute=0, hour='0'),
 }
 
-# Buybackprogram contract updates
+# Buybackprogram contract updates, updates contracts every 30 minutes
 CELERYBEAT_SCHEDULE['buybackprogram_update_all_contracts'] = {
     'task': 'buybackprogram.tasks.update_all_contracts',
-    'schedule': crontab(minute='*/15'),
+    'schedule': crontab(minute='*/30'),
+}
+
+# Buybackprogram program performance updates, updates performance at midnight
+CELERYBEAT_SCHEDULE['buybackprogram_update_program_performance'] = {
+    'task': 'buybackprogram.tasks.update_program_performance',
+    'schedule': crontab(minute=0, hour='0'),
 }
 ```
 

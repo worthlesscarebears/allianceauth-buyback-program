@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load humanize %}
+{% load price_formats %}
+    <table class="table">
+        <tbody>
+            <tr>
+                <th >{% trans "Date issued" %}</th>
+                <td>{{contract.date_issued}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Issued from" %}</th>
+                <td>{{contract.issuer_name}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Issued to" %}</th>
+                <td>{{contract.assignee_name}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Location" %}</th>
+                <td>{{contract.location_name}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Time pending" %}</th>
+                <td>{{contract.date_issued|timesince }}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Status" %}</th>
+                <td>{{contract.status}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Tracking #" %}</th>
+                <td>{{contract.title}}</td>
+            </tr>
+            <tr>
+                <th >{% trans "Asking price" %}</th>
+                <td>{{contract.price|floatformat:0|intcomma}} ISK</td>
+            </tr>
+        </tbody>
+    </table>

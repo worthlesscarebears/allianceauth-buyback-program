@@ -12,6 +12,7 @@ class TestHelpers(TestCase):
         load_eveuniverse()
         user = UserIssuerFactory()
         program = ProgramFactory()
+        additional_notes = "Test note"
         contract_net_prices = {
             "total_all_items_raw": 1,
             "total_all_items": 1,
@@ -22,7 +23,9 @@ class TestHelpers(TestCase):
             "contract_net_total": 1,
         }
         # when
-        tracking = get_tracking_number(user, program, None, [], contract_net_prices)
+        tracking = get_tracking_number(
+            user, program, None, [], contract_net_prices, additional_notes
+        )
         # then
         self.assertEqual(tracking.program, program)
         self.assertEqual(tracking.issuer_user, user)

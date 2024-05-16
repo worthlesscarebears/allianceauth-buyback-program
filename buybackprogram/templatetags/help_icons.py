@@ -13,6 +13,10 @@ def help(option):
         source = "instant"
 
     icons = {
+        "item_details": "Details for each of the items on this contract",
+        "accepted_locations": "Locations where the contracts are accepted at",
+        "contract_settings": "Settings used in the actual ingame contract",
+        "invoice": "List of expenses applied on your contract",
         "name": "The type name for this item",
         "quantity": "Quantity of items to be sold",
         "price_source": "The buy and sell prices for this item at the selected trade hub",

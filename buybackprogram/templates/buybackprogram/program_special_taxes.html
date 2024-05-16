@@ -5,24 +5,25 @@
 {% load static %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Program Special Taxes</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
-  {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
-    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit_item' program_pk=program.id %}"><i class="fas fa-plus">Add item</i></a>
-    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit_marketgroup' program_pk=program.id %}"><i class="fas fa-plus">Add market group</i></a>
-    <a class="btn btn-sm btn-danger" href="{% url 'buybackprogram:program_item_remove_all' program_pk=program.id %}"><i class="fas fa-trash">Deleta all items</i></a>
+<div class="card">
+  <div class="card-header">
+    {% trans "Program Special Taxes" %}
+  </div>
+  <div class="card-body">
+    {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
+    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit_item' program_pk=program.id %}"><i class="fas fa-plus"></i> {% trans "Add item" %}</a>
+    <a class="btn btn-sm btn-warning" href="{% url 'buybackprogram:program_edit_marketgroup' program_pk=program.id %}"><i class="fas fa-plus"></i> {% trans "Add market group" %}</a>
+    <a class="btn btn-sm btn-danger" href="{% url 'buybackprogram:program_item_remove_all' program_pk=program.id %}"><i class="fas fa-trash"></i> {% trans "Deleta all items" %}</a>
   {% endif %}
-  <div class="table-responsive" style="margin: 20px 0;">
-    <table id="program_items" style="margin: 20px auto;" class="table table-striped table-condensed">
+    <p style="margin-top:5px;">{% trans "This section shows all special item taxes applied to this program. Taxes may either be additional taxes or discounts." %}</p>
+    <table id="program_items" class="table table-striped table-hover no-footer w-100">
       <thead>
         <th>Name</th>
-        <th style="text-align: center;">Tax adjustment</th>
-        <th style="text-align: center;">Total tax</th>
-        <th style="text-align: center;">Is allowed</th>
+        <th style="text-align: center;">{% trans "Tax adjustment" %}</th>
+        <th style="text-align: center;">{% trans "Total tax" %}</th>
+        <th style="text-align: center;">{% trans "Is allowed" %}</th>
         {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
-          <th style="text-align: center;">Actions</th>
+          <th style="text-align: center;">{% trans "Actions" %}</th>
         {% endif %}
       </thead>
       <tbody>
@@ -57,6 +58,7 @@
 {% endblock %}
 
 {% block extra_css %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}

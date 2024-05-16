@@ -131,6 +131,11 @@ class CalculatorForm(forms.Form):
         help_text="You can set a optional donation percentage on your contract",
         validators=[MaxValueValidator(100), MinValueValidator(0)],
     )
+    additional_notes = forms.CharField(
+        label="Additional Notes",
+        help_text="You can set additional notes for your contract in here",
+        required=False,  # Make sure it's not required
+    )
 
 
 class UserSettingsForm(forms.ModelForm):

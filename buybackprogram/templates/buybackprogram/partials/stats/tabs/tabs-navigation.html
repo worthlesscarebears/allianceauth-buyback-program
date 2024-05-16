@@ -1,0 +1,43 @@
+{% load i18n %}
+<ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+        <a
+            class="nav-link active"
+            id="outstanding"
+            data-bs-toggle="tab"
+            href="#tab-outstanding"
+            role="tab"
+            aria-controls="home"
+            aria-selected="true"
+        >
+            {% trans "Outstanding" %} ({{values.outstanding_count}})
+        </a>
+    </li>
+
+    <li>
+        <a
+            class="nav-link"
+            id="finished"
+            data-bs-toggle="tab"
+            href="#tab-finished"
+            role="tab"
+            aria-controls="home"
+            aria-selected="false"
+        >
+            {% trans "Finished" %} ({{values.finished_count}})
+        </a>
+    </li>
+    <li>
+        <a
+            class="nav-link"
+            id="untracked"
+            data-bs-toggle="tab"
+            href="#tab-untracked"
+            role="tab"
+            aria-controls="home"
+            aria-selected="false"
+        >
+            {% trans "Untracked" %} ({{values.untracked_count}})
+        </a>
+    </li>
+</ul>

@@ -5,15 +5,15 @@
 {% load static %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Buyback user settings</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
-  <div>
+<div class="card text-center">
+  <div class="card-header">
+    {% trans "Buyback user settings" %}
+  </div>
+  <div class="card-body">
     <form class="form" action="{% url 'buybackprogram:user_settings_edit' %}" method="POST">
       {% csrf_token %}
       {{ form|bootstrap }}
-      <button type="submit" class="btn btn-primary">Update Settings</button>
+      <button type="submit" class="btn btn-primary">{% trans "Update Settings" %}</button>
     </form>
   </div>
 </div>

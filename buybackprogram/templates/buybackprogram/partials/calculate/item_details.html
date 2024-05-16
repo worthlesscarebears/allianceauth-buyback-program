@@ -1,0 +1,153 @@
+{% load humanize %}
+{% load price_formats %}
+{% load help_icons %}
+{% load static %}
+{% load i18n %}
+<table id="value" class="table table-hover no-footer w-100">
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
+                    <th>{% trans "Quantity" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
+                    <th>{{price_source}} Buy / Sell <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price_source' %}"></i></th>
+                    <th>{% trans "Base Price" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
+                    <th>{% trans "Our Taxes" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
+                    <th>{% trans "Our Price" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
+                    <th>{% trans "Row Total" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
+                    <th>{% trans "Notes" %} <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in buyback_data %}
+                        <tr>
+                            <td>
+                                {% if item.type_data %}
+                                    <img class="item-icon" src="https://image.eveonline.com/Type/{{item.type_data.id}}_64.png" />
+                                {% else %}
+                                    <img class="item-icon" src="{% static 'buybackprogram/images/help.png' %}" />
+                                {% endif %}
+
+
+
+                            <b>{{ item.item_values.name }}</b>
+
+                            </td>
+                            <td>{{ item.item_values.quantity|intcomma }}</td>
+                            <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma}} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
+                            <td>{{ item.item_values.raw_value|floatformat:0|intcomma|price }}</td>
+                            <td>{{ item.item_values.tax_value|floatformat:2|tax }}</td>
+                            <td>{{ item.item_values.unit_value|floatformat:0|intcomma|price }}</td>
+                            <td>{{ item.item_values.buy_value|floatformat:0|intcomma|price }}</td>
+                            <td>
+                                {% for note in item.item_prices.notes%}
+                                    <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                {% endfor %}
+                            </td>
+                        </tr>
+
+                        {% if item.item_values.normal.value and item.item_prices.has_price_variants %}
+                            <tr class="no-border">
+                                <td colspan="8" data-bs-toggle="collapse" href="#{{ item.item_values.normal.id }}-raw" class="accordion-toggle">
+                                    <i style="padding-left: 10px;" class="fas fa-angle-down"></i> {% trans "Raw" %}
+                                </td>
+                            </tr>
+
+                            <tr class="collapse no-border" id="{{ item.item_values.normal.id }}-raw">
+                                <td style="padding-left: 30px;">{{ item.item_values.name }}</td>
+                                <td>{{ item.item_values.quantity|intcomma }}</td>
+                                <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma }} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
+                                <td>{{ item.item_values.normal.raw_value|floatformat:0|intcomma|price }}</td>
+                                <td>{{ item.item_values.normal.total_tax|floatformat:2|tax }}</td>
+                                <td>{{ item.item_values.normal.unit_value|floatformat:0|intcomma|price }}</td>
+                                <td class="buy-value-{{item.item_values.normal.is_buy_value}}">{{ item.item_values.normal.value|floatformat:0|intcomma|price }}</td>
+                                <td>
+                                    {% for note in item.item_values.normal.notes %}
+                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if item.item_values.npc.value %}
+                            <tr class="no-border">
+                                <td colspan="8" data-bs-toggle="collapse" href="#{{ item.item_values.normal.id }}-npc" class="accordion-toggle">
+                                    <i style="padding-left: 10px;" class="fas fa-angle-down"></i> {% trans "NPC buy order" %}
+                                </td>
+                            </tr>
+
+                            <tr class="collapse no-border" id="{{ item.item_values.normal.id }}-npc">
+                                <td style="padding-left: 30px;">{{item.item_values.npc.name}}</td>
+                                <td>{{item.item_values.npc.quantity|intcomma}}</td>
+                                <td>{{item.item_values.npc.buy|floatformat:0|intcomma}} / {{item.item_values.npc.sell|floatformat:0|intcomma|price}}</td>
+                                <td>{{ item.item_values.npc.raw_value|floatformat:0|intcomma|price }}</td>
+                                <td>{{item.item_values.npc.total_tax|floatformat:2|tax}}</td>
+                                <td>{{item.item_values.npc.unit_value|floatformat:0|intcomma|price}}</td>
+                                <td class="buy-value-{{item.item_values.npc.is_buy_value}}">{{item.item_values.npc.value|floatformat:0|intcomma|price}}</td>
+                                <td>
+                                    {% for note in item.item_values.npc.notes%}
+                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if item.item_values.compressed.value %}
+                            <tr class="no-border">
+                                <td colspan="8" data-bs-toggle="collapse" href="#{{ item.item_values.normal.id }}-compressed" class="accordion-toggle">
+                                    <i style="padding-left: 10px;" class="fas fa-angle-down"></i> {% trans "Compressed" %}
+                                </td>
+                            </tr>
+
+                            <tr class="collapse no-border" id="{{ item.item_values.normal.id }}-compressed">
+                                <td style="padding-left: 30px;">{{item.item_values.compressed.name}}</td>
+                                <td>{{item.item_values.compressed.quantity|intcomma}}</td>
+                                <td>{{item.item_values.compressed.buy|floatformat:0|intcomma}} / {{item.item_values.compressed.sell|floatformat:0|intcomma|price}}</td>
+                                <td>{{item.item_values.compressed.raw_value|floatformat:0|intcomma|price}}</td>
+                                <td>{{item.item_values.compressed.total_tax|floatformat:2|tax}}</td>
+                                <td>{{item.item_values.compressed.unit_value|floatformat:0|intcomma|price}}</td>
+                                <td class="buy-value-{{item.item_values.compressed.is_buy_value}}">{{item.item_values.compressed.value|floatformat:0|intcomma|price}}</td>
+                                <td>
+                                    {% for note in item.item_values.compressed.notes%}
+                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if item.item_values.refined.value %}
+                            <tr class="no-border">
+                                <td colspan="8" data-bs-toggle="collapse" href="{% for x in item.item_values.refined.materials %}#{{ item.item_values.normal.id }}-refined{{ forloop.counter }}{% if not forloop.last %}, {% endif %} {% endfor %},#{{ item.item_values.normal.id }}-refined-total" class="accordion-toggle">
+                                   <i style="padding-left: 10px;" class="fas fa-angle-down "> </i> {% trans "Refined" %}
+                                </td>
+                            </tr>
+
+                            {% for material in item.item_values.refined.materials %}
+                                <tr class="collapse no-border" id="{{ item.item_values.normal.id }}-refined{{ forloop.counter }}">
+                                    <td style="padding-left: 30px;">{{material.name}}</td>
+                                    <td>{{material.quantity|floatformat:2}}</td>
+                                    <td>{{material.buy|floatformat:0|intcomma}} / {{material.sell|floatformat:0|intcomma|price}}</td>
+                                    <td>{{material.raw_value|floatformat:0|intcomma|price}}</td>
+                                    <td>{{material.total_tax|floatformat:2|tax}}</td>
+                                    <td>{{material.unit_value|floatformat:0|intcomma|price}}</td>
+                                    <td>{{material.value|floatformat:0|intcomma|price}}</td>
+                                    <td>
+                                    {% for note in material.notes%}
+                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
+                                    {% endfor %}
+                                </td>
+                                </tr>
+                            {% endfor %}
+                            <tr class="collapse no-border" id="{{ item.item_values.normal.id }}-refined-total">
+                                <td colspan="3" style="padding-left: 30px;border-top:1px dotted grey;">{% trans "Total value" %} <i>@ {{program.refining_rate}} refining rate</i></td>
+                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.raw_value|floatformat:0|intcomma|price}}</td>
+                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.total_tax|floatformat:2|tax}}</td>
+                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.unit_value|floatformat:0|intcomma|price}}</td>
+                                <td colspan="2" class="buy-value-{{item.item_values.refined.is_buy_value}}" style="border-top:1px dotted grey;">{{item.item_values.refined.value|floatformat:0|intcomma|price}}</td>
+                            </tr>
+                        {% endif %}
+                        <tr class="collapse no-border">
+                            <td colspan="8"></td>
+                        </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>

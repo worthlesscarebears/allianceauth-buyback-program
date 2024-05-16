@@ -1,5 +1,14 @@
-.allianceauth-buyback-program-plugin .buy-value-True{
-	color: green !important;
+.allianceauth-buyback-program-plugin .no-border{
+  border:0;
+
+}
+
+.allianceauth-buyback-program-plugin tr.no-border td {
+  border: 0;
+}
+
+.allianceauth-buyback-program-plugin{
+	margin:10px;
 
 }
 

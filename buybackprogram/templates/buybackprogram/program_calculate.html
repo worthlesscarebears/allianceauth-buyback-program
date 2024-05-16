@@ -7,267 +7,59 @@
 {% load help_icons %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Contract calculator</h3>
+
+
+{% if buyback_data %}
+<div class="card text-white bg-success">
+  <div class="card-header">{% trans "Calculation Succesfull" %}</div>
+  <div class="card-body">
+    {% include "buybackprogram/partials/calculate/calculation_success.html" %}
+  </div>
 </div>
-<div class="panel-body" style="min-height: 100px;">
-    {% if buyback_data %}
-    <div class="table-responsive" style="margin: 20px 0;">
-        <p class="text-success">Based on the items we have calculated a contract price for you. Please use the following settings when creating a buyback contract:</p>
 
-        <h4>Accepted location(s)</h4>
-        <table id="contract" style="margin: 20px auto;" class="table table-striped table-condensed">
-            {% for location in program.location.all %}
-                <tr>
-                    <td>
-                        <div>{{location.location_display_name}}</div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+<div class="card" style="margin-top:10px;">
+  <div class="card-header"><h5>{% trans "Accepted location(s)" %} <i class="fas fa-light fa-question" title="{% help 'accepted_locations' %}"></i></h5></div>
+  <div class="card-body">
+    {% include "buybackprogram/partials/calculate/accepted_locations.html" %}
+  </div>
+</div>
 
-        <h4>Contract settings</h4>
-        <table id="contract" style="margin: 20px auto;" class="table table-striped table-condensed">
-            <tr>
-                <th>Contract type:</th>
-                <td colspan="2">Item Exchange</td>
+<div class="card" style="margin-top:10px;">
+  <div class="card-header"><h5>{% trans "Contact Settings" %} <i class="fas fa-light fa-question" title="{% help 'contract_settings' %}"></i></h5></div>
+  <div class="card-body">
+    {% include "buybackprogram/partials/calculate/contract_settings.html" %}
+  </div>
+</div>
 
-            </tr>
-            <tr>
-                <th>Availability:</th>
-                {% if program.is_corporation %}
-                    <td data-type="copy_value">{{program.owner.corporation}}</td>
-                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
-                {% else %}
-                    <td data-type="copy_value">{{program.owner.character.character}}</td>
-                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
-                {% endif %}
-            </tr>
-            <tr>
-                <th>I will receive:</th>
-                {% if contract_price_data.contract_net_total >= 0%}
-                    <td data-type="copy_value">{{contract_price_data.contract_net_total|floatformat:0|intcomma}}</td>
-                    <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
-                {% else %}
-                    <td>0 ISK <i><s>{{contract_price_data.contract_net_total|floatformat:0|intcomma}} ISK</s></i><td>
-                {% endif %}
+<div class="card" style="margin-top:10px;">
+  <div class="card-header"><h5>{% trans "Invoice" %} <i class="fas fa-light fa-question" title="{% help 'invoice' %}"></i></h5></div>
+  <div class="card-body">
+    {% include "buybackprogram/partials/calculate/invoice.html" %}
+  </div>
+</div>
 
-
-            </tr>
-            <tr>
-                <th>Expiration:</th>
-                <td colspan="2">{{program.expiration}}</td>
-            </tr>
-            <tr>
-                <th>Description:</th>
-                <td data-type="copy_value">{{tracking_number}}</td>
-                <td><button data-type="copy"><i class="fas fa-copy"></i></button></td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="table-responsive" style="margin: 20px 0;">
-        <h4>Invoice</h4>
-            <p class="text-muted">List of expenses applied on your contract</p>
-        <table id="contract" style="margin: 20px auto;" class="table table-striped table-condensed">
-            <tr>
-                <th>Prices based on</th>
-                <td>{{price_source}} {{program.price_type}} price <i class="fas fa-light fa-question" title="{% help 'price_type' %}"></i></td>
-            </tr>
-            <tr>
-                <th>Price before expenses</th>
-                <td>{{contract_price_data.total_all_items_raw|floatformat:0|intcomma}} ISK</td>
-            </tr>
-            <tr>
-                <th>Program taxes</th>
-              <td>{{contract_price_data.total_tax_amount|floatformat:0|intcomma}} ISK</td>
-            </tr>
-            {% if program.hauling_fuel_cost > 0 %}
-            <tr>
-                <th>Hauling cost</th>
-                <td>{{contract_price_data.total_hauling_cost|floatformat:0|intcomma}} ISK @ {{contract_price_data.hauling_cost|floatformat:0|intcomma}} ISK / m³</td>
-            </tr>
-            {% endif %}
-            {% if contract_price_data.total_donation_amount %}
-            <tr>
-                <th>Donation amount</th>
-                <td>{{contract_price_data.total_donation_amount|floatformat:0|intcomma}} ISK <i> @ {{donation}} %</i></td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th style="border-top:2px dotted black;">Net price</th>
-                {% if contract_price_data.contract_net_total >= 0%}
-                    <td style="border-top:2px dotted black;">{{contract_price_data.contract_net_total|floatformat:0|intcomma }} ISK</td>
-                {% else %}
-                    <td style="border-top:2px dotted black;">0 ISK <i><s>{{contract_price_data.contract_net_total|floatformat:0|intcomma }} ISK</s></i><td>
-                {% endif %}
-            </tr>
-
-        </table>
-    </div>
-
-    <div class="table-responsive" style="margin: 20px 0;">
-        <h4>Item details</h4>
-        <p class="text-muted">Details for each item and their price calculations</p>
-        <table id="value" style="margin: 20px auto;" class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Name <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'name' %}"></i></th>
-                    <th>Quantity <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'quantity' %}"></i></th>
-                    <th>{{price_source}} Buy / Sell <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price_source' %}"></i></th>
-                    <th>Base Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'base_price' %}"></i></th>
-                    <th>Our Taxes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'taxes' %}"></i></th>
-                    <th>Our Price <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'price' %}"></i></th>
-                    <th>Row Total <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'total' %}"></i></th>
-                    <th>Notes <i class="fas-regular fas-circle-question"></i><i class="fas fa-light fa-question" title="{% help 'notes' %}"></i></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in buyback_data %}
-                        <tr>
-                            <td>
-                                {% if item.type_data %}
-                                    <img class="item-icon" src="https://image.eveonline.com/Type/{{item.type_data.id}}_64.png" />
-                                {% else %}
-                                    <img class="item-icon" src="{% static 'buybackprogram/images/help.png' %}" />
-                                {% endif %}
-
-
-
-                                <b>{{ item.item_values.name }}</b>
-
-                            </td>
-                            <td>{{ item.item_values.quantity|intcomma }}</td>
-                            <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma}} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
-                            <td>{{ item.item_values.raw_value|floatformat:0|intcomma|price }}</td>
-                            <td>{{ item.item_values.tax_value|floatformat:2|tax }}</td>
-                            <td>{{ item.item_values.unit_value|floatformat:0|intcomma|price }}</td>
-                            <td>{{ item.item_values.buy_value|floatformat:0|intcomma|price }}</td>
-                            <td>
-                                {% for note in item.item_prices.notes%}
-                                    <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                {% endfor %}
-                            </td>
-                        </tr>
-
-                        {% if item.item_values.normal.value and item.item_prices.has_price_variants %}
-                            <tr>
-                                <td colspan="6" data-toggle="collapse" data-target="#{{ item.item_values.normal.id }}-raw" class="accordion-toggle">
-                                    <i style="padding-left: 10px;" class="fas fa-angle-down"> Raw</i>
-                                </td>
-                            </tr>
-
-                            <tr class="collapse" id="{{ item.item_values.normal.id }}-raw">
-                                <td style="padding-left: 30px;">{{ item.item_values.name }}</td>
-                                <td>{{ item.item_values.quantity|intcomma }}</td>
-                                <td>{{ item.item_prices.type_prices.buy|floatformat:0|intcomma }} / {{ item.item_prices.type_prices.sell|floatformat:0|intcomma|price }}</td>
-                                <td>{{ item.item_values.normal.raw_value|floatformat:0|intcomma|price }}</td>
-                                <td>{{ item.item_values.normal.total_tax|floatformat:2|tax }}</td>
-                                <td>{{ item.item_values.normal.unit_value|floatformat:0|intcomma|price }}</td>
-                                <td class="buy-value-{{item.item_values.normal.is_buy_value}}">{{ item.item_values.normal.value|floatformat:0|intcomma|price }}</td>
-                                <td>
-                                    {% for note in item.item_values.normal.notes %}
-                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
-
-                        {% if item.item_values.npc.value %}
-                            <tr>
-                                <td colspan="6" data-toggle="collapse" data-target="#{{ item.item_values.normal.id }}-npc" class="accordion-toggle">
-                                    <i style="padding-left: 10px;" class="fas fa-angle-down"> NPC buy order</i>
-                                </td>
-                            </tr>
-
-                            <tr class="collapse" id="{{ item.item_values.normal.id }}-npc">
-                                <td style="padding-left: 30px;">{{item.item_values.npc.name}}</td>
-                                <td>{{item.item_values.npc.quantity|intcomma}}</td>
-                                <td>{{item.item_values.npc.buy|floatformat:0|intcomma}} / {{item.item_values.npc.sell|floatformat:0|intcomma|price}}</td>
-                                <td>{{ item.item_values.npc.raw_value|floatformat:0|intcomma|price }}</td>
-                                <td>{{item.item_values.npc.total_tax|floatformat:2|tax}}</td>
-                                <td>{{item.item_values.npc.unit_value|floatformat:0|intcomma|price}}</td>
-                                <td class="buy-value-{{item.item_values.npc.is_buy_value}}">{{item.item_values.npc.value|floatformat:0|intcomma|price}}</td>
-                                <td>
-                                    {% for note in item.item_values.npc.notes%}
-                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
-
-                        {% if item.item_values.compressed.value %}
-                            <tr>
-                                <td colspan="6" data-toggle="collapse" data-target="#{{ item.item_values.normal.id }}-compressed" class="accordion-toggle">
-                                    <i style="padding-left: 10px;" class="fas fa-angle-down"> Compressed</i>
-                                </td>
-                            </tr>
-
-                            <tr class="collapse" id="{{ item.item_values.normal.id }}-compressed">
-                                <td style="padding-left: 30px;">{{item.item_values.compressed.name}}</td>
-                                <td>{{item.item_values.compressed.quantity|intcomma}}</td>
-                                <td>{{item.item_values.compressed.buy|floatformat:0|intcomma}} / {{item.item_values.compressed.sell|floatformat:0|intcomma|price}}</td>
-                                <td>{{item.item_values.compressed.raw_value|floatformat:0|intcomma|price}}</td>
-                                <td>{{item.item_values.compressed.total_tax|floatformat:2|tax}}</td>
-                                <td>{{item.item_values.compressed.unit_value|floatformat:0|intcomma|price}}</td>
-                                <td class="buy-value-{{item.item_values.compressed.is_buy_value}}">{{item.item_values.compressed.value|floatformat:0|intcomma|price}}</td>
-                                <td>
-                                    {% for note in item.item_values.compressed.notes%}
-                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
-
-                        {% if item.item_values.refined.value %}
-                            <tr>
-                                <td colspan="6" data-toggle="collapse" data-target="{% for x in item.item_values.refined.materials %}#{{ item.item_values.normal.id }}-refined{{ forloop.counter }}{% if not forloop.last %}, {% endif %} {% endfor %},#{{ item.item_values.normal.id }}-refined-total" class="accordion-toggle">
-                                   <i style="padding-left: 10px;" class="fas fa-angle-down"> Refined</i>
-                                </td>
-                            </tr>
-
-                            {% for material in item.item_values.refined.materials %}
-                                <tr class="collapse" id="{{ item.item_values.normal.id }}-refined{{ forloop.counter }}">
-                                    <td style="padding-left: 30px;">{{material.name}}</td>
-                                    <td>{{material.quantity|floatformat:2}}</td>
-                                    <td>{{material.buy|floatformat:0|intcomma}} / {{material.sell|floatformat:0|intcomma|price}}</td>
-                                    <td>{{material.raw_value|floatformat:0|intcomma|price}}</td>
-                                    <td>{{material.total_tax|floatformat:2|tax}}</td>
-                                    <td>{{material.unit_value|floatformat:0|intcomma|price}}</td>
-                                    <td>{{material.value|floatformat:0|intcomma|price}}</td>
-                                    <td>
-                                    {% for note in material.notes%}
-                                        <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                    {% endfor %}
-                                </td>
-                                </tr>
-                            {% endfor %}
-                            <tr class="collapse" id="{{ item.item_values.normal.id }}-refined-total">
-                                <td colspan="3" style="padding-left: 30px;border-top:1px dotted grey;">Total value <i>@ {{program.refining_rate}} refining rate</i></td>
-                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.raw_value|floatformat:0|intcomma|price}}</td>
-                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.total_tax|floatformat:2|tax}}</td>
-                                <td style="border-top:1px dotted grey;">{{item.item_values.refined.unit_value|floatformat:0|intcomma|price}}</td>
-                                <td class="buy-value-{{item.item_values.refined.is_buy_value}}" style="border-top:1px dotted grey;">{{item.item_values.refined.value|floatformat:0|intcomma|price}}</td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <td colspan="7"></td>
-                        </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
+<div class="card" style="margin-top:10px;">
+  <div class="card-header"><h5>{% trans "Item Details" %} <i class="fas fa-light fa-question" title="{% help 'item_details' %}"></i></h5></div>
+  <div class="card-body">
+    {% include "buybackprogram/partials/calculate/item_details.html" %}
+  </div>
+</div>
     {% endif %}
 
-    <h4>Buyback program {% if program.name %}: {{program.name}},{% endif %} managed by {% if program.is_corporation %}{{ program.owner.corporation }}{% else %}{{ program.owner.character.character }}{% endif %}</h4>
-    <form class="form" action="{% url 'buybackprogram:program_calculate' program_pk=program.id %}" method="POST">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <button type="submit" class="btn btn-primary">Calculate</button>
-      </form>
+<div class="card" style="margin-top:10px;">
+    <h5 class="card-header">{% trans "Contract calculator" %}</h5>
+    <div class="card-body">
+        <form class="form" action="{% url 'buybackprogram:program_calculate' program_pk=program.id %}" method="POST">
+            {% csrf_token %}
+            {{ form|bootstrap }}
+            <button type="submit" class="btn btn-primary">{% trans "Calculate" %}</button>
+            </form>
+    </div>
+    <div class="card-footer text-muted" >
+        <b>{% trans "Selected Program:" %} </b>{% if program.name %}{{program.name}},{% endif %} managed by {% if program.is_corporation %}{{ program.owner.corporation }}{% else %}{{ program.owner.character.character }}{% endif %}
+    </div>
 </div>
+
 {% endblock %}
 
 {% block extra_javascript %}
@@ -295,11 +87,7 @@ document.querySelectorAll('button[data-type="copy"]')
 {% endblock %}
 
 {% block extra_css %}
-    {% if NIGHT_MODE %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_dark.css' %}">
-        {% else %}
-        <link rel="stylesheet" type="text/css" href="{% static 'buybackprogram/css/style_light.css' %}">
-    {% endif %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}

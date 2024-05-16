@@ -1079,7 +1079,7 @@ def item_missing(item_name, quantity):
 
 
 def get_tracking_number(
-    user, program, form_donation, buyback_data, contract_price_data
+    user, program, form_donation, buyback_data, contract_price_data, additional_notes
 ):
     try:
         last_id = Tracking.objects.last().id
@@ -1109,6 +1109,7 @@ def get_tracking_number(
         net_price=round(contract_price_data["contract_net_total"]),
         tracking_number=tracking_number,
         created_at=timezone.now(),
+        additional_notes=additional_notes,
     )
 
     tracking.save()

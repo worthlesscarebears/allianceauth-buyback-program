@@ -14,7 +14,7 @@ class BuybackProgramMenuItem(MenuItemHook):
         MenuItemHook.__init__(
             self,
             _("Buyback Program"),
-            "fas fa-cube fa-fw",
+            "fa-solid fa-store",
             "buybackprogram:index",
             navactive=["buybackprogram:"],
         )

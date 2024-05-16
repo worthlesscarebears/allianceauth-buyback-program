@@ -1,0 +1,39 @@
+{% load humanize %}
+{% load price_formats %}
+{% load help_icons %}
+{% load i18n %}
+<table id="contract" class="table table-striped table-hover no-footer w-100">
+            <tr>
+                <th>{% trans "Prices based on" %}</th>
+                <td>{{price_source}} {{program.price_type}} price <i class="fas fa-light fa-question" title="{% help 'price_type' %}"></i></td>
+            </tr>
+            <tr>
+                <th>{% trans "Price before expenses" %}</th>
+                <td>{{contract_price_data.total_all_items_raw|floatformat:0|intcomma}} ISK</td>
+            </tr>
+            <tr>
+                <th>{% trans "Program taxes" %}</th>
+              <td>{{contract_price_data.total_tax_amount|floatformat:0|intcomma}} ISK</td>
+            </tr>
+            {% if program.hauling_fuel_cost > 0 %}
+            <tr>
+                <th>{% trans "Hauling cost" %}</th>
+                <td>{{contract_price_data.total_hauling_cost|floatformat:0|intcomma}} ISK @ {{contract_price_data.hauling_cost|floatformat:0|intcomma}} ISK / m³</td>
+            </tr>
+            {% endif %}
+            {% if contract_price_data.total_donation_amount %}
+            <tr>
+                <th>{% trans "Donation amount" %}</th>
+                <td>{{contract_price_data.total_donation_amount|floatformat:0|intcomma}} ISK <i> @ {{donation}} %</i></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th style="border-top:2px dotted black;">Net price</th>
+                {% if contract_price_data.contract_net_total >= 0%}
+                    <td style="border-top:2px dotted black;">{{contract_price_data.contract_net_total|floatformat:0|intcomma }} ISK</td>
+                {% else %}
+                    <td style="border-top:2px dotted black;">0 ISK <i><s>{{contract_price_data.contract_net_total|floatformat:0|intcomma }} ISK</s></i><td>
+                {% endif %}
+            </tr>
+
+        </table>

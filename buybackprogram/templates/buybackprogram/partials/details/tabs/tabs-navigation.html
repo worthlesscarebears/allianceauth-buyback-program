@@ -1,0 +1,30 @@
+{% load i18n %}
+<ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+        <a
+            class="nav-link active"
+            id="original"
+            data-bs-toggle="tab"
+            href="#tab-original"
+            role="tab"
+            aria-controls="home"
+            aria-selected="true"
+        >
+            {% trans "Original Items" %}
+        </a>
+    </li>
+
+    <li>
+        <a
+            class="nav-link"
+            id="contract"
+            data-bs-toggle="tab"
+            href="#tab-contract"
+            role="tab"
+            aria-controls="home"
+            aria-selected="false"
+        >
+            {% trans "Contract Items" %}
+        </a>
+    </li>
+</ul>

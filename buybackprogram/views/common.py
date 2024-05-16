@@ -9,7 +9,7 @@ from eveuniverse.models import EveMarketGroup, EveSolarSystem, EveType
 from allianceauth.services.hooks import get_extension_logger
 
 from buybackprogram.forms import UserSettingsForm
-from buybackprogram.models import Program, UserSettings
+from buybackprogram.models import Faq, Program, UserSettings
 from buybackprogram.utils import messages_plus
 
 logger = get_extension_logger(__name__)
@@ -59,7 +59,13 @@ def index(request):
 @login_required
 @permission_required("buybackprogram.basic_access")
 def faq(request):
-    return render(request, "buybackprogram/faq.html")
+    faq = Faq.objects.all()
+
+    context = {
+        "faqs": faq,
+    }
+
+    return render(request, "buybackprogram/faq.html", context)
 
 
 @login_required

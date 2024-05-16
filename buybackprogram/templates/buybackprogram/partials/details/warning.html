@@ -1,0 +1,10 @@
+{% load bs_tab_color_class %}
+
+{% for note in notes %}
+    <div class="card text-white {{note.color|BsTabColorClass}}" style="margin-top:5px;">
+        <div class="card-header"><i class="fas {{note.icon}}"></i> {{note.header}}</div>
+        <div class="card-body">
+            <p class="card-text">{{note.message}}</p>
+        </div>
+    </div>
+{% endfor %}

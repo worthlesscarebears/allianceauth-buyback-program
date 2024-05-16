@@ -4,200 +4,48 @@
 {% load price_formats %}
 
 {% block body %}
-<div class="panel-heading">
-  <h3 class="panel-title">Program statistics</h3>
-</div>
-<div class="panel-body" style="min-height: 100px;">
-        <div class="table-responsive">
-            <table style="width: 50%" class="table table-condensed">
-                <tbody>
-                    <tr>
-                        <th>Outstanding count:</th>
-                        <td>{{values.outstanding_count}}</td>
-                        <th>Outstanding value:</th>
-                        <td>{{values.outstanding|floatformat:0|intcomma|price}}</td>
-                    </tr>
-                    <tr>
-                        <th>Total bought count:</th>
-                        <td>{{values.finished_count}}</td>
-                        <th>Total bought:</th>
-                        <td>{{values.finished|floatformat:0|intcomma|price}}</td>
-                    </tr>
-                    {% if BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS %}
-                        <tr>
-                            <th>Untracked count:</th>
-                            <td>{{values.untracked_count}}</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
 
-            {% if values.untracked_count > 0 %}
-                <div class="alert alert-warning alert-dismissible" role="alert"> <i class="fas fa-exclamation-triangle"> Warning:</i> You have {{values.untracked_count}} outstanding contracts that start with the buyback prefill text but do not match any tracking objects in your programs! These contracts are possibly scam contracts trying to identify as valid buyback contracts.</div>
+    <div class="card">
+        <div class="card-header">{% trans "Summary" %}</div>
+        <div class="card-body">
+            {% include "buybackprogram/partials/stats/summary.html" %}
+        </div>
+    </div>
 
-                </div>
-            {% endif %}
+    {% if values.untracked_count > 0 %}
+        <div class="card" style="margin-top:10px">
+            <div class="card-header">{% trans "Notes" %}</div>
+            <div class="card-body">
+                {% include "buybackprogram/partials/stats/warning.html" %}
+            </div>
+        </div>
+    {% endif %}
 
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Outstanding ({{values.outstanding_count}})</a></li>
-            <li role="presentation"><a href="#finished" aria-controls="finished" role="tab" data-toggle="tab">Finished ({{values.finished_count}})</a></li>
-            {% if BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS %}
-                <li role="presentation"><a href="#untracked" aria-controls="untracked" role="tab" data-toggle="tab">Untracked ({{values.untracked_count}})</a>
-                </li>
-            {% endif %}
-        </ul>
+    <div class="card" style="margin-top:10px">
+        <div class="card-header">{% trans "Contracts" %}</div>
+        <div class="card-body">
+            <!-- Nav tabs -->
+            {% include "buybackprogram/partials/stats/tabs/tabs-navigation.html" %}
 
-        <div class="panel panel-default panel-tabs">
-            <div class="panel-body">
-                <div class="tab-content">
-                    <!-- outstanding contracts tab -->
-                    <div role="tabpanel" class="tab-pane active" id="home">
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th >{% trans "Issuer" %}</th>
-                                    <th >{% trans "Assignee" %}</th>
-                                    <th >{% trans "Location" %}</th>
-                                    <th >{% trans "Date issued" %}</th>
-                                    <th >{% trans "Time pending" %}</th>
-                                    <th >{% trans "Status" %}</th>
-                                    <th >{% trans "Tracking #" %}</th>
-                                    <th >{% trans "Price" %}</th>
-                                    <th>{% trans "Notes" %}</th>
-                                    <th>{% trans "Action" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+            <div class="tab-content" id="nav-tabContent">
 
-                                {% for tracking in contracts %}
-                                    {% if tracking.contract.status == 'outstanding' %}
-                                        <tr>
-                                            <td>{{tracking.contract.issuer_name}}</td>
-                                            <td>{{tracking.contract.assignee_name}}</td>
-                                            <td>{{tracking.contract.location_name}}</td>
-                                            <td>{{tracking.contract.date_issued}}</td>
-                                            <td>{{tracking.contract.date_issued|timesince }}</td>
-                                            <td>{{tracking.contract.status}}</td>
-                                            <td>{{tracking.tracking_number}}</td>
-                                            <td>{{tracking.contract.price|floatformat:0|intcomma|price}}</td>
+                {% include "buybackprogram/partials/stats/tabs/outstanding.html" %}
+                {% include "buybackprogram/partials/stats/tabs/finished.html" %}
+                {% include "buybackprogram/partials/stats/tabs/untracked.html" %}
 
-                                            <td>
-                                                {% for note in tracking.contract.notes %}
-                                                <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                                {% endfor %}
-                                            </td>
-
-                                            <td><a class="btn btn-info btn-sm" href="{% url 'buybackprogram:contract_details' contract_title=tracking.tracking_number %}">
-                                            Details
-                                        </a></td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- finished contracts tab -->
-                    <div role="tabpanel" class="tab-pane" id="finished">
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th >{% trans "Issuer" %}</th>
-                                    <th >{% trans "Assignee" %}</th>
-                                    <th >{% trans "Location" %}</th>
-                                    <th >{% trans "Date issued" %}</th>
-                                    <th >{% trans "Time pending" %}</th>
-                                    <th >{% trans "Status" %}</th>
-                                    <th >{% trans "Tracking #" %}</th>
-                                    <th >{% trans "Price" %}</th>
-                                    <th>{% trans "Notes" %}</th>
-                                    <th>{% trans "Action" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                {% for tracking in contracts %}
-                                    {% if tracking.contract.status == 'finished' %}
-                                        <tr>
-                                            <td>{{tracking.contract.issuer_name}}</td>
-                                            <td>{{tracking.contract.assignee_name}}</td>
-                                            <td>{{tracking.contract.location_name}}</td>
-                                            <td>{{tracking.contract.date_issued}}</td>
-                                            <td>{{tracking.contract.date_issued|timesince }}</td>
-                                            <td>{{tracking.contract.status}}</td>
-                                            <td>{{tracking.tracking_number}}</td>
-                                            <td>{{tracking.contract.price|floatformat:0|intcomma|price}}</td>
-
-                                            <td>
-                                                {% for note in tracking.contract.notes %}
-                                                <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                                {% endfor %}
-                                            </td>
-
-                                            <td><a class="btn btn-info btn-sm" href="{% url 'buybackprogram:contract_details' contract_title=tracking.tracking_number %}">
-                                            Details
-                                        </a></td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- untracked contracts tab -->
-                    <div role="tabpanel" class="tab-pane" id="untracked">
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th >{% trans "Issuer" %}</th>
-                                    <th >{% trans "Assignee" %}</th>
-                                    <th >{% trans "Location" %}</th>
-                                    <th >{% trans "Date issued" %}</th>
-                                    <th >{% trans "Time pending" %}</th>
-                                    <th >{% trans "Status" %}</th>
-                                    <th >{% trans "Description" %}</th>
-                                    <th >{% trans "Price" %}</th>
-                                    <th>{% trans "Notes" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS %}
-                                    {% for contract in untracked_contracts %}
-                                        {% if contract.status == 'outstanding' %}
-                                            <tr>
-                                                <td>{{contract.issuer_name}}</td>
-                                                <td>{{contract.assignee_name}}</td>
-                                                <td>{{contract.location_name}}</td>
-                                                <td>{{contract.date_issued}}</td>
-                                                <td>{{contract.date_issued|timesince }}</td>
-                                                <td>{{contract.status}}</td>
-                                                <td>{{contract.title}}</td>
-                                                <td>{{contract.price|floatformat:0|intcomma|price}}</td>
-
-                                                <td>
-                                                    {% for note in contract.notes %}
-                                                    <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>
-                                                    {% endfor %}
-                                                </td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-</div>
+
+
+
 {% endblock %}
 
 {% block extra_javascript %}
 {% endblock %}
 
 {% block extra_css %}
+{% include "buybackprogram/bundles/buybackprogram-css-light.html" %}
 {% endblock %}
 
 {% block extra_script %}

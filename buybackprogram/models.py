@@ -746,6 +746,7 @@ class Owner(models.Model):
             contract=contract,
             icon="fa-theater-masks",
             color="red",
+            header="Suspicious Contract",
             message="Contract has no tracking object but is has a buyback prefill text! Possibly a scam contract.",
         )
 
@@ -803,6 +804,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-unlink",
                 color="red",
+                header="Item missmatch",
                 message="Tracked items do not match the actual items in the contract. See details for more info.",
             )
 
@@ -816,6 +818,7 @@ class Owner(models.Model):
                     contract=contract,
                     icon="fa-dollar-sign",
                     color="red",
+                    header="High ask price",
                     message="Ask price is above the calculated price for this contract",
                 )
 
@@ -826,6 +829,7 @@ class Owner(models.Model):
                     contract=contract,
                     icon="fa-dollar-sign",
                     color="orange",
+                    header="low ask price",
                     message="Ask price is bellow the calculated price for this contract",
                 )
 
@@ -836,6 +840,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-compass",
                 color="red",
+                header="Location missmatch",
                 message="Contract location does not match program location",
             )
 
@@ -846,6 +851,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-home",
                 color="orange",
+                header="Receiver missmatch",
                 message="Contract is made for corporation while it should be made directly to the program managers character",
             )
 
@@ -856,6 +862,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-user",
                 color="orange",
+                header="Receiver missmatch",
                 message="Contract is made for the program managers character while it should be made to the managers corporation",
             )
 
@@ -866,6 +873,7 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-exclamation",
                 color="orange",
+                header="Title variation",
                 message="Contract description contains extra characterse besides the tracking number. The description should be: '%s', instead it is: '%s'"
                 % (tracking.tracking_number, contract.title),
             )
@@ -877,7 +885,18 @@ class Owner(models.Model):
                 contract=contract,
                 icon="fa-hand-holding-usd",
                 color="green",
+                header="Donation",
                 message="Contact contains a donation",
+            )
+
+            notes.append(note)
+
+        if tracking.additional_notes:
+            note = ContractNotification(
+                contract=contract,
+                icon="fa-message",
+                header="Additional notes",
+                message="Extra notes provided by the seller",
             )
 
             notes.append(note)
@@ -1322,6 +1341,12 @@ class ContractNotification(models.Model):
         max_length=32,
     )
 
+    header = models.CharField(
+        max_length=1024,
+        null=True,
+        blank=True,
+    )
+
     message = models.CharField(
         max_length=1024,
     )
@@ -1352,6 +1377,7 @@ class Tracking(models.Model):
     net_price = models.BigIntegerField(null=False)
     tracking_number = models.CharField(max_length=32)
     created_at = models.DateTimeField(null=True, blank=True)
+    additional_notes = models.TextField(null=True, blank=True)
 
 
 class TrackingItem(models.Model):
@@ -1398,3 +1424,11 @@ class UserSettings(models.Model):
         default_permissions = ()
         verbose_name = _("User Settings")
         verbose_name_plural = _("User Settings")
+
+
+class Faq(models.Model):
+    header = models.CharField(
+        max_length=1024,
+    )
+
+    body = models.TextField()

@@ -1,0 +1,44 @@
+{% load static %}
+{% load i18n %}
+{% load navactive %}
+
+    <li class="nav-item">
+        <a href="{% url 'buybackprogram:index' %}" class="nav-link py-0">
+            <span class="btn btn-secondary">{% trans "Programs" %}</span>
+        </a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="{% url 'buybackprogram:my_stats' %}" class="nav-link py-0">
+            <span class="btn btn-secondary">{% trans "My Statistics" %}</span>
+        </a>
+    </li>
+
+    {% if perms.buybackprogram.manage_programs %}
+        <li class="nav-item">
+            <a href="{% url 'buybackprogram:program_stats' %}" class="nav-link py-0">
+                <span class="btn btn-secondary">{% trans "My Program Statistics" %}</span>
+            </a>
+        </li>
+    {% endif %}
+
+    {% if perms.buybackprogram.see_all_statics %}
+        <li class="nav-item">
+            <a href="{% url 'buybackprogram:program_stats_all' %}" class="nav-link py-0">
+                <span class="btn btn-secondary">{% trans "All Program Statistics" %}</span>
+            </a>
+        </li>
+    {% endif %}
+
+    <li class="nav-item">
+        <a href="{% url 'buybackprogram:faq' %}" class="nav-link py-0">
+            <span class="btn btn-secondary">{% trans "FAQ" %}</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="{% url 'buybackprogram:user_settings_edit' %}" class="nav-link py-0">
+            <span class="btn btn-success">{% trans "My Settings" %}</span>
+        </a>
+    </li>
