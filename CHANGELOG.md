@@ -35,6 +35,39 @@ Section Order:
 ### Security
 -->
 
+## [2.0.0] - 2024-05-11
+
+> **IMPORTANT**
+>
+> **This version needs at least Alliance Auth v4.0.0!**
+>
+> Please make sure to update your Alliance Auth instance **before**
+> you install this version, otherwise, an update to Alliance Auth will
+> be pulled in unsupervised.
+
+Program Performance has been changed from on demand to cache file. Add the following code to your `settings.py` file to update program performances once per day.
+```python
+# Buybackprogram program performance updates, updates performance at midnight
+CELERYBEAT_SCHEDULE['buybackprogram_update_program_performance'] = {
+    'task': 'buybackprogram.tasks.update_program_performance',
+    'schedule': crontab(minute=0, hour='0'),
+}
+```
+
+### Removed
+- Dropped support for alliance Auth 3
+
+### Added
+- Compatibility to Alliance Auth v4
+	- Bootstrap 5
+- Translation tags
+- Command to generate dummy entries (ONLY FOR DEVELOPMENT USE)
+- Added extra field for open text comments, Closes #73
+- Added ability to write extra FAQ entries
+
+### Changed
+- Program performance will now be a scheduled task and cached as a file, scheduled task needs to be added and allianceauth user must have permissions to the static folder (as is from default installation)
+
 ## [2.0.0b1] - 2024-05-11
 
 > **IMPORTANT**
