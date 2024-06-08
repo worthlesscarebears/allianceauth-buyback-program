@@ -157,7 +157,8 @@ def update_all_prices():
                 type_ids.clear()
 
         # Get leftover data from the bulk
-        market_data.update(get_bulk_prices(type_ids))
+        if len(type_ids) > 0:
+            market_data.update(get_bulk_prices(type_ids))
 
         logger.debug("Market data fetched, starting database update...")
         missing_items = []
