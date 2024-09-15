@@ -33,6 +33,11 @@ ORE_EVE_GROUPS = [
     4514,
     4515,
     4516,
+    4759, # Griemeer
+    4758, # Hezorime
+    4755, # Kylixium
+    4756, # Nocxite
+    4757, # Ueganite
 ]
 
 OPE_EVE_GROUPS = [493]
