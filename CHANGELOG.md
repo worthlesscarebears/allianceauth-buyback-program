@@ -38,6 +38,16 @@ Section Order:
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+
+### Changed
+
+### Fixed
+- Closes #79, Volume not calculated by packed volume
+- Fixes volume calculations for price dencity based on packed volume
+
+## [Unreleased] - yyyy-mm-dd
+
+### Added
 - Closes #76, added error handling if performance report is missing
 
 ### Changed

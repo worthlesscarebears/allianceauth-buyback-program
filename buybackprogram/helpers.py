@@ -477,11 +477,15 @@ def get_item_values(item_type, item_prices, program):
         )
 
         if not item_type.volume <= 0:
-            price_dencity = price / item_type.volume
+            price_dencity = price / item_type.packaged_volume
         else:
             price_dencity = False
         price_dencity_tax = get_price_dencity_tax(
-            program, price, item_type.volume, quantity, is_ore(item_type.eve_group.id)
+            program,
+            price,
+            item_type.packaged_volume,
+            quantity,
+            is_ore(item_type.eve_group.id),
         )
         program_tax = program.tax
         item_tax = get_item_tax(program, item_type.id)
@@ -574,14 +578,16 @@ def get_item_values(item_type, item_prices, program):
             )
 
             if not item_type.volume <= 0:
-                price_dencity = item_prices["raw_prices"]["buy"] / item_type.volume
+                price_dencity = (
+                    item_prices["raw_prices"]["buy"] / item_type.packaged_volume
+                )
             else:
                 price_dencity = False
 
             price_dencity_tax = get_price_dencity_tax(
                 program,
                 item_prices["raw_prices"]["buy"],
-                item_type.volume,
+                item_type.packaged_volume,
                 item_prices["raw_prices"]["quantity"],
                 is_ore(item_type.eve_group.id),
             )
@@ -783,7 +789,11 @@ def get_item_values(item_type, item_prices, program):
         else:
             price_dencity = False
         price_dencity_tax = get_price_dencity_tax(
-            program, price, item_type.volume, quantity, is_ore(item_type.eve_group.id)
+            program,
+            price,
+            item_type.packaged_volume,
+            quantity,
+            is_ore(item_type.eve_group.id),
         )
         program_tax = program.tax
         item_tax = get_item_tax(program, item_type.id)
@@ -976,6 +986,7 @@ def get_item_buy_value(buyback_data, program, donation):
     contract_net_total = False
     total_donation = False
     tota_all_items_raw = 0
+    total_volume = 0
 
     # Get a grand total value of all buy prices
     for item in buyback_data:
@@ -999,7 +1010,10 @@ def get_item_buy_value(buyback_data, program, donation):
         for item in buyback_data:
             if has_buy_price(item["item_prices"]):
                 # Check if compressed price is used. If yes we will use compression price density. If not we will use raw price density.
-                if item["item_prices"]["compression_prices"]:
+                if (
+                    item["item_prices"]["compression_prices"]
+                    and program.use_compressed_value
+                ):
                     compressed_version = EveType.objects.filter(
                         id=item["item_prices"]["compression_prices"]["id"]
                     ).first()
@@ -1017,7 +1031,7 @@ def get_item_buy_value(buyback_data, program, donation):
                         % (item["type_data"])
                     )
 
-                    item_volume = item["type_data"].volume
+                    item_volume = item["type_data"].packaged_volume
 
                 quantity = item["item_values"]["quantity"]
                 hauling_cost = item_volume * program.hauling_fuel_cost * quantity
@@ -1028,6 +1042,7 @@ def get_item_buy_value(buyback_data, program, donation):
                 )
 
                 total_hauling_cost += hauling_cost
+                total_volume += item_volume * quantity
 
                 logger.debug(
                     "Final: Hauling cost %s m³ of %s is %s ISK"
@@ -1055,6 +1070,7 @@ def get_item_buy_value(buyback_data, program, donation):
         "hauling_cost": program.hauling_fuel_cost,
         "total_hauling_cost": total_hauling_cost,
         "contract_net_total": contract_net_total,
+        "contract_total_volume": total_volume,
     }
 
     return contract_net_prices
