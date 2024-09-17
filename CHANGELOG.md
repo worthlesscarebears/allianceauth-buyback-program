@@ -35,6 +35,15 @@ Section Order:
 ### Security
 -->
 
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- Closes #76, added error handling if performance report is missing
+
+### Changed
+
+### Fixed
+
 ## [2.0.0] - 2024-05-11
 
 > **IMPORTANT**
