@@ -35,6 +35,15 @@ Section Order:
 ### Security
 -->
 
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+
+### Changed
+
+### Fixed
+- Closes #75, adds error handling if invalid id is used (text format)
+
 ## [2.0.0] - 2024-05-11
 
 > **IMPORTANT**
