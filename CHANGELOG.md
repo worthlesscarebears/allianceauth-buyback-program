@@ -42,12 +42,7 @@ Section Order:
 ### Changed
 
 ### Fixed
-- Closes #82, new ore types not counted for refining
-
-## [2.0.1] - 2024-06-15
-
-### Fixed
-- Some prices not getting updated with the bulk update task
+- Closes #75, adds error handling if invalid id is used (text format)
 
 ## [2.0.0] - 2024-05-11
 
