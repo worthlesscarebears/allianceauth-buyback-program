@@ -42,12 +42,17 @@ Section Order:
 ### Changed
 
 ### Fixed
-- Closes #82, new ore types not counted for refining
+- Closes #79, Volume not calculated by packed volume
+- Fixes volume calculations for price dencity based on packed volume
 
-## [2.0.1] - 2024-06-15
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- Closes #76, added error handling if performance report is missing
+
+### Changed
 
 ### Fixed
-- Some prices not getting updated with the bulk update task
 
 ## [2.0.0] - 2024-05-11
 
