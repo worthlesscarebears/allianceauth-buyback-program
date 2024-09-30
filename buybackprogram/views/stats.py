@@ -19,6 +19,7 @@ from buybackprogram.notes import (
     note_quantity_missing_from_contract,
     note_quantity_missing_from_tracking,
 )
+from buybackprogram.utils import messages_plus
 
 from ..models import (
     Contract,
@@ -157,9 +158,19 @@ def program_performance(request, program_pk):
     filename = f"program_performance_{program_pk}.json"
     file_path = os.path.join(static_path, filename)
 
-    if os.path.exists(file_path):
+    try:
+        # Try to open the file and load the JSON data
         with open(file_path, "r") as file:
             context = json.load(file)
+    except FileNotFoundError:
+        messages_plus.error(
+            request,
+            "Error: The performance data file is missing for this program. Please generate the report first.",
+        )
+        return render(
+            request,
+            "buybackprogram/performance.html",
+        )
 
     return render(request, "buybackprogram/performance.html", context)
 

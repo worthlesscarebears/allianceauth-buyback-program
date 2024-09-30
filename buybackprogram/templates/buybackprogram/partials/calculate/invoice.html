@@ -15,6 +15,10 @@
                 <th>{% trans "Program taxes" %}</th>
               <td>{{contract_price_data.total_tax_amount|floatformat:0|intcomma}} ISK</td>
             </tr>
+            <tr>
+                <th>{% trans "Total volume" %}</th>
+                <td>{{contract_price_data.contract_total_volume|floatformat:0|intcomma}} m³</td>
+            </tr>
             {% if program.hauling_fuel_cost > 0 %}
             <tr>
                 <th>{% trans "Hauling cost" %}</th>

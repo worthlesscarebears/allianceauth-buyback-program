@@ -42,7 +42,17 @@ Section Order:
 ### Changed
 
 ### Fixed
-- Closes #75, adds error handling if invalid id is used (text format)
+- Closes #79, Volume not calculated by packed volume
+- Fixes volume calculations for price dencity based on packed volume
+
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+- Closes #76, added error handling if performance report is missing
+
+### Changed
+
+### Fixed
 
 ## [2.0.0] - 2024-05-11
 
