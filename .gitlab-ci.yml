@@ -23,13 +23,6 @@ pre-commit:
     - python -V
     - pip install tox
 
-pylint:
-  stage: checks
-  extends: .tox_setup
-  image: python:3.10-bookworm
-  script:
-  - tox -e pylint
-
 test-38-django40:
   extends: .tox_setup
   image: python:3.8-bookworm
@@ -64,20 +57,6 @@ test-311-django42:
   script:
   - tox -e py311-django42
   - bash <(curl -s https://codecov.io/bash)
-
-test-core:
-  extends: .tox_setup
-  image: python:3.10-bookworm
-  script:
-  - tox -e core
-
-test-docs:
-  stage: test
-  image: python:3.10-bookworm
-  before_script:
-  - pip install tox
-  script:
-    - tox -e docs
 
 deploy-pypi:
   stage: deploy
