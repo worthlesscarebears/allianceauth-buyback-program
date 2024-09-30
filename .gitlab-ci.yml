@@ -1,11 +1,11 @@
 stages:
-  - checks
-  - test
-  - deploy
+- checks
+- test
+- deploy
 
 pre-commit:
   stage: checks
-  image: python:3.10-buster
+  image: python:3.10-bookworm
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   cache:
@@ -15,8 +15,7 @@ pre-commit:
     - pip install pre-commit
     - pre-commit run --all-files
 
-.test:
-  stage: test
+.tox_setup:
   before_script:
     - apt-get update
     - apt-get install redis-server -y
@@ -24,39 +23,51 @@ pre-commit:
     - python -V
     - pip install tox
 
-test-py38-dj40:
-  extends: .test
-  image: python:3.8-bullseye
+test-38-django40:
+  extends: .tox_setup
+  image: python:3.8-bookworm
   script:
-    - tox -e py38-django40
+  - tox -e py38-django40
+  - bash <(curl -s https://codecov.io/bash)
 
-test-py39-dj40:
-  extends: .test
-  image: python:3.9-bullseye
+test-39-django40:
+  extends: .tox_setup
+  image: python:3.9-bookworm
   script:
-    - tox -e py39-django40
+  - tox -e py39-django40
+  - bash <(curl -s https://codecov.io/bash)
 
-test-py310-dj40:
-  extends: .test
-  image: python:3.10-bullseye
+test-310-django40:
+  extends: .tox_setup
+  image: python:3.10-bookworm
   script:
-    - tox -e py310-django40
-    - bash <(curl -s https://codecov.io/bash)
+  - tox -e py310-django40
+  - bash <(curl -s https://codecov.io/bash)
 
-test-py311-dj40:
-  extends: .test
-  image: python:3.11-bullseye
+test-311-django40:
+  extends: .tox_setup
+  image: python:3.11-bookworm
   script:
   - tox -e py311-django40
   - bash <(curl -s https://codecov.io/bash)
 
+test-311-django42:
+  extends: .tox_setup
+  image: python:3.11-bookworm
+  script:
+  - tox -e py311-django42
+  - bash <(curl -s https://codecov.io/bash)
+
 deploy-pypi:
   stage: deploy
-  image: python:3.10-bullseye
+  image: python:3.10-bookworm
+
   before_script:
-    - pip install -U pip twine wheel build
+    - pip install build twine
+
   script:
     - python -m build
     - twine upload dist/*
+
   only:
     - tags
