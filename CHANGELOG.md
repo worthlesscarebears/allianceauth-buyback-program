@@ -35,7 +35,7 @@ Section Order:
 ### Security
 -->
 
-## [Unreleased] - yyyy-mm-dd
+## [2.1.0] - 2024-09-30
 
 ### Added
 
@@ -43,16 +43,11 @@ Section Order:
 
 ### Fixed
 - Closes #79, Volume not calculated by packed volume
+- Fixes #82, Refined value of new ore types
+- Fixes #80, Error handling for missing performance file
+- Fixes #79, Item volumes with fuel cost
+- Fixes #75, Error handling for incorrect structure id on location creation
 - Fixes volume calculations for price dencity based on packed volume
-
-## [Unreleased] - yyyy-mm-dd
-
-### Added
-- Closes #76, added error handling if performance report is missing
-
-### Changed
-
-### Fixed
 
 ## [2.0.0] - 2024-05-11
 
