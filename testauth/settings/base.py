@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django_celery_beat",
     "bootstrapform",
+    "django_bootstrap5",  # https://github.com/zostera/django-bootstrap5
     "sortedm2m",
     "esi",
     "allianceauth.authentication",
@@ -32,6 +33,11 @@ INSTALLED_APPS = [
     "allianceauth.notifications",
     "allianceauth.thirdparty.navhelper",
     "allianceauth.analytics",
+    "allianceauth.menu",
+    "allianceauth.theme",
+    "allianceauth.theme.darkly",
+    "allianceauth.theme.flatly",
+    "allianceauth.theme.materia",
 ]
 
 SECRET_KEY = "wow I'm a really bad default secret key"
@@ -42,23 +48,23 @@ CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERYBEAT_SCHEDULE = {
     "esi_cleanup_callbackredirect": {
         "task": "esi.tasks.cleanup_callbackredirect",
-        "schedule": crontab(minute=0, hour="*/4"),
+        "schedule": crontab(minute="0", hour="*/4"),
     },
     "esi_cleanup_token": {
         "task": "esi.tasks.cleanup_token",
-        "schedule": crontab(minute=0, hour=0),
+        "schedule": crontab(minute="0", hour="0"),
     },
     "run_model_update": {
         "task": "allianceauth.eveonline.tasks.run_model_update",
-        "schedule": crontab(minute=0, hour="*/6"),
+        "schedule": crontab(minute="0", hour="*/6"),
     },
     "check_all_character_ownership": {
         "task": "allianceauth.authentication.tasks.check_all_character_ownership",
-        "schedule": crontab(minute=0, hour="*/4"),
+        "schedule": crontab(minute="0", hour="*/4"),
     },
     "analytics_daily_stats": {
         "task": "allianceauth.analytics.tasks.analytics_daily_stats",
-        "schedule": crontab(minute=0, hour=2),
+        "schedule": crontab(minute="0", hour="2"),
     },
 }
 
@@ -76,7 +82,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allianceauth.analytics.middleware.AnalyticsMiddleware",
 ]
 
 ROOT_URLCONF = "allianceauth.urls"
@@ -185,6 +190,9 @@ DATABASES = {
 }
 
 SITE_NAME = "Alliance Auth"
+
+DEFAULT_THEME = "allianceauth.theme.flatly.auth_hooks.FlatlyThemeHook"
+DEFAULT_THEME_DARK = "allianceauth.theme.darkly.auth_hooks.DarklyThemeHook"  # Legacy AAv3 user.profile.night_mode=1
 
 LOGIN_URL = "auth_login_user"  # view that handles login logic
 
