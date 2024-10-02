@@ -1102,9 +1102,9 @@ class Program(models.Model):
     )
 
     compression_price_dencity_modifier = models.BooleanField(
-        verbose_name="Price density modifier for compressable items",
+        verbose_name="Ore volume based on compressed volume",
         default=False,
-        help_text="Should we apply price density calculations for items that can be compressed such as ore and ice. If set to False price density tax is not applied on any items that can be compressed.",
+        help_text="Should we use compressed volume for items that can be compressed such as ore and ice in fuel cost and price dencity calculations. If set to False the raw volume is used for volume calculations if the item does not have a compressed price variant available from the use compressed value setting.",
     )
 
     price_dencity_treshold = models.IntegerField(

@@ -258,9 +258,9 @@ You can use a price density modifier which will add a additional tax on items wi
 
 > :information_source: This setting is aimer more at high sec buyback programs.
 
-##### Compressible price density modifier
+##### Ore volume based on compressed volume
 
-You can select to ignore price density calculations for items that can be compressed. This is helpful when the compressed variants do not have proper buy orders in Jita. If you set this to True then the compressible item density will be calculated based on the isk / volume of the compression variant of the sold item.
+Using this setting will calculate all items that can be compressed (mainly ore and ice) based on the compressed variant volume and use this volume instead of the raw volume to calculate the hauling and price dencity costs. This setting is mainly aimed at null sec where you might get raw ore sold to you but want to compress it before shipping as raw ore volume is very high and will cause high hauling costs.
 
 ##### Price density threshold
 
