@@ -33,9 +33,9 @@ Section Order:
 ### Security
 -->
 
-## [Unreleased] - yyyy-mm-dd
+## [2.2.0] - 2024-10-02
 
-### Added
+This version requires migrations.
 
 ### Changed
 - Changed the program ore price dencity setting to `compression_price_dencity_modifier`. If this setting is used the compressed volume is now applied both on fuel tax and price dencity tax instead of just the price dencity as it used to be. This fixes high hauling costs for uncompressed ores if hauling fuel cost is used but the ores do not have compressed variants.
@@ -44,10 +44,6 @@ Section Order:
 - Closes #75, fix for incorrect station id when creating a new location
 
 ## [2.1.0] - 2024-09-30
-
-### Added
-
-### Changed
 
 ### Fixed
 - Closes #79, Volume not calculated by packed volume
