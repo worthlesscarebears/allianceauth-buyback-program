@@ -182,20 +182,6 @@ def location_add(request):
 
             owner = Owner.objects.filter(user=request.user).first()
 
-            try:
-                structure_id = int(structure_id)
-            except ValueError:
-                form.add_error("structure_id", "Structure ID must be a valid number.")
-                messages_plus.error(
-                    request,
-                    "Error: Structure ID must be a valid number.",
-                )
-                return render(
-                    request,
-                    "buybackprogram/location_add.html",
-                    {"form": form, "locations": locations},
-                )
-
             created = Location.objects.update_or_create(
                 eve_solar_system=eve_solar_system,
                 name=name,

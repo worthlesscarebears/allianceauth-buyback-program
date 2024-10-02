@@ -1013,7 +1013,7 @@ def get_item_buy_value(buyback_data, program, donation):
                 if (
                     item["item_prices"]["compression_prices"]
                     and program.use_compressed_value
-                ):
+                ) or (program.compression_price_dencity_modifier and is_ore):
                     compressed_version = EveType.objects.filter(
                         id=item["item_prices"]["compression_prices"]["id"]
                     ).first()

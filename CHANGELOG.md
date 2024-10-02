@@ -22,8 +22,6 @@ https://docs.github.com/assets/cb-41128/mw-1440/images/help/writing/alerts-rende
 > Critical content demanding immediate user attention due to potential risks.
 -->
 
-## \[In Development\] - Unreleased
-
 <!--
 Section Order:
 
@@ -34,6 +32,16 @@ Section Order:
 ### Removed
 ### Security
 -->
+
+## [Unreleased] - yyyy-mm-dd
+
+### Added
+
+### Changed
+- Changed the program ore price dencity setting to `compression_price_dencity_modifier`. If this setting is used the compressed volume is now applied both on fuel tax and price dencity tax instead of just the price dencity as it used to be. This fixes high hauling costs for uncompressed ores if hauling fuel cost is used but the ores do not have compressed variants.
+
+### Fixed
+- Closes #75, fix for incorrect station id when creating a new location
 
 ## [2.1.0] - 2024-09-30
 
