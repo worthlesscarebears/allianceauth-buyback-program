@@ -811,9 +811,13 @@ class Owner(models.Model):
             notes.append(note)
 
         # If our tracked price is different than the actual contract price
-        if tracking.net_price >= 0 and tracking.net_price != contract.price:
+        # We round the numbers in here as most players do not use decimals ingame and the prices might be off by the digits
+        tracking_net_price = round(tracking.net_price)
+        contract_net_price = round(contract.price)
+
+        if tracking_net_price >= 0 and tracking_net_price != contract_net_price:
             # If contract price is bellow tracked price
-            if contract.price > tracking.net_price:
+            if contract_net_price > tracking_net_price:
                 note = ContractNotification(
                     contract=contract,
                     icon="fa-dollar-sign",

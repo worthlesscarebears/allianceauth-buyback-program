@@ -1141,7 +1141,7 @@ def get_tracking_number(
         taxes=contract_price_data["total_tax_amount"],
         hauling_cost=contract_price_data["total_hauling_cost"],
         donation=contract_price_data["total_donation_amount"],
-        net_price=round(contract_price_data["contract_net_total"]),
+        net_price=contract_price_data["contract_net_total"],
         tracking_number=tracking_number,
         created_at=timezone.now(),
         additional_notes=additional_notes,
