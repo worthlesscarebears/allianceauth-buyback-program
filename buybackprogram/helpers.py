@@ -75,6 +75,10 @@ def get_or_create_prices(item_id):
         return ItemPrices.objects.get(eve_type_id=item_id)
 
     except ItemPrices.DoesNotExist:
+        logger.debug(
+            "Item %s does not have prices stored in database, fetching prices now ..."
+            % item_id
+        )
         if BUYBACKPROGRAM_PRICE_METHOD == "Fuzzwork":
             response_fuzzwork = requests.get(
                 "https://market.fuzzwork.co.uk/aggregates/",
@@ -86,12 +90,14 @@ def get_or_create_prices(item_id):
 
             items_fuzzwork = response_fuzzwork.json()
 
-            buy = int(float(items_fuzzwork[str(item_id)]["buy"]["max"]))
-            sell = int(float(items_fuzzwork[str(item_id)]["sell"]["min"]))
-            buy_average = int(float(items_fuzzwork[str(item_id)]["buy"]["percentile"]))
-            sell_average = int(
-                float(items_fuzzwork[str(item_id)]["sell"]["percentile"])
-            )
+            buy = float(items_fuzzwork[str(item_id)]["buy"]["max"])
+            logger.debug("Buy price set to %s" % buy)
+            sell = float(items_fuzzwork[str(item_id)]["sell"]["min"])
+            logger.debug("Sell price set to %s" % sell)
+            buy_average = float(items_fuzzwork[str(item_id)]["buy"]["percentile"])
+            logger.debug("Buy average price set to %s" % buy_average)
+            sell_average = float(items_fuzzwork[str(item_id)]["sell"]["percentile"])
+            logger.debug("Sell average price set to %s" % sell_average)
 
         elif BUYBACKPROGRAM_PRICE_METHOD == "Janice":
             if valid_janice_api_key():
@@ -106,13 +112,14 @@ def get_or_create_prices(item_id):
 
                 item_janice = response_janice.json()
 
-                buy = int(float(item_janice["immediatePrices"]["buyPrice5DayMedian"]))
-                sell = int(float(item_janice["immediatePrices"]["sellPrice5DayMedian"]))
-                buy_average = int(
-                    float(item_janice["top5AveragePrices"]["buyPrice5DayMedian"])
+                buy = float(item_janice["immediatePrices"]["buyPrice5DayMedian"])
+                sell = float(item_janice["immediatePrices"]["sellPrice5DayMedian"])
+                buy_average = float(
+                    item_janice["top5AveragePrices"]["buyPrice5DayMedian"]
                 )
-                sell_average = int(
-                    float(item_janice["top5AveragePrices"]["sellPrice5DayMedian"])
+
+                sell_average = float(
+                    item_janice["top5AveragePrices"]["sellPrice5DayMedian"]
                 )
             else:
                 logger.error(
@@ -140,10 +147,12 @@ def get_or_create_prices(item_id):
                     sell=sell_average,
                     updated=updated,
                 )
+                logger.debug("Price stored in database %s" % price)
             else:
                 price = ItemPrices.objects.create(
                     eve_type_id=item_id, buy=buy, sell=sell, updated=updated
                 )
+                logger.debug("Price stored in database %s" % price)
 
             return price
         except Error as e:
@@ -460,8 +469,8 @@ def get_item_values(item_type, item_prices, program):
     # RAW VARIANT VALUES
     if item_prices["raw_prices"] and item_prices["raw_prices"]["raw_price_used"]:
         quantity = item_prices["raw_prices"]["quantity"]
-        sell = item_prices["raw_prices"]["sell"]
-        buy = item_prices["raw_prices"]["buy"]
+        sell = float(item_prices["raw_prices"]["sell"])
+        buy = float(item_prices["raw_prices"]["buy"])
         split = statistics.median([sell, buy])
 
         # Determine what price type we should use
@@ -555,12 +564,13 @@ def get_item_values(item_type, item_prices, program):
             )
 
             price_dencity = (
-                item_prices["compression_prices"]["buy"] / compressed_version.volume
+                float(item_prices["compression_prices"]["buy"])
+                / compressed_version.volume
             )
 
             price_dencity_tax = get_price_dencity_tax(
                 program,
-                item_prices["compression_prices"]["buy"],
+                float(item_prices["compression_prices"]["buy"]),
                 compressed_version.volume,
                 item_prices["compression_prices"]["quantity"],
                 is_ore(item_type.eve_group.id),
@@ -579,14 +589,14 @@ def get_item_values(item_type, item_prices, program):
 
             if not item_type.volume <= 0:
                 price_dencity = (
-                    item_prices["raw_prices"]["buy"] / item_type.packaged_volume
+                    float(item_prices["raw_prices"]["buy"]) / item_type.packaged_volume
                 )
             else:
                 price_dencity = False
 
             price_dencity_tax = get_price_dencity_tax(
                 program,
-                item_prices["raw_prices"]["buy"],
+                float(item_prices["raw_prices"]["buy"]),
                 item_type.packaged_volume,
                 item_prices["raw_prices"]["quantity"],
                 is_ore(item_type.eve_group.id),
@@ -606,8 +616,8 @@ def get_item_values(item_type, item_prices, program):
             materials = EveType.objects.filter(id=material["id"]).first()
 
             quantity = material["quantity"]
-            sell = material["sell"]
-            buy = material["buy"]
+            sell = float(material["sell"])
+            buy = float(material["buy"])
             split = statistics.median([sell, buy])
 
             # Determine what price type we should use
@@ -684,8 +694,8 @@ def get_item_values(item_type, item_prices, program):
         ).first()
 
         quantity = item_prices["compression_prices"]["quantity"]
-        buy = item_prices["compression_prices"]["buy"]
-        sell = item_prices["compression_prices"]["sell"]
+        buy = float(item_prices["compression_prices"]["buy"])
+        sell = float(item_prices["compression_prices"]["sell"])
         split = statistics.median([sell, buy])
 
         # Determine what price type we should use
@@ -763,8 +773,8 @@ def get_item_values(item_type, item_prices, program):
     # Get value for NPC price
     if item_prices["npc_prices"]:
         quantity = item_prices["npc_prices"]["quantity"]
-        sell = item_prices["npc_prices"]["sell"]
-        buy = item_prices["npc_prices"]["buy"]
+        sell = float(item_prices["npc_prices"]["sell"])
+        buy = float(item_prices["npc_prices"]["buy"])
         split = statistics.median([sell, buy])
 
         # Determine what price type we should use
@@ -868,9 +878,9 @@ def get_item_values(item_type, item_prices, program):
             [raw_item["unit_value"], refined["unit_value"], compressed["unit_value"]]
         )
     else:
-        buy_value = npc_item["value"]
-        raw_value = npc_item["raw_value"]
-        unit_value = npc_item["unit_value"]
+        buy_value = float(npc_item["value"])
+        raw_value = float(npc_item["raw_value"])
+        unit_value = float(npc_item["unit_value"])
 
     # Determine what value we will use for buy value
     if buy_value == raw_item["value"]:
@@ -1013,7 +1023,10 @@ def get_item_buy_value(buyback_data, program, donation):
                 if (
                     item["item_prices"]["compression_prices"]
                     and program.use_compressed_value
-                ) or (program.compression_price_dencity_modifier and is_ore):
+                ) or (
+                    program.compression_price_dencity_modifier
+                    and is_ore(item["type_data"].eve_group.id)
+                ):
                     compressed_version = EveType.objects.filter(
                         id=item["item_prices"]["compression_prices"]["id"]
                     ).first()

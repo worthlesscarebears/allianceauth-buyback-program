@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buybackprogram', '0015_faq_contractnotification_header_and_more'),
+        ("buybackprogram", "0015_faq_contractnotification_header_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='program',
-            name='compression_price_dencity_modifier',
-            field=models.BooleanField(default=False, help_text='Should we use compressed volume for items that can be compressed such as ore and ice in fuel cost and price dencity calculations. If set to False the raw volume is used for volume calculations if the item does not have a compressed price variant available from the use compressed value setting.', verbose_name='Ore volume based on compressed volume'),
+            model_name="program",
+            name="compression_price_dencity_modifier",
+            field=models.BooleanField(
+                default=False,
+                help_text="Should we use compressed volume for items that can be compressed such as ore and ice in fuel cost and price dencity calculations. If set to False the raw volume is used for volume calculations if the item does not have a compressed price variant available from the use compressed value setting.",
+                verbose_name="Ore volume based on compressed volume",
+            ),
         ),
     ]

@@ -84,15 +84,15 @@ class Command(BaseCommand):
                 if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
                     item = ItemPrices(
                         eve_type_id=key,
-                        buy=int(float(value["buy"]["percentile"])),
-                        sell=int(float(value["sell"]["percentile"])),
+                        buy=float(value["buy"]["percentile"]),
+                        sell=float(value["sell"]["percentile"]),
                         updated=timezone.now(),
                     )
                 else:
                     item = ItemPrices(
                         eve_type_id=key,
-                        buy=int(float(value["buy"]["max"])),
-                        sell=int(float(value["sell"]["min"])),
+                        buy=float(value["buy"]["max"]),
+                        sell=float(value["sell"]["min"]),
                         updated=timezone.now(),
                     )
 
