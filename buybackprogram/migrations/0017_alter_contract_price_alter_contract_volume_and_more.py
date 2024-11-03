@@ -4,60 +4,61 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buybackprogram', '0016_alter_program_compression_price_dencity_modifier'),
+        ("buybackprogram", "0016_alter_program_compression_price_dencity_modifier"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contract',
-            name='price',
+            model_name="contract",
+            name="price",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='contract',
-            name='volume',
+            model_name="contract",
+            name="volume",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='itemprices',
-            name='buy',
+            model_name="itemprices",
+            name="buy",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='itemprices',
-            name='sell',
+            model_name="itemprices",
+            name="sell",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='tracking',
-            name='donation',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=20, null=True),
+            model_name="tracking",
+            name="donation",
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=20, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='tracking',
-            name='hauling_cost',
+            model_name="tracking",
+            name="hauling_cost",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='tracking',
-            name='net_price',
+            model_name="tracking",
+            name="net_price",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='tracking',
-            name='taxes',
+            model_name="tracking",
+            name="taxes",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='tracking',
-            name='value',
+            model_name="tracking",
+            name="value",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
         migrations.AlterField(
-            model_name='trackingitem',
-            name='buy_value',
+            model_name="trackingitem",
+            name="buy_value",
             field=models.DecimalField(decimal_places=2, max_digits=20),
         ),
     ]

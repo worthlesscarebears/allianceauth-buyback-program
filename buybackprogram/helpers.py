@@ -376,28 +376,34 @@ def get_item_prices(item_type, name, quantity, program):
 
         # Get compressed versions of the ores that are not yet compressed
         if is_ore(item_type.eve_group.id):
-            if "Compressed" in name:
-                compresed_name = name
-            else:
-                compresed_name = "Compressed " + name
+            try:
+                if "Compressed" in name:
+                    compresed_name = name
+                else:
+                    compresed_name = "Compressed " + name
 
-            compresed_type = EveType.objects.filter(name=compresed_name).first()
+                compresed_type = EveType.objects.filter(name=compresed_name).first()
 
-            compression_price = get_or_create_prices(compresed_type.id)
+                compression_price = get_or_create_prices(compresed_type.id)
 
-            compressed_type_prices = {
-                "id": compression_price.eve_type_id,
-                "quantity": quantity,
-                "buy": compression_price.buy,
-                "sell": compression_price.sell,
-            }
+                compressed_type_prices = {
+                    "id": compression_price.eve_type_id,
+                    "quantity": quantity,
+                    "buy": compression_price.buy,
+                    "sell": compression_price.sell,
+                }
 
-            has_price_variants = True
+                has_price_variants = True
 
-            logger.debug(
-                "Prices: Got compression prices %s ISK for %s based on original item %s"
-                % (compression_price.buy, compresed_name, name)
-            )
+                logger.debug(
+                    "Prices: Got compression prices %s ISK for %s based on original item %s"
+                    % (compression_price.buy, compresed_name, name)
+                )
+            except Exception as e:
+                logger.error(
+                    f"Failed to get compression prices for {compresed_name}: {e}"
+                )
+                compressed_type_prices = False
 
         # If item can't or should not be compressed
         else:
