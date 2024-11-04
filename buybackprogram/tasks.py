@@ -168,18 +168,16 @@ def update_all_prices():
                 # Check what prices we should use either instant prices or top 5% percentile
                 if not BUYBACKPROGRAM_PRICE_INSTANT_PRICES:
                     # Get the price values from the API data
-                    buy = int(
-                        float(market_data[str(price.eve_type_id)]["buy"]["percentile"])
+                    buy = float(
+                        market_data[str(price.eve_type_id)]["buy"]["percentile"]
                     )
-                    sell = int(
-                        float(market_data[str(price.eve_type_id)]["sell"]["percentile"])
+                    sell = float(
+                        market_data[str(price.eve_type_id)]["sell"]["percentile"]
                     )
                 else:
                     # Get the price values from the API data
-                    buy = int(float(market_data[str(price.eve_type_id)]["buy"]["max"]))
-                    sell = int(
-                        float(market_data[str(price.eve_type_id)]["sell"]["min"])
-                    )
+                    buy = float(market_data[str(price.eve_type_id)]["buy"]["max"])
+                    sell = float(market_data[str(price.eve_type_id)]["sell"]["min"])
 
             # If API did not return any values we remove prices for the item
             else:

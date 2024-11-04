@@ -17,7 +17,7 @@
                         <tr>
                             <td><img class="item-icon" src="https://image.eveonline.com/Type/{{item.eve_type.id}}_64.png" />{{item.eve_type.name}}</td>
                             <td>{{item.quantity|intcomma}}</td>
-                            <td>{{item.buy_value|floatformat:0|intcomma}} ISK</td>
+                            <td>{{item.buy_value|floatformat:2|intcomma}} ISK</td>
                             <td>
                                 {% for note in item.notes %}
                                     <i style="color: {{note.color}};" class="fas {{note.icon}}" title="{{note.message}}"></i>

@@ -6,26 +6,26 @@
             <table id="contract" class="table">
                 <tr>
                     <th>{% trans "Price before expenses" %}</th>
-                    <td>{{tracking.value|floatformat:0|intcomma}} ISK</td>
+                    <td>{{tracking.value|floatformat:2|intcomma}} ISK</td>
                 </tr>
                 <tr>
                     <th>{% trans "Program taxes" %}</th>
-                  <td>{{tracking.taxes|floatformat:0|intcomma}} ISK</td>
+                  <td>{{tracking.taxes|floatformat:2|intcomma}} ISK</td>
                 </tr>
                 <tr>
                     <th>{% trans "Hauling cost" %}</th>
-                    <td>{{tracking.hauling_cost|floatformat:0|intcomma}} ISK</td>
+                    <td>{{tracking.hauling_cost|floatformat:2|intcomma}} ISK</td>
                 </tr>
                 <tr>
                     <th>{% trans "Donation amount" %}</th>
-                    <td>{{tracking.donation|floatformat:0|intcomma}} ISK <i></i></td>
+                    <td>{{tracking.donation|floatformat:2|intcomma}} ISK <i></i></td>
                 </tr>
                 <tr>
                     <th style="border-top:2px dotted black;">Net price</th>
                     {% if tracking.net_price >= 0 %}
-                        <td style="border-top:2px dotted black;">{{tracking.net_price|floatformat:0|intcomma }} ISK</td>
+                        <td style="border-top:2px dotted black;">{{tracking.net_price|floatformat:2|intcomma }} ISK</td>
                     {% else %}
-                        <td style="border-top:2px dotted black;">0 ISK <i><s>{{tracking.net_price|floatformat:0|intcomma }} ISK</s></i><td>
+                        <td style="border-top:2px dotted black;">0 ISK <i><s>{{tracking.net_price|floatformat:2|intcomma }} ISK</s></i><td>
                     {% endif %}
                 </tr>
 

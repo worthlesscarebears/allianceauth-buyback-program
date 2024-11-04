@@ -811,9 +811,13 @@ class Owner(models.Model):
             notes.append(note)
 
         # If our tracked price is different than the actual contract price
-        if tracking.net_price >= 0 and tracking.net_price != contract.price:
+        # We round the numbers in here as most players do not use decimals ingame and the prices might be off by the digits
+        tracking_net_price = round(tracking.net_price)
+        contract_net_price = round(contract.price)
+
+        if tracking_net_price >= 0 and tracking_net_price != contract_net_price:
             # If contract price is bellow tracked price
-            if contract.price > tracking.net_price:
+            if contract_net_price > tracking_net_price:
                 note = ContractNotification(
                     contract=contract,
                     icon="fa-dollar-sign",
@@ -1284,8 +1288,8 @@ class ItemPrices(models.Model):
         on_delete=models.deletion.CASCADE,
         unique=True,
     )
-    buy = models.BigIntegerField()
-    sell = models.BigIntegerField()
+    buy = models.DecimalField(max_digits=20, decimal_places=2)
+    sell = models.DecimalField(max_digits=20, decimal_places=2)
     updated = models.DateTimeField()
 
 
@@ -1301,10 +1305,10 @@ class Contract(models.Model):
     issuer_id = models.IntegerField()
     start_location_id = models.BigIntegerField(null=True)
     location_name = models.CharField(max_length=128, null=True)
-    price = models.BigIntegerField()
+    price = models.DecimalField(max_digits=20, decimal_places=2)
     status = models.CharField(max_length=30)
     title = models.CharField(max_length=128)
-    volume = models.BigIntegerField()
+    volume = models.DecimalField(max_digits=20, decimal_places=2)
     no_tracking = models.BooleanField(default=False)
 
     def __str__(self) -> str:
@@ -1370,11 +1374,13 @@ class Tracking(models.Model):
         on_delete=models.deletion.CASCADE,
         related_name="+",
     )
-    value = models.BigIntegerField(null=False)
-    taxes = models.BigIntegerField(null=False)
-    hauling_cost = models.BigIntegerField(null=False)
-    donation = models.BigIntegerField(null=True, blank=True)
-    net_price = models.BigIntegerField(null=False)
+    value = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    taxes = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    hauling_cost = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    donation = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+    net_price = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     tracking_number = models.CharField(max_length=32)
     created_at = models.DateTimeField(null=True, blank=True)
     additional_notes = models.TextField(null=True, blank=True)
@@ -1393,7 +1399,7 @@ class TrackingItem(models.Model):
         help_text="Item type information",
     )
 
-    buy_value = models.BigIntegerField(null=False)
+    buy_value = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     quantity = models.IntegerField()
 
