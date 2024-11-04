@@ -33,6 +33,19 @@ Section Order:
 ### Security
 -->
 
+## [2.3.0] - 2024-11-04
+
+This version requires migrations. This version includes major changes on price calculations by adding decimals to prices to make price calculations more accurate.
+
+### Changed
+- Values are now displayed with 2 digits up from no digits
+- Values are now stored in database as floats
+- Contract price checker still rounds the price and tracking values as most players do not use digits in-game and the contract prices are rounded when created in-game.
+
+### Fixed
+- Fixes #84, missing decimals made prices to be off more than intended
+- Fixes #86, fixes issue where calculation would crash if an ore had no compressed variation
+
 ## [2.2.0] - 2024-10-02
 
 This version requires migrations.
