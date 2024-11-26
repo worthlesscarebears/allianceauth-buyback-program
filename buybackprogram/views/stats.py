@@ -133,8 +133,8 @@ def leaderboard(request, program_pk):
                     0,  # contract total
                     0,  # donation total
                 ]
-            monthstats["users"][month][user][0] += tracking.contract.price
-            monthstats["users"][month][user][1] += tracking.donation
+            monthstats["users"][month][user][0] += float(tracking.contract.price)
+            monthstats["users"][month][user][1] += float(tracking.donation)
 
             if user not in monthstats["userinfo"]:
                 monthstats["userinfo"][user] = {
