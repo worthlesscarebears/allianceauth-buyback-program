@@ -1,3 +1,4 @@
+import math
 from typing import Tuple
 
 from django.contrib.auth.models import Group, User
@@ -812,8 +813,19 @@ class Owner(models.Model):
 
         # If our tracked price is different than the actual contract price
         # We round the numbers in here as most players do not use decimals ingame and the prices might be off by the digits
-        tracking_net_price = round(tracking.net_price)
-        contract_net_price = round(contract.price)
+
+        logger.debug(
+            "Contract Notes: Tracking price before rounding is set to %s and contract price is set to %s"
+            % (tracking.net_price, contract.price)
+        )
+
+        tracking_net_price = math.trunc(tracking.net_price)
+        contract_net_price = math.trunc(contract.price)
+
+        logger.debug(
+            "Contract Notes: Tracking price is set to %s and contract price is set to %s"
+            % (tracking_net_price, contract_net_price)
+        )
 
         if tracking_net_price >= 0 and tracking_net_price != contract_net_price:
             # If contract price is bellow tracked price
