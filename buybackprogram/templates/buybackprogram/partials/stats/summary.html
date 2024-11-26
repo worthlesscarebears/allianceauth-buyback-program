@@ -7,13 +7,13 @@
             <th>{% trans "Outstanding count:" %}</th>
             <td>{{values.outstanding_count}}</td>
             <th>{% trans "Outstanding value:" %}</th>
-            <td>{{values.outstanding|floatformat:2|intcomma|price}}</td>
+            <td>{{values.outstanding|custom_number_format:2|price}}</td>
         </tr>
         <tr>
             <th>{% trans "Total bought count:" %}</th>
             <td>{{values.finished_count}}</td>
             <th>{% trans "Total bought:" %}</th>
-            <td>{{values.finished|floatformat:2|intcomma|price}}</td>
+            <td>{{values.finished|custom_number_format:2|price}}</td>
         </tr>
         {% if BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS %}
             <tr>

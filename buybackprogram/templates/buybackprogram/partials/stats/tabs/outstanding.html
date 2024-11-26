@@ -31,7 +31,7 @@
                             <td>{{tracking.contract.date_issued|timesince }}</td>
                             <td>{{tracking.contract.status}}</td>
                             <td>{{tracking.tracking_number}}</td>
-                            <td>{{tracking.contract.price|floatformat:2|intcomma|price}}</td>
+                            <td>{{tracking.contract.price|custom_number_format:2|price}}</td>
 
                             <td>
                                 {% for note in tracking.contract.notes %}
