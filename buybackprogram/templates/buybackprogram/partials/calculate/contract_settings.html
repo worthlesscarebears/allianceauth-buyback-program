@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load i18n %}
+{% load price_formats %}
         <table id="contract" class="table table-striped table-hover no-footer w-100">
             <tr>
                 <th>{% trans "Contract type:" %}</th>
@@ -19,10 +20,10 @@
             <tr>
                 <th>{% trans "I will receive:" %}</th>
                 {% if contract_price_data.contract_net_total >= 0%}
-                    <td data-type="copy_value">{{contract_price_data.contract_net_total|floatformat:2|intcomma}}</td>
+                    <td data-type="copy_value">{{ contract_price_data.contract_net_total|custom_number_format:2 }}</td>
                     <td><button data-type="copy"><i class="fa-solid fa-copy"></i></button></td>
                 {% else %}
-                    <td>0 ISK <i><s>{{contract_price_data.contract_net_total|floatformat:2|intcomma}} ISK</s></i><td>
+                    <td>0 ISK <i><s>{{ contract_price_data.contract_net_total|custom_number_format:2 }} ISK</s></i><td>
                 {% endif %}
 
 

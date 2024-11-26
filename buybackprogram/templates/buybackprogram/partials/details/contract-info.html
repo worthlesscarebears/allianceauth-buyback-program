@@ -33,7 +33,7 @@
             </tr>
             <tr>
                 <th >{% trans "Asking price" %}</th>
-                <td>{{contract.price|floatformat:2|intcomma}} ISK</td>
+                <td>{{contract.price|custom_number_format:2}} ISK</td>
             </tr>
         </tbody>
     </table>
