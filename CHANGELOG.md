@@ -33,6 +33,13 @@ Section Order:
 ### Security
 -->
 
+## [2.3.1] - 2024-11-26
+
+### Fixed
+- #91, contract price notification roundings were incorrect
+- #90, fixed localization issues by forcing number formats to match eve
+- #89, fixed leaderboard to work with decimals
+
 ## [2.3.0] - 2024-11-04
 
 This version requires migrations. This version includes major changes on price calculations by adding decimals to prices to make price calculations more accurate.
