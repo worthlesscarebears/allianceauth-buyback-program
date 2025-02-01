@@ -453,9 +453,9 @@ def update_program_performance():
                     if m not in (monthstats[strata][yi]):
                         monthstats[strata][yi][m] = [0, 0]
                     y[0].append(
-                        round(monthstats[strata][yi][m][0] / scaling[strata], 3)
+                        round(float(monthstats[strata][yi][m][0]) / scaling[strata], 3)
                     )
-                    y[1].append(monthstats[strata][yi][m][1])
+                    y[1].append(float(monthstats[strata][yi][m][1]))
                 monthstats[strata][yi] = y
         monthstats["x"] = ["x"] + allmonths
 
