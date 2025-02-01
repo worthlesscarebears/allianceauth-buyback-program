@@ -32,11 +32,7 @@ Section Order:
 ### Removed
 ### Security
 -->
-## [Unreleased] - yyyy-mm-dd
-
-### Added
-
-### Changed
+## [2.3.2] - 2024-11-26
 
 ### Fixed
 - #95, Fixed issue preventing performance getting generated
