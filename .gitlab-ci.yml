@@ -1,7 +1,7 @@
 stages:
-- checks
-- test
-- deploy
+  - checks
+  - test
+  - deploy
 
 pre-commit:
   stage: checks
@@ -15,6 +15,13 @@ pre-commit:
     - pip install pre-commit
     - pre-commit run --all-files
 
+# pylint:
+#   stage: checks
+#   extends: .tox_setup
+#   image: python:3.10-bookworm
+#   script:
+#   - tox -e pylint
+
 .tox_setup:
   before_script:
     - apt-get update
@@ -23,51 +30,45 @@ pre-commit:
     - python -V
     - pip install tox
 
-test-38-django40:
+test-py38-dj40:
   extends: .tox_setup
   image: python:3.8-bookworm
   script:
-  - tox -e py38-django40
-  - bash <(curl -s https://codecov.io/bash)
+    - tox -e py38-django40
 
-test-39-django40:
+test-py39-dj40:
   extends: .tox_setup
   image: python:3.9-bookworm
   script:
-  - tox -e py39-django40
-  - bash <(curl -s https://codecov.io/bash)
+    - tox -e py39-django40
 
-test-310-django40:
+test-py310-dj40:
   extends: .tox_setup
   image: python:3.10-bookworm
   script:
-  - tox -e py310-django40
-  - bash <(curl -s https://codecov.io/bash)
+    - tox -e py310-django40
+    - bash <(curl -s https://codecov.io/bash)
 
-test-311-django40:
+test-py311-dj40:
   extends: .tox_setup
   image: python:3.11-bookworm
   script:
   - tox -e py311-django40
   - bash <(curl -s https://codecov.io/bash)
 
-test-311-django42:
+test-py311-dj42:
   extends: .tox_setup
   image: python:3.11-bookworm
   script:
-  - tox -e py311-django42
-  - bash <(curl -s https://codecov.io/bash)
+    - tox -e py311-django42
 
 deploy-pypi:
   stage: deploy
   image: python:3.10-bookworm
-
   before_script:
-    - pip install build twine
-
+    - pip install twine wheel build
   script:
     - python -m build
     - twine upload dist/*
-
   only:
     - tags
