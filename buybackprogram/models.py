@@ -679,9 +679,7 @@ class Owner(models.Model):
 
     @fetch_token_for_owner(["esi-universe.read_structures.v1"])
     def _get_location_name(self, token, structid) -> list:
-        status = fetch_esi_status()
-
-        if not status.is_online or status.error_limit_remain < 5:
+        if not fetch_esi_status().is_ok:
             return "Unknown"
         if structid <= 100000000:  # likely to be NPC station
             return EveEntity.objects.resolve_name(structid)

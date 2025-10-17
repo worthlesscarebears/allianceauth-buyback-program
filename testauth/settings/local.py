@@ -44,6 +44,7 @@ DATABASES['default'] = {
 # to https://example.com/sso/callback substituting your domain for example.com
 # Logging in to auth requires the publicData scope (can be overridden through the
 # LOGIN_TOKEN_SCOPES setting). Other apps may require more (see their docs).
+ESI_USER_CONTACT_EMAIL = "contact@eve-linknet.com"
 ESI_SSO_CLIENT_ID = "dummy"
 ESI_SSO_CLIENT_SECRET = "dummy"
 ESI_SSO_CALLBACK_URL = "http://localhost:8000"
