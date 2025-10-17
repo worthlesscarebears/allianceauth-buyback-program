@@ -32,6 +32,11 @@ Section Order:
 ### Removed
 ### Security
 -->
+## [2.3.3] - 2025-10-17
+
+### Fixed
+- #107, Fixes issue for contract tracker not working
+
 ## [2.3.2] - 2024-11-26
 
 ### Fixed
