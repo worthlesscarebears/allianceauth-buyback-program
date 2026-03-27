@@ -2,10 +2,11 @@ import datetime as dt
 
 import factory
 import factory.fuzzy
+from eveuniverse.models import EveEntity
 from faker import Faker
 
 from django.utils.timezone import now
-from eveuniverse.models import EveEntity, EveSolarSystem, EveType
+from eve_sde.models import ItemType, SolarSystem
 
 from app_utils.testdata_factories import (
     EveAllianceInfoFactory,
@@ -33,17 +34,17 @@ Faker.seed(0)
 
 
 def random_eve_type_id() -> int:
-    ids = EveType.objects.filter(published=True).values_list("id", flat=True)
+    ids = ItemType.objects.filter(published=True).values_list("id", flat=True)
     if not ids:
         return None
     return factory.fuzzy.FuzzyChoice(ids).fuzz()
 
 
-def random_eve_type() -> EveType:
+def random_eve_type() -> ItemType:
     eve_type_did = random_eve_type_id()
     if not eve_type_did:
         return None
-    return EveType.objects.get(id=eve_type_did)
+    return ItemType.objects.get(id=eve_type_did)
 
 
 # TODO: Move to app_utils
@@ -126,7 +127,7 @@ class LocationFactory(factory.django.DjangoModelFactory):
 
     @factory.lazy_attribute
     def eve_solar_system(self):
-        obj = EveSolarSystem.objects.order_by("?").first()
+        obj = SolarSystem.objects.order_by("?").first()
         if not obj:
             raise RuntimeError("No EveSolarSystem found for LocationFactory.")
         return obj

@@ -23,8 +23,9 @@ SITE_URL = "http://127.0.0.1:8000"
 # useful error messages but can leak sensitive data.
 DEBUG = False
 
+INSTALLED_APPS += ["modeltranslation"]
 # Add any additional apps to this list.
-INSTALLED_APPS += ["buybackprogram", "eveuniverse"]
+INSTALLED_APPS += ["buybackprogram", "eve_sde", "eveuniverse"]
 
 # Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
 """

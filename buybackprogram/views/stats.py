@@ -2,12 +2,13 @@ import json
 import os
 from datetime import datetime
 
+from eveuniverse.models import EveEntity
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.shortcuts import render
 from django.utils import timezone
-from eveuniverse.models import EveEntity
 
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.services.hooks import get_extension_logger
