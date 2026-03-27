@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Python: Attach",
+    "adapter": "Debugpy",
+    "request": "attach",
+    "connect": {
+      "host": "127.0.0.1",
+      "port": 5678
+    },
+    "pathMappings": [
+      {
+        "localRoot": "${ZED_WORKTREE_ROOT}",
+        "remoteRoot": "."
+      }
+    ]
+  }
+]
