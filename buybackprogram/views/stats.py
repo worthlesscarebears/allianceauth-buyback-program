@@ -2,8 +2,6 @@ import json
 import os
 from datetime import datetime
 
-from eveuniverse.models import EveEntity
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -20,6 +18,7 @@ from buybackprogram.notes import (
     note_quantity_missing_from_contract,
     note_quantity_missing_from_tracking,
 )
+from buybackprogram.providers import esi
 from buybackprogram.utils import messages_plus
 
 from ..models import (
@@ -78,13 +77,17 @@ def my_stats(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
-            tracking.contract.issuer_id
+        tracking.contract.issuer_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.issuer_id])
+            .results(use_etag=False)[0]
+            .name
         )
 
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
-            tracking.contract.assignee_id
+        tracking.contract.assignee_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.assignee_id])
+            .results(use_etag=False)[0]
+            .name
         )
 
         # Add contract to the valid contract list
@@ -139,7 +142,9 @@ def leaderboard(request, program_pk):
 
             if user not in monthstats["userinfo"]:
                 monthstats["userinfo"][user] = {
-                    "name": EveEntity.objects.resolve_name(user),
+                    "name": esi.client.Universe.PostUniverseNames(body=[user])
+                    .results(use_etag=False)[0]
+                    .name,
                     "pic": f"https://images.evetech.net/characters/{user}/portrait?size=32",
                 }
 
@@ -229,13 +234,17 @@ def program_stats(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
-            tracking.contract.issuer_id
+        tracking.contract.issuer_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.issuer_id])
+            .results(use_etag=False)[0]
+            .name
         )
 
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
-            tracking.contract.assignee_id
+        tracking.contract.assignee_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.assignee_id])
+            .results(use_etag=False)[0]
+            .name
         )
 
         # Add contract to the valid contract list
@@ -256,11 +265,17 @@ def program_stats(request):
             contract.notes = ContractNotification.objects.filter(contract=contract)
 
             # Get the name for the issuer
-            contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+            contract.issuer_name = (
+                esi.client.Universe.PostUniverseNames(body=[contract.issuer_id])
+                .results(use_etag=False)[0]
+                .name
+            )
 
             # Get the name for the assignee
-            contract.assignee_name = EveEntity.objects.resolve_name(
-                contract.assignee_id
+            contract.assignee_name = (
+                esi.client.Universe.PostUniverseNames(body=[contract.assignee_id])
+                .results(use_etag=False)[0]
+                .name
             )
 
     context = {
@@ -314,13 +329,16 @@ def program_stats_all(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
-            tracking.contract.issuer_id
+        tracking.contract.issuer_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.issuer_id])
+            .results(use_etag=False)[0]
+            .name
         )
-
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
-            tracking.contract.assignee_id
+        tracking.contract.assignee_name = (
+            esi.client.Universe.PostUniverseNames(body=[tracking.contract.assignee_id])
+            .results(use_etag=False)[0]
+            .name
         )
 
         valid_contracts.append(tracking)
@@ -340,11 +358,17 @@ def program_stats_all(request):
             contract.notes = ContractNotification.objects.filter(contract=contract)
 
             # Get the name for the issuer
-            contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+            contract.issuer_name = (
+                esi.client.Universe.PostUniverseNames(body=[contract.issuer_id])
+                .results(use_etag=False)[0]
+                .name
+            )
 
             # Get the name for the assignee
-            contract.assignee_name = EveEntity.objects.resolve_name(
-                contract.assignee_id
+            contract.assignee_name = (
+                esi.client.Universe.PostUniverseNames(body=[contract.assignee_id])
+                .results(use_etag=False)[0]
+                .name
             )
 
     context = {
@@ -431,10 +455,18 @@ def contract_details(request, contract_title):
         contract_item.notes = contract_notes
 
     # Get the name for the issuer
-    contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+    contract.issuer_name = (
+        esi.client.Universe.PostUniverseNames(body=[contract.issuer_id])
+        .results(use_etag=False)[0]
+        .name
+    )
 
     # Get the name for the assignee
-    contract.assignee_name = EveEntity.objects.resolve_name(contract.assignee_id)
+    contract.assignee_name = (
+        esi.client.Universe.PostUniverseNames(body=[contract.assignee_id])
+        .results(use_etag=False)[0]
+        .name
+    )
 
     # Sort lists by reverse quantity order
     contract_items = sorted(contract_items, key=lambda x: -x.quantity)

@@ -12,5 +12,6 @@ esi = ESIClientProvider(
         "GetCharactersCharacterIdContracts",
         "GetCharactersCharacterIdContractsContractIdItems",
         "GetUniverseStructuresStructureId",
+        "PostUniverseNames",
     ],
 )
