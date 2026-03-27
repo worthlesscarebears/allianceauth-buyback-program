@@ -1,0 +1,37 @@
+{ pkgs, lib, config, inputs, ... }:
+
+{
+  packages = [ pkgs.git pkgs.nixd pkgs.libmysqlclient  ];
+
+    languages.nix.enable = true;
+    languages.python = {
+      enable = true;
+      venv.enable = true;
+      uv = {
+        enable = true;
+        sync.enable = true;
+      };
+    };
+
+    env.LD_LIBRARY_PATH = "${pkgs.libmysqlclient}/lib/mariadb";
+
+    git-hooks.hooks = {
+       black.enable = true;
+       flake8.enable = true;
+       isort.enable = true;
+       pyright.enable = false;
+       python-debug-statements.enable = true;
+       check-shebang-scripts-are-executable.enable = true;
+       check-symlinks.enable = true;
+       check-yaml.enable = true;
+       check-merge-conflicts.enable = true;
+       check-json.enable = true;
+       check-executables-have-shebangs.enable = true;
+       check-added-large-files.enable = true;
+       check-case-conflicts.enable = true;
+       markdownlint.enable = true;
+       nixfmt.enable = true;
+       prettier.enable = true;
+       trufflehog.enable = true;
+     };
+}
