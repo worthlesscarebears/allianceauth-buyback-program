@@ -5,7 +5,7 @@ import requests
 
 from django.db import Error
 from django.utils import timezone
-from eveuniverse.models import EveMarketPrice, EveType, EveTypeMaterial
+from eve_sde.models import ItemType, ItemTypeMaterials
 
 from allianceauth.services.hooks import get_extension_logger
 
@@ -30,7 +30,6 @@ from buybackprogram.notes import (
     note_item_disallowed,
     note_item_specific_tax,
     note_missing_jita_buy,
-    note_missing_npc_price,
     note_missing_typematerials,
     note_no_price_data,
     note_npc_price,
@@ -62,9 +61,9 @@ def use_npc_price(item, program):
         return True
     elif item.id in RED_LOOT_TYPE_IDS and program.red_loot_npc_price:
         return True
-    elif item.eve_group.id in OPE_EVE_GROUPS and program.ope_npc_price:
+    elif item.group.id in OPE_EVE_GROUPS and program.ope_npc_price:
         return True
-    elif item.eve_group.id in BONDS_EVE_GROUPS and program.ope_npc_price:
+    elif item.group.id in BONDS_EVE_GROUPS and program.ope_npc_price:
         return True
     else:
         return False
@@ -157,21 +156,6 @@ def get_or_create_prices(item_id):
             return price
         except Error as e:
             logger.error("Error updating prices: %s" % e)
-
-
-def get_npc_price(item_id):
-    try:
-        logger.error("Getting NPC price from EveMarketPrice for item: %s" % (item_id))
-        return EveMarketPrice.objects.get(eve_type=item_id)
-    except EveMarketPrice.DoesNotExist:
-        logger.error(
-            "NPC price missing from EveMarketPrice for: %s. Did you forget to run buybackprogram_load_data and buybackprogram_load_prices on setup?"
-            % (item_id)
-        )
-        return EveMarketPrice.objects.none()
-
-    except Error as e:
-        logger.error("Error getting NPC prices for %s: %s" % (item_id, e))
 
 
 def getList(dict):
@@ -286,21 +270,21 @@ def get_item_prices(item_type, name, quantity, program):
             notes.append(note_item_disallowed(item_disallowed, name))
 
     # If item is somehow not published (expired items etc.)
-    if not item_type.published or not item_type.eve_market_group:
+    if not item_type.published or not item_type.market_group:
         item_disallowed = True
 
         notes.append(note_unpublished_item(item_type))
 
         logger.debug(
             "%s published status is %s and market group is %s, item disallowed: %s"
-            % (name, item_type.published, item_type.eve_market_group, item_disallowed)
+            % (name, item_type.published, item_type.market_group, item_disallowed)
         )
 
     logger.debug("%s is disallowed: %s" % (name, item_disallowed))
 
     if not item_disallowed:
         # If raw ore value should not be taken into account
-        if is_ore(item_type.eve_group.id) and not program.use_raw_ore_value:
+        if is_ore(item_type.group.id) and not program.use_raw_ore_value:
             logger.debug("Raw price not used for %s" % item_type.name)
 
             item_raw_price = {
@@ -336,13 +320,13 @@ def get_item_prices(item_type, name, quantity, program):
             notes.append(note_price_outdated(update_timediff, name))
 
         # Check if we should get refined value for the item
-        if is_ore(item_type.eve_group.id) and program.use_refined_value:
+        if is_ore(item_type.group.id) and program.use_refined_value:
             item_material_price = []
 
             # Get all refining materials for item
-            type_materials = EveTypeMaterial.objects.filter(
-                eve_type_id=item_type.id
-            ).prefetch_related("eve_type")
+            type_materials = ItemTypeMaterials.objects.filter(
+                item_type_id=item_type.id
+            ).prefetch_related("item_type")
 
             notes.append(note_missing_typematerials(type_materials, name))
 
@@ -375,14 +359,14 @@ def get_item_prices(item_type, name, quantity, program):
             logger.debug("Prices: No refined value used for %s" % name)
 
         # Get compressed versions of the ores that are not yet compressed
-        if is_ore(item_type.eve_group.id):
+        if is_ore(item_type.group.id):
             try:
                 if "Compressed" in name:
                     compresed_name = name
                 else:
                     compresed_name = "Compressed " + name
 
-                compresed_type = EveType.objects.filter(name=compresed_name).first()
+                compresed_type = ItemType.objects.filter(name=compresed_name).first()
 
                 compression_price = get_or_create_prices(compresed_type.id)
 
@@ -412,24 +396,12 @@ def get_item_prices(item_type, name, quantity, program):
 
         # Get NPC prices
         if use_npc_price(item_type, program):
-            item_npc_price = get_npc_price(item_type.id)
-
-            if item_npc_price:
-                npc_type_prices = {
-                    "id": item_type.id,
-                    "quantity": quantity,
-                    "buy": item_npc_price.average_price,
-                    "sell": False,
-                }
-            else:
-                npc_type_prices = {
-                    "id": item_type.id,
-                    "quantity": quantity,
-                    "buy": 0,
-                    "sell": False,
-                }
-
-                notes.append(note_missing_npc_price(name))
+            npc_type_prices = {
+                "id": item_type.id,
+                "quantity": quantity,
+                "buy": item_type.base_price,
+                "sell": False,
+            }
 
             logger.debug("Prices: Got NPC buy price for %s" % name)
 
@@ -491,16 +463,21 @@ def get_item_values(item_type, item_prices, program):
             "Using price value type '%s' with value %s" % (program.price_type, price)
         )
 
-        if not item_type.volume <= 0:
-            price_dencity = price / item_type.packaged_volume
+        volume = (
+            item_type.volume
+            if item_type.packaged_volume is None
+            else item_type.packaged_volume
+        )
+        if volume > 0:
+            price_dencity = price / volume
         else:
             price_dencity = False
         price_dencity_tax = get_price_dencity_tax(
             program,
             price,
-            item_type.packaged_volume,
+            volume,
             quantity,
-            is_ore(item_type.eve_group.id),
+            is_ore(item_type.group.id),
         )
         program_tax = program.tax
         item_tax = get_item_tax(program, item_type.id)
@@ -560,7 +537,7 @@ def get_item_values(item_type, item_prices, program):
 
         # Check if compressed price is used. If yes we will use compression price density. If not we will use raw price density.
         if item_prices["compression_prices"]:
-            compressed_version = EveType.objects.filter(
+            compressed_version = ItemType.objects.filter(
                 id=item_prices["compression_prices"]["id"]
             ).first()
 
@@ -579,7 +556,7 @@ def get_item_values(item_type, item_prices, program):
                 float(item_prices["compression_prices"]["buy"]),
                 compressed_version.volume,
                 item_prices["compression_prices"]["quantity"],
-                is_ore(item_type.eve_group.id),
+                is_ore(item_type.group.id),
             )
 
             logger.debug(
@@ -593,19 +570,22 @@ def get_item_values(item_type, item_prices, program):
                 % (item_type.name)
             )
 
-            if not item_type.volume <= 0:
-                price_dencity = (
-                    float(item_prices["raw_prices"]["buy"]) / item_type.packaged_volume
-                )
+            volume = (
+                item_type.volume
+                if item_type.packaged_volume is None
+                else item_type.packaged_volume
+            )
+            if volume > 0:
+                price_dencity = float(item_prices["raw_prices"]["buy"]) / volume
             else:
                 price_dencity = False
 
             price_dencity_tax = get_price_dencity_tax(
                 program,
                 float(item_prices["raw_prices"]["buy"]),
-                item_type.packaged_volume,
+                volume,
                 item_prices["raw_prices"]["quantity"],
-                is_ore(item_type.eve_group.id),
+                is_ore(item_type.group.id),
             )
 
             logger.debug(
@@ -619,7 +599,7 @@ def get_item_values(item_type, item_prices, program):
         )
 
         for material in item_prices["material_prices"]:
-            materials = EveType.objects.filter(id=material["id"]).first()
+            materials = ItemType.objects.filter(id=material["id"]).first()
 
             quantity = material["quantity"]
             sell = float(material["sell"])
@@ -695,7 +675,7 @@ def get_item_values(item_type, item_prices, program):
 
     # COMPRESSION VARIANT VALUES
     if item_prices["compression_prices"] and program.use_compressed_value:
-        compressed_version = EveType.objects.filter(
+        compressed_version = ItemType.objects.filter(
             id=item_prices["compression_prices"]["id"]
         ).first()
 
@@ -729,7 +709,7 @@ def get_item_values(item_type, item_prices, program):
             price,
             compressed_version.volume,
             quantity,
-            is_ore(item_type.eve_group.id),
+            is_ore(item_type.group.id),
         )
         program_tax = program.tax
         item_tax = get_item_tax(program, item_type.id)
@@ -800,16 +780,21 @@ def get_item_values(item_type, item_prices, program):
                 "Using price type '%s' with value %s" % (program.price_type, price)
             )
 
-        if not item_type.volume <= 0:
-            price_dencity = price / item_type.volume
+        volume = (
+            item_type.volume
+            if item_type.packaged_volume is None
+            else item_type.packaged_volume
+        )
+        if volume > 0:
+            price_dencity = price / volume
         else:
             price_dencity = False
         price_dencity_tax = get_price_dencity_tax(
             program,
             price,
-            item_type.packaged_volume,
+            volume,
             quantity,
-            is_ore(item_type.eve_group.id),
+            is_ore(item_type.group.id),
         )
         program_tax = program.tax
         item_tax = get_item_tax(program, item_type.id)
@@ -1031,9 +1016,9 @@ def get_item_buy_value(buyback_data, program, donation):
                     and program.use_compressed_value
                 ) or (
                     program.compression_price_dencity_modifier
-                    and is_ore(item["type_data"].eve_group.id)
+                    and is_ore(item["type_data"].group.id)
                 ):
-                    compressed_version = EveType.objects.filter(
+                    compressed_version = ItemType.objects.filter(
                         id=item["item_prices"]["compression_prices"]["id"]
                     ).first()
 
@@ -1050,7 +1035,11 @@ def get_item_buy_value(buyback_data, program, donation):
                         % (item["type_data"])
                     )
 
-                    item_volume = item["type_data"].packaged_volume
+                    item_volume = (
+                        item["type_data"].volume
+                        if item["type_data"].packaged_volume is None
+                        else item["type_data"].packaged_volume
+                    )
 
                 quantity = item["item_values"]["quantity"]
                 hauling_cost = item_volume * program.hauling_fuel_cost * quantity

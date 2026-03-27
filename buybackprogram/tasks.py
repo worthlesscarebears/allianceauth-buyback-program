@@ -10,7 +10,6 @@ from django.conf import settings
 from django.db import Error
 from django.utils import timezone
 from esi.errors import TokenError
-from eveuniverse.models import EveMarketPrice
 
 from allianceauth.services.hooks import get_extension_logger
 from allianceauth.services.tasks import QueueOnce
@@ -197,10 +196,6 @@ def update_all_prices():
         except Error as e:
             logger.error("Error updating prices: %s" % e)
 
-        EveMarketPrice.objects.update_from_esi()
-
-        logger.debug("Updated all eveuniverse market prices.")
-
         if len(missing_items) > 0:
             logger.error(
                 "%s items missing items from source API, prices set to 0."
@@ -372,7 +367,7 @@ def update_program_performance():
                     # cache[tracking.contract.issuer_id] = EveEntity.objects.resolve_name(tracking.contract.issuer_id)
 
                     # Collect item category data
-                    catid = item.eve_type.eve_group.name
+                    catid = item.eve_type.group.name
                     if catid not in category2items:
                         category2items[catid] = set()
                     category2items[catid].add(item.eve_type.name)
@@ -398,7 +393,7 @@ def update_program_performance():
                             ),
                             tracking.contract.issuer_id,
                             tracking.contract.price,
-                            item.eve_type.eve_group.name,
+                            item.eve_type.group.name,
                             item.eve_type.id,
                             item.eve_type.name,
                             item.quantity,
