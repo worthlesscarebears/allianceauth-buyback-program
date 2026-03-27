@@ -55,7 +55,7 @@ def note_unpublished_item(item_type):
             "message": "%s is not a published item. It is either an expired item or a copy paste of an item that should not exists ingame."
             % item_type.name,
         }
-    if not item_type.eve_market_group:
+    if not item_type.market_group:
         note = {
             "icon": "fa-hand-paper",
             "color": "red",

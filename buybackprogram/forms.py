@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
-from eveuniverse.models import EveMarketGroup, EveSolarSystem, EveType
+from eve_sde.models import ItemMarketGroup, ItemType, SolarSystem
 
 from buybackprogram.models import Location, Owner, Program, UserSettings
 
@@ -29,7 +29,7 @@ class ProgramForm(forms.ModelForm):
 
 class ProgramItemForm(forms.Form):
     item_type = forms.ModelChoiceField(
-        queryset=EveType.objects.none(),
+        queryset=ItemType.objects.none(),
         label="Item type",
         help_text="Add the name of item which you want to determine an tax on. Once you start typing, we offer suggestions",
         empty_label=None,
@@ -52,15 +52,15 @@ class ProgramItemForm(forms.Form):
         super(ProgramItemForm, self).__init__(*args, **kwargs)
 
         if value is not None:
-            self.fields["item_type"].queryset = EveType.objects.filter(
+            self.fields["item_type"].queryset = ItemType.objects.filter(
                 pk=value,
                 published=True,
-            ).exclude(eve_group__eve_category__id=9)
+            ).exclude(group__category__id=9)
 
 
 class ProgramMarketGroupForm(forms.Form):
     marketgroup = forms.ModelChoiceField(
-        queryset=EveMarketGroup.objects.none(),
+        queryset=ItemMarketGroup.objects.none(),
         label="Item type",
         help_text="Add the name of item which you want to determine an tax on. Once you start typing, we offer suggestions",
         empty_label=None,
@@ -83,14 +83,14 @@ class ProgramMarketGroupForm(forms.Form):
         super(ProgramMarketGroupForm, self).__init__(*args, **kwargs)
 
         if value is not None:
-            self.fields["marketgroup"].queryset = EveMarketGroup.objects.filter(
+            self.fields["marketgroup"].queryset = ItemMarketGroup.objects.filter(
                 pk=value,
             )
 
 
 class LocationForm(forms.Form):
     eve_solar_system = forms.ModelChoiceField(
-        queryset=EveSolarSystem.objects.none(),
+        queryset=SolarSystem.objects.none(),
         label="Solar system",
         help_text="Select solar system name. Start typing and we will give you suggestions.",
         empty_label=None,
@@ -114,7 +114,7 @@ class LocationForm(forms.Form):
         super(LocationForm, self).__init__(*args, **kwargs)
 
         if value is not None:
-            self.fields["eve_solar_system"].queryset = EveSolarSystem.objects.filter(
+            self.fields["eve_solar_system"].queryset = SolarSystem.objects.filter(
                 pk=value,
             )
 

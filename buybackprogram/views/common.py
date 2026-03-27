@@ -4,7 +4,7 @@ from django.db.models.functions import Concat
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
-from eveuniverse.models import EveMarketGroup, EveSolarSystem, EveType
+from eve_sde.models import ItemMarketGroup, ItemType, SolarSystem
 
 from allianceauth.services.hooks import get_extension_logger
 
@@ -71,9 +71,7 @@ def faq(request):
 @login_required
 @permission_required("buybackprogram.manage_programs")
 def item_autocomplete(request):
-    items = EveType.objects.filter(published=True).exclude(
-        eve_group__eve_category__id=9
-    )
+    items = ItemType.objects.filter(published=True).exclude(group__category__id=9)
 
     q = request.GET.get("q", None)
 
@@ -91,7 +89,7 @@ def item_autocomplete(request):
 @login_required
 @permission_required("buybackprogram.manage_programs")
 def solarsystem_autocomplete(request):
-    items = EveSolarSystem.objects.all()
+    items = SolarSystem.objects.all()
 
     q = request.GET.get("q", None)
 
@@ -109,19 +107,19 @@ def solarsystem_autocomplete(request):
 @login_required
 @permission_required("buybackprogram.manage_programs")
 def marketgroup_autocomplete(request):
-    items = EveMarketGroup.objects.all()
+    items = ItemMarketGroup.objects.all()
 
     q = request.GET.get("q", None)
 
     if q is not None:
-        items = items.prefetch_related("parent_market_group").filter(name__icontains=q)
+        items = items.prefetch_related("parent_group").filter(name__icontains=q)
 
     items = items.annotate(
         value=F("id"),
         text=Concat(
-            F("parent_market_group__parent_market_group__name"),
+            F("parent_group__parent_group__name"),
             Value(" -> "),
-            F("parent_market_group__name"),
+            F("parent_group__name"),
             Value(" -> "),
             F("name"),
         ),

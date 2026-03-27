@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
-from eveuniverse.models import EveMarketGroup, EveType
+from eve_sde.models import ItemMarketGroup, ItemType
 
 from allianceauth.services.hooks import get_extension_logger
 
@@ -110,23 +110,23 @@ def program_edit_marketgroup(request, program_pk):
             item_tax = form.cleaned_data["item_tax"]
             disallow_item = form.cleaned_data["disallow_item"]
 
-            marketgroups = EveMarketGroup.objects.get(
+            marketgroups = ItemMarketGroup.objects.get(
                 pk=form.cleaned_data["marketgroup"].id
             )
 
-            item_type = EveType.objects.filter(
-                eve_market_group=form.cleaned_data["marketgroup"]
+            item_type = ItemType.objects.filter(
+                market_group=form.cleaned_data["marketgroup"]
             )
 
             item_types.append(item_type)
 
             for m in marketgroups.market_group_children.all():
-                item_type = EveType.objects.filter(eve_market_group=m)
+                item_type = ItemType.objects.filter(market_group=m)
 
                 item_types.append(item_type)
 
                 for m2 in m.market_group_children.all():
-                    item_type = EveType.objects.filter(eve_market_group=m2)
+                    item_type = ItemType.objects.filter(market_group=m2)
 
                     item_types.append(item_type)
 

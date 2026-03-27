@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy
-from eveuniverse.models import EveType
+from eve_sde.models import ItemType
 
 from allianceauth.services.hooks import get_extension_logger
 
@@ -60,11 +60,11 @@ def program_calculate(request, program_pk):
                     # Get item name from the first part
                     name = parts[0].replace("*", "")
 
-                    item_type = EveType.objects.filter(name=name).first()
+                    item_type = ItemType.objects.filter(name=name).first()
 
                     # Check if we have a match from the database for the item
                     if item_type:
-                        item_category = item_type.eve_group.eve_category
+                        item_category = item_type.group.category
 
                         # Check if item is a blueprint
                         if item_category.name == "Blueprint":

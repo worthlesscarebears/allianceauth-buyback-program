@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from django.db import IntegrityError
 from django.test import TestCase
-from eveuniverse.models import EveType
+from eve_sde.models import ItemType
 
 from app_utils.esi import EsiStatus
 from app_utils.esi_testing import EsiClientStub, EsiEndpoint
@@ -27,7 +27,6 @@ from .testdata.factories import (
     UserProjectManagerFactory,
     UserSettingsFactory,
 )
-from .testdata.load_eveuniverse import load_eveuniverse
 
 MODULE_PATH = "buybackprogram.models"
 
@@ -36,7 +35,6 @@ class TestOwners(NoSocketsTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
         cls.project_manager = UserProjectManagerFactory()
 
     def test_should_have_str_method(self):
@@ -53,7 +51,6 @@ class TestOwnersUpdateContractFromEsi(NoSocketsTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
         cls.project_manager = UserProjectManagerFactory()
 
     def test_should_create_new_contract(
@@ -61,7 +58,7 @@ class TestOwnersUpdateContractFromEsi(NoSocketsTestCase):
     ):
         # given
         tracking_number = "AB1"
-        eve_type = EveType.objects.get(name="Pyerite")
+        eve_type = ItemType.objects.get(name="Pyerite")
         owner = OwnerFactory(user=self.project_manager)
         owner_character_id = owner.character.character.character_id
         owner_corporation_id = owner.corporation.corporation_id
@@ -117,7 +114,7 @@ class TestOwnersUpdateContractFromEsi(NoSocketsTestCase):
     ):
         # given
         tracking_number = "AB1"
-        eve_type = EveType.objects.get(name="Pyerite")
+        eve_type = ItemType.objects.get(name="Pyerite")
         owner = OwnerFactory(user=self.project_manager)
         owner_character_id = owner.character.character.character_id
         owner_corporation_id = owner.corporation.corporation_id
@@ -166,7 +163,6 @@ class TestOwnerGetLocationName(NoSocketsTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
         cls.owner = OwnerFactory()
 
     def test_should_return_name_for_station(
@@ -230,7 +226,6 @@ class TestLocations(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -243,7 +238,6 @@ class TestProgram(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -256,7 +250,6 @@ class TestProgramItem(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -269,7 +262,6 @@ class TestItemPrices(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -297,7 +289,6 @@ class TestContractItems(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -318,7 +309,6 @@ class TestTrackings(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
@@ -331,7 +321,6 @@ class TestTrackingItems(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        load_eveuniverse()
 
     def test_should_have_str_method(self):
         # given
