@@ -13,6 +13,7 @@ source = { editable = "." }
 dependencies = [
     { name = "allianceauth" },
     { name = "allianceauth-app-utils" },
+    { name = "django-esi" },
     { name = "django-eveonline-sde" },
     { name = "django-eveuniverse" },
 ]
@@ -27,6 +28,7 @@ dev = [
 requires-dist = [
     { name = "allianceauth", specifier = ">=4,<5.0.0" },
     { name = "allianceauth-app-utils", specifier = ">=1.18.0" },
+    { name = "django-esi", specifier = ">=8.3.1,<10.0.0" },
     { name = "django-eveonline-sde", specifier = ">=0.0.1b6" },
     { name = "django-eveuniverse", specifier = ">=1.0.0" },
 ]

@@ -11,7 +11,7 @@ from django.db import Error, models
 from django.utils.translation import gettext as _
 from esi.errors import TokenExpiredError, TokenInvalidError
 from esi.models import Token
-from eve_sde.models import ItemType, SolarSystem
+from eve_sde.models import ItemType, NPCStation, SolarSystem
 
 from allianceauth.authentication.models import CharacterOwnership, State
 
@@ -111,14 +111,16 @@ class Owner(models.Model):
         logger.debug("Fetching contracts for %s" % self.character)
 
         # Get all contracts for owner
-        contracts = self._fetch_contracts()
+        contracts = [(contract, False) for contract in self._fetch_contracts()]
 
         logger.debug("Got %s character contracts" % len(contracts))
 
         logger.debug("Fetching corporation contracts for %s" % self.corporation)
 
         # Get all contracts for owner corporation
-        corporation_contracts = self._fetch_corporation_contracts()
+        corporation_contracts = [
+            (contract, True) for contract in self._fetch_corporation_contracts()
+        ]
 
         logger.debug("Got %s corporation contracts" % len(corporation_contracts))
 
@@ -138,10 +140,15 @@ class Owner(models.Model):
             # If the tracking has an active program (not deleted)
             if tracking.program:
                 # Start checking if we find any matches from our ESI contracts
-                for contract in all_contracts:
+                for contract, contract_is_corporation in all_contracts:
                     # Only get contracts with the correct prefill ticker
-                    if tracking.tracking_number in contract["title"]:
-                        self._process_contract(contract, tracking, token)
+                    if tracking.tracking_number in contract.title:
+                        self._process_contract(
+                            contract=contract,
+                            contract_is_corporation=contract_is_corporation,
+                            tracking=tracking,
+                            token=token,
+                        )
 
                         tracked_contrats.append(contract)
 
@@ -154,7 +161,9 @@ class Owner(models.Model):
 
             # Check what contracts we already have processed earlier
             untracked_contracts = [
-                x for x in all_contracts if x not in tracked_contrats
+                (contract, is_corp)
+                for contract, is_corp in all_contracts
+                if contract not in tracked_contrats
             ]
 
             logger.debug(
@@ -162,82 +171,92 @@ class Owner(models.Model):
                 % (len(untracked_contracts), len(all_contracts))
             )
 
-            for contract in untracked_contracts:
-                if BUYBACKPROGRAM_TRACKING_PREFILL in contract["title"]:
+            for contract, contract_is_corporation in untracked_contracts:
+                if BUYBACKPROGRAM_TRACKING_PREFILL in contract.title:
                     try:
                         tracking = Tracking.objects.get(
-                            tracking_number__contains=contract["title"]
+                            tracking_number__contains=contract.title
                         )
                         logger.debug(
                             "Contract %s already tracked, passing"
-                            % contract["contract_id"]
+                            % contract.contract_id
                         )
 
                     except Tracking.DoesNotExist:
                         logger.debug(
                             "Contract %s is not tracked, starting updates"
-                            % contract["contract_id"]
+                            % contract.contract_id
                         )
 
-                        self._process_contract_without_tracking(contract, token)
+                        self._process_contract_without_tracking(
+                            contract=contract,
+                            contract_is_corporation=contract_is_corporation,
+                            token=token,
+                        )
         else:
             logger.debug(
                 "Track prefill contracts is set to %s, passing prefill contract checks"
                 % BUYBACKPROGRAM_TRACK_PREFILL_CONTRACTS
             )
 
-    def _process_contract(self, contract, tracking, token):
+    def _process_contract(
+        self,
+        contract,
+        contract_is_corporation: bool,
+        tracking,
+        token: Token,
+    ):
         # Check if we already have the contract stored
         try:
-            old_contract = Contract.objects.get(contract_id=contract["contract_id"])
+            old_contract = Contract.objects.get(contract_id=contract.contract_id)
 
             logger.debug(
-                "Contract %s is already stored in database" % contract["contract_id"]
+                "Contract %s is already stored in database" % contract.contract_id
             )
 
         except Contract.DoesNotExist:
             logger.debug(
                 "No matching contracts stored for %s in database, new contract."
-                % contract["contract_id"]
+                % contract.contract_id
             )
             old_contract = Contract.objects.none()
             old_contract.status = False
 
-        logger.debug("User has token: %s" % contract["start_location_id"])
+        logger.debug("User has token: %s" % contract.start_location_id)
 
         # If we have found a contract from database that is not yet finished
         if old_contract.status not in ["finished", "rejected"]:
             logger.debug(
                 "Contract %s status is still pending, starting updates"
-                % contract["contract_id"]
+                % contract.contract_id
             )
 
             # Get location name for contract
             contract_location_name = self._get_location_name(
-                contract["start_location_id"]
+                structid=contract.start_location_id
             )
 
             logger.debug("Got contract location name: %s" % contract_location_name)
 
             # Create or update the found contract
             obj, created = Contract.objects.update_or_create(
-                contract_id=contract["contract_id"],
+                contract_id=contract.contract_id,
                 defaults={
-                    "contract_id": contract["contract_id"],
-                    "assignee_id": contract["assignee_id"],
-                    "availability": contract["availability"],
-                    "date_completed": contract["date_completed"],
-                    "date_expired": contract["date_expired"],
-                    "date_issued": contract["date_issued"],
-                    "for_corporation": contract["for_corporation"],
-                    "issuer_corporation_id": contract["issuer_corporation_id"],
-                    "issuer_id": contract["issuer_id"],
-                    "start_location_id": contract["start_location_id"],
+                    "contract_id": contract.contract_id,
+                    "assignee_id": contract.assignee_id,
+                    "availability": contract.availability,
+                    "date_completed": contract.date_completed,
+                    "date_expired": contract.date_expired,
+                    "date_issued": contract.date_issued,
+                    "for_corporation": contract.for_corporation,
+                    "issuer_corporation_id": contract.issuer_corporation_id,
+                    "issuer_id": contract.issuer_id,
+                    "start_location_id": contract.start_location_id,
                     "location_name": contract_location_name,
-                    "price": contract["price"],
-                    "status": contract["status"],
-                    "title": contract["title"],
-                    "volume": contract["volume"],
+                    "price": contract.price,
+                    "status": contract.status,
+                    "title": contract.title,
+                    "volume": contract.volume,
                     "no_tracking": False,
                 },
             )
@@ -247,7 +266,7 @@ class Owner(models.Model):
                 logger.debug(
                     "Contract %s created, linking tracking object %s"
                     % (
-                        contract["contract_id"],
+                        contract.contract_id,
                         tracking.tracking_number,
                     )
                 )
@@ -258,7 +277,7 @@ class Owner(models.Model):
                     logger.error(
                         "Error linking contract %s with tracking %s: %s"
                         % (
-                            contract["contract_id"],
+                            contract.contract_id,
                             tracking.tracking_number,
                             e,
                         )
@@ -266,7 +285,7 @@ class Owner(models.Model):
 
                 logger.debug(
                     "New contract %s has been created. Starting item fetch"
-                    % contract["contract_id"]
+                    % contract.contract_id
                 )
 
                 character_id = self.character.character.character_id
@@ -276,38 +295,38 @@ class Owner(models.Model):
                 logger.debug(
                     "Fetching items for %s with character %s. Corporation contract: %s"
                     % (
-                        contract["contract_id"],
+                        contract.contract_id,
                         character_id,
-                        contract["is_corporation"],
+                        contract_is_corporation,
                     )
                 )
 
-                if not contract["is_corporation"]:
+                if not contract_is_corporation:
                     logger.debug(
                         "Looking up items for %s via character endpoint"
-                        % contract["contract_id"]
+                        % contract.contract_id
                     )
                     # Get all items in the contract
-                    contract_items = esi.client.Contracts.get_characters_character_id_contracts_contract_id_items(
+                    contract_items = esi.client.Contracts.GetCharactersCharacterIdContractsContractIdItems(
                         character_id=character_id,
-                        contract_id=contract["contract_id"],
-                        token=token.valid_access_token(),
+                        contract_id=contract.contract_id,
+                        token=token,
                     ).results()
 
                 else:
                     logger.debug(
                         "Looking up items for %s via corporation endpoint"
-                        % contract["contract_id"]
+                        % contract.contract_id
                     )
-                    contract_items = esi.client.Contracts.get_corporations_corporation_id_contracts_contract_id_items(
+                    contract_items = esi.client.Contracts.GetCorporationsCorporationIdContractsContractIdItems(
                         corporation_id=corporation_id,
-                        contract_id=contract["contract_id"],
-                        token=token.valid_access_token(),
+                        contract_id=contract.contract_id,
+                        token=token,
                     ).results()
 
                 logger.debug(
                     "%s items found in contract %s"
-                    % (len(contract_items), contract["contract_id"])
+                    % (len(contract_items), contract.contract_id)
                 )
 
                 corporations = CharacterOwnership.objects.filter(
@@ -321,33 +340,29 @@ class Owner(models.Model):
 
                 # Prepare objects for bulk create
                 for item in contract_items:
-                    cont = Contract.objects.get(contract_id=contract["contract_id"])
-                    itm = ItemType.objects.get(id=item["type_id"])
+                    cont = Contract.objects.get(contract_id=contract.contract_id)
+                    itm = ItemType.objects.get(id=item.type_id)
 
                     contract_item = ContractItem(
                         contract=cont,
                         eve_type=itm,
-                        quantity=item["quantity"],
+                        quantity=item.quantity,
                     )
 
                     objs.append(contract_item)
 
-                    items.append(
-                        str(ItemType.objects.get(id=item["type_id"]))
-                        + " x "
-                        + str(item["quantity"])
-                    )
+                    items.append(itm.name + " x " + str(item.quantity))
 
                 try:
                     ContractItem.objects.bulk_create(objs)
                     logger.debug(
                         "Succesfully added %s items for contract %s into database"
-                        % (len(objs), contract["contract_id"])
+                        % (len(objs), contract.contract_id)
                     )
                 except Error as e:
                     logger.error(
                         "Error adding items for contract %s: %s"
-                        % (contract["contract_id"], e)
+                        % (contract.contract_id, e)
                     )
 
                 # Check and see if any notifications/warnings should be set on the contract
@@ -357,13 +372,13 @@ class Owner(models.Model):
 
                 # Notifications for users who have the notifications enabled
 
-                if not contract["is_corporation"]:
+                if not contract_is_corporation:
                     assigned_to = self.character.character.character_name
                 else:
                     assigned_to = self.character.character.corporation_name
 
                 notifications = ContractNotification.objects.filter(
-                    contract__contract_id=contract["contract_id"]
+                    contract__contract_id=contract.contract_id
                 )
 
                 notes = str()
@@ -408,11 +423,9 @@ class Owner(models.Model):
                         tracking.program.name
                     ),
                     "color": 0x5BC0DE,
-                    "value": intcomma(int(contract["price"])),
+                    "value": intcomma(int(contract.price or 0)),
                     "assigned_to": assigned_to,
-                    "assigned_from": EveEntity.objects.resolve_name(
-                        contract["issuer_id"]
-                    ),
+                    "assigned_from": EveEntity.objects.resolve_name(contract.issuer_id),
                 }
 
                 # If tracking is active and we should send a message for our users
@@ -463,25 +476,25 @@ class Owner(models.Model):
 
                 # If user has not disabled notifications
                 if user_settings.disable_notifications is False:
-                    if not contract["is_corporation"]:
+                    if not contract_is_corporation:
                         assigned_to = self.character.character.character_name
                     else:
                         assigned_to = self.character.character.corporation_name
 
                     # Check if the contract was accepted or rejected
-                    if contract["status"] == "finished":
+                    if contract.status == "finished":
                         status = "accepted"
                         color = 0x5CB85C
                         level = "success"
-                    elif contract["status"] == "rejected":
+                    elif contract.status == "rejected":
                         status = "rejected"
                         color = 0xD9534F
                         level = "danger"
                     else:
-                        status = contract["status"]
+                        status = contract.status
 
                     notifications = ContractNotification.objects.filter(
-                        contract__contract_id=contract["contract_id"]
+                        contract__contract_id=contract.contract_id
                     )
 
                     notes = str()
@@ -498,10 +511,10 @@ class Owner(models.Model):
                         "title": "Your buyback contract has been {0}".format(status),
                         "color": color,
                         "notes": notes,
-                        "value": intcomma(int(contract["price"])),
+                        "value": intcomma(int(contract.price or 0)),
                         "assigned_to": assigned_to,
                         "assigned_from": EveEntity.objects.resolve_name(
-                            contract["issuer_id"]
+                            contract.issuer_id
                         ),
                     }
 
@@ -521,59 +534,64 @@ class Owner(models.Model):
                     % obj.contract_id
                 )
 
-    def _process_contract_without_tracking(self, contract, token):
+    def _process_contract_without_tracking(
+        self,
+        contract,
+        contract_is_corporation: bool,
+        token: Token,
+    ):
         # Check if we already have the contract stored
         try:
-            old_contract = Contract.objects.get(contract_id=contract["contract_id"])
+            old_contract = Contract.objects.get(contract_id=contract.contract_id)
 
             logger.debug(
                 "Untracked contract %s is already stored in database"
-                % contract["contract_id"]
+                % contract.contract_id
             )
 
         except Contract.DoesNotExist:
             logger.debug(
                 "No matching contracts stored for %s in database, new untracked contract."
-                % contract["contract_id"]
+                % contract.contract_id
             )
             old_contract = Contract.objects.none()
             old_contract.status = False
 
-        logger.debug("User has token: %s" % contract["start_location_id"])
+        logger.debug("User has token: %s" % contract.start_location_id)
 
         # If we have found a contract from database that is not yet finished
         if old_contract.status not in ["finished", "rejected"]:
             logger.debug(
                 "Untracked contract %s status is still pending, starting updates"
-                % contract["contract_id"]
+                % contract.contract_id
             )
 
             # Get location name for contract
             contract_location_name = self._get_location_name(
-                contract["start_location_id"]
+                structid=contract.start_location_id
             )
 
             logger.debug("Got contract location name: %s" % contract_location_name)
 
             # Create or update the found contract
             obj, created = Contract.objects.update_or_create(
-                contract_id=contract["contract_id"],
+                contract_id=contract.contract_id,
                 defaults={
-                    "contract_id": contract["contract_id"],
-                    "assignee_id": contract["assignee_id"],
-                    "availability": contract["availability"],
-                    "date_completed": contract["date_completed"],
-                    "date_expired": contract["date_expired"],
-                    "date_issued": contract["date_issued"],
-                    "for_corporation": contract["for_corporation"],
-                    "issuer_corporation_id": contract["issuer_corporation_id"],
-                    "issuer_id": contract["issuer_id"],
-                    "start_location_id": contract["start_location_id"],
+                    "contract_id": contract.contract_id,
+                    "assignee_id": contract.assignee_id,
+                    "availability": contract.availability,
+                    "date_completed": contract.date_completed,
+                    "date_expired": contract.date_expired,
+                    "date_issued": contract.date_issued,
+                    "for_corporation": contract.for_corporation,
+                    "issuer_corporation_id": contract.issuer_corporation_id,
+                    "issuer_id": contract.issuer_id,
+                    "start_location_id": contract.start_location_id,
                     "location_name": contract_location_name,
-                    "price": contract["price"],
-                    "status": contract["status"],
-                    "title": contract["title"],
-                    "volume": contract["volume"],
+                    "price": contract.price,
+                    "status": contract.status,
+                    "title": contract.title,
+                    "volume": contract.volume,
                     "no_tracking": True,
                 },
             )
@@ -582,7 +600,7 @@ class Owner(models.Model):
             if created:
                 logger.debug(
                     "Contract %s created without tracking object, possible scam!"
-                    % (contract["contract_id"],)
+                    % (contract.contract_id,)
                 )
 
                 character_id = self.character.character.character_id
@@ -592,51 +610,51 @@ class Owner(models.Model):
                 logger.debug(
                     "Fetching items for %s with character %s. Corporation contract: %s"
                     % (
-                        contract["contract_id"],
+                        contract.contract_id,
                         character_id,
-                        contract["is_corporation"],
+                        contract_is_corporation,
                     )
                 )
 
-                if not contract["is_corporation"]:
+                if not contract_is_corporation:
                     logger.debug(
                         "Looking up items for %s via character endpoint"
-                        % contract["contract_id"]
+                        % contract.contract_id
                     )
                     # Get all items in the contract
-                    contract_items = esi.client.Contracts.get_characters_character_id_contracts_contract_id_items(
+                    contract_items = esi.client.Contracts.GetCharactersCharacterIdContractsContractIdItems(
                         character_id=character_id,
-                        contract_id=contract["contract_id"],
-                        token=token.valid_access_token(),
+                        contract_id=contract.contract_id,
+                        token=token,
                     ).results()
 
                 else:
                     logger.debug(
                         "Looking up items for %s via corporation endpoint"
-                        % contract["contract_id"]
+                        % contract.contract_id
                     )
-                    contract_items = esi.client.Contracts.get_corporations_corporation_id_contracts_contract_id_items(
+                    contract_items = esi.client.Contracts.GetCorporationsCorporationIdContractsContractIdItems(
                         corporation_id=corporation_id,
-                        contract_id=contract["contract_id"],
-                        token=token.valid_access_token(),
+                        contract_id=contract.contract_id,
+                        token=token,
                     ).results()
 
                 logger.debug(
                     "%s items found in contract %s"
-                    % (len(contract_items), contract["contract_id"])
+                    % (len(contract_items), contract.contract_id)
                 )
 
                 objs = []
 
                 # Prepare objects for bulk create
                 for item in contract_items:
-                    cont = Contract.objects.get(contract_id=contract["contract_id"])
-                    itm = ItemType.objects.get(id=item["type_id"])
+                    cont = Contract.objects.get(contract_id=contract.contract_id)
+                    itm = ItemType.objects.get(id=item.type_id)
 
                     contract_item = ContractItem(
                         contract=cont,
                         eve_type=itm,
-                        quantity=item["quantity"],
+                        quantity=item.quantity,
                     )
 
                     objs.append(contract_item)
@@ -645,12 +663,12 @@ class Owner(models.Model):
                     ContractItem.objects.bulk_create(objs)
                     logger.debug(
                         "Succesfully added %s items for contract %s into database"
-                        % (len(objs), contract["contract_id"])
+                        % (len(objs), contract.contract_id)
                     )
                 except Error as e:
                     logger.error(
                         "Error adding items for contract %s: %s"
-                        % (contract["contract_id"], e)
+                        % (contract.contract_id, e)
                     )
 
                 # Check and see if any notifications/warnings should be set on the contract
@@ -680,62 +698,55 @@ class Owner(models.Model):
                 )
 
     @fetch_token_for_owner(["esi-universe.read_structures.v1"])
-    def _get_location_name(self, token, structid) -> list:
+    def _get_location_name(self, token: Token, structid) -> str:
         if not fetch_esi_status().is_ok:
             return "Unknown"
-        if structid <= 100000000:  # likely to be NPC station
-            return EveEntity.objects.resolve_name(structid)
+        # https://developers.eveonline.com/docs/guides/id-ranges/
+        if (
+            structid >= 60_000_000 and structid <= 69_999_999
+        ):  # likely to be NPC station
+            return NPCStation.objects.get(id=structid).name
 
-        operation = esi.client.Universe.get_universe_structures_structure_id(
-            structure_id=structid, token=token.valid_access_token()
+        operation = esi.client.Universe.GetUniverseStructuresStructureId(
+            structure_id=structid, token=token
         )
-        operation.request_config.also_return_response = True
 
         try:
-            label, response = operation.result()
-        except OSError as ex:
+            result = operation.result(use_etag=False)
+            return result.name
+        except Exception as ex:
             logger.error("Error fetching location information %s" % (ex))
             return "Unknown"
 
-        if response.status_code != 200:
-            return "Unknown"
-        return label["name"]
-
     @fetch_token_for_owner(["esi-contracts.read_character_contracts.v1"])
-    def _fetch_contracts(self, token) -> list:
+    def _fetch_contracts(self, token: Token) -> list:
         character_id = self.character.character.character_id
 
-        esi_contracts = esi.client.Contracts.get_characters_character_id_contracts(
+        esi_contracts = esi.client.Contracts.GetCharactersCharacterIdContracts(
             character_id=character_id,
-            token=token.valid_access_token(),
+            token=token,
         ).results()
 
         contracts = []
 
         for esi_contract in esi_contracts:
-            contract = esi_contract
-            contract["is_corporation"] = False
-
-            contracts.append(contract)
+            contracts.append(esi_contract)
 
         return contracts
 
     @fetch_token_for_owner(["esi-contracts.read_corporation_contracts.v1"])
-    def _fetch_corporation_contracts(self, token) -> list:
+    def _fetch_corporation_contracts(self, token: Token) -> list:
         corporation_id = self.character.character.corporation_id
 
-        esi_contracts = esi.client.Contracts.get_corporations_corporation_id_contracts(
+        esi_contracts = esi.client.Contracts.GetCorporationsCorporationIdContracts(
             corporation_id=corporation_id,
-            token=token.valid_access_token(),
+            token=token,
         ).results()
 
         contracts = []
 
         for esi_contract in esi_contracts:
-            contract = esi_contract
-            contract["is_corporation"] = True
-
-            contracts.append(contract)
+            contracts.append(esi_contract)
 
         return contracts
 
