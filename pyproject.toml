@@ -28,7 +28,6 @@ dependencies = [
     "allianceauth-app-utils>=1.18.0",
     "allianceauth<5.0.0,>=4",
     "django-eveonline-sde>=0.0.1b6",
-    "django-eveuniverse>=1.0.0",
     "django-esi<10.0.0,>=8.3.1",
 ]
 

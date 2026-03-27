@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("eveuniverse", "0005_type_materials_and_sections"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("eveonline", "0015_factions"),
         ("authentication", "0019_merge_20211026_0919"),

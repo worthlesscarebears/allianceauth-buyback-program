@@ -1,8 +1,6 @@
 import math
 from typing import Tuple
 
-from eveuniverse.models import EveEntity
-
 from django.contrib.auth.models import Group, User
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
@@ -425,7 +423,11 @@ class Owner(models.Model):
                     "color": 0x5BC0DE,
                     "value": intcomma(int(contract.price or 0)),
                     "assigned_to": assigned_to,
-                    "assigned_from": EveEntity.objects.resolve_name(contract.issuer_id),
+                    "assigned_from": esi.client.Universe.PostUniverseNames(
+                        body=[contract.issuer_id]
+                    )
+                    .results(use_etag=False)[0]
+                    .name,
                 }
 
                 # If tracking is active and we should send a message for our users
@@ -513,9 +515,11 @@ class Owner(models.Model):
                         "notes": notes,
                         "value": intcomma(int(contract.price or 0)),
                         "assigned_to": assigned_to,
-                        "assigned_from": EveEntity.objects.resolve_name(
-                            contract.issuer_id
-                        ),
+                        "assigned_from": esi.client.Universe.PostUniverseNames(
+                            body=[contract.issuer_id]
+                        )
+                        .results(use_etag=False)[0]
+                        .name,
                     }
 
                     send_user_notification(

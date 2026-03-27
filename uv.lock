@@ -15,7 +15,6 @@ dependencies = [
     { name = "allianceauth-app-utils" },
     { name = "django-esi" },
     { name = "django-eveonline-sde" },
-    { name = "django-eveuniverse" },
 ]
 
 [package.dev-dependencies]
@@ -30,7 +29,6 @@ requires-dist = [
     { name = "allianceauth-app-utils", specifier = ">=1.18.0" },
     { name = "django-esi", specifier = ">=8.3.1,<10.0.0" },
     { name = "django-eveonline-sde", specifier = ">=0.0.1b6" },
-    { name = "django-eveuniverse", specifier = ">=1.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -706,16 +704,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-bitfield"
-version = "2.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/fc/872e9c94107a7ed3b9534c76be29cdc6697cc27332075fccc384e8c30b93/django-bitfield-2.2.0.tar.gz", hash = "sha256:1b21262acc4ec0af3f82ed04498a056cd9d5452532ac02771e004835a34e0b1b", size = 17365, upload-time = "2022-07-12T00:36:08.008Z" }
-
-[[package]]
 name = "django-bootstrap-form"
 version = "3.4"
 source = { registry = "https://pypi.org/simple" }
@@ -788,23 +776,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/03/2e/339bec2b1c786e480271f867cc558bd5e8b6d6a82300b2786f80fc4f63d6/django_eveonline_sde-0.0.1b6.tar.gz", hash = "sha256:21b60eb489505b7c1046858c556097b2edc99a2b353a08a68c63f590c9f49a6e", size = 54259, upload-time = "2026-03-06T12:36:30.639Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/02/e1/0122e1c0b06f70d31a8993bd7cd4a3ba048c7b3ef9cbee20dd1b4ca0994f/django_eveonline_sde-0.0.1b6-py3-none-any.whl", hash = "sha256:f3299869d3cd4b9bf0e44bec0104af9d74637226f022075916aaaf58e8f9d4b4", size = 72765, upload-time = "2026-03-06T12:36:29.388Z" },
-]
-
-[[package]]
-name = "django-eveuniverse"
-version = "1.6.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "celery" },
-    { name = "celery-once" },
-    { name = "django" },
-    { name = "django-bitfield" },
-    { name = "django-esi" },
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/da/e06365fb75e6acaa17c6b538b0b56cf77cd651218f33dd23d30998eee756/django_eveuniverse-1.6.0.tar.gz", hash = "sha256:444d1fb0ee8e46bc37b4ada7636bcb5169ff16924a3e449ed7d614dadad10a6f", size = 121592, upload-time = "2025-10-02T18:54:57.357Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/e1/53539e6e1d9bc5e715d07bb336ca61adb1e2cf02b47ce456f9157acc1397/django_eveuniverse-1.6.0-py3-none-any.whl", hash = "sha256:a650ef25aa3b522f6792a0629dcab05767613efcadfeb0612b18c5f2c42379d5", size = 152762, upload-time = "2025-10-02T18:54:55.916Z" },
 ]
 
 [[package]]
