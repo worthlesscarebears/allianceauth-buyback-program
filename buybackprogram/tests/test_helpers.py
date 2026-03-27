@@ -3,13 +3,11 @@ from django.test import TestCase
 from buybackprogram.helpers import get_tracking_number
 
 from .testdata.factories import ProgramFactory, UserIssuerFactory
-from .testdata.load_eveuniverse import load_eveuniverse
 
 
 class TestHelpers(TestCase):
     def test_should_create_tracking_when_first(self):
         # given
-        load_eveuniverse()
         user = UserIssuerFactory()
         program = ProgramFactory()
         additional_notes = "Test note"

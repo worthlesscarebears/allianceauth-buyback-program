@@ -1,6 +1,8 @@
 import math
 from typing import Tuple
 
+from eveuniverse.models import EveEntity
+
 from django.contrib.auth.models import Group, User
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
@@ -9,7 +11,7 @@ from django.db import Error, models
 from django.utils.translation import gettext as _
 from esi.errors import TokenExpiredError, TokenInvalidError
 from esi.models import Token
-from eveuniverse.models import EveEntity, EveSolarSystem, EveType
+from eve_sde.models import ItemType, SolarSystem
 
 from allianceauth.authentication.models import CharacterOwnership, State
 
@@ -320,7 +322,7 @@ class Owner(models.Model):
                 # Prepare objects for bulk create
                 for item in contract_items:
                     cont = Contract.objects.get(contract_id=contract["contract_id"])
-                    itm, _ = EveType.objects.get_or_create_esi(id=item["type_id"])
+                    itm, _ = ItemType.objects.get_or_create_esi(id=item["type_id"])
 
                     contract_item = ContractItem(
                         contract=cont,
@@ -331,7 +333,7 @@ class Owner(models.Model):
                     objs.append(contract_item)
 
                     items.append(
-                        str(EveType.objects.get(id=item["type_id"]))
+                        str(ItemType.objects.get(id=item["type_id"]))
                         + " x "
                         + str(item["quantity"])
                     )
@@ -629,7 +631,7 @@ class Owner(models.Model):
                 # Prepare objects for bulk create
                 for item in contract_items:
                     cont = Contract.objects.get(contract_id=contract["contract_id"])
-                    itm, _ = EveType.objects.get_or_create_esi(id=item["type_id"])
+                    itm, _ = ItemType.objects.get_or_create_esi(id=item["type_id"])
 
                     contract_item = ContractItem(
                         contract=cont,
@@ -998,7 +1000,7 @@ class Location(models.Model):
     )
 
     eve_solar_system = models.ForeignKey(
-        EveSolarSystem,
+        SolarSystem,
         verbose_name="Solar system",
         help_text="System where the buyback structure is located",
         blank=True,
@@ -1269,7 +1271,7 @@ class ProgramItem(models.Model):
         help_text="What program do these items belong to",
     )
     item_type = models.ForeignKey(
-        EveType,
+        ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Select item for special tax",
     )
@@ -1294,7 +1296,7 @@ class ProgramItem(models.Model):
 
 class ItemPrices(models.Model):
     eve_type = models.OneToOneField(
-        EveType,
+        ItemType,
         on_delete=models.deletion.CASCADE,
         unique=True,
     )
@@ -1333,7 +1335,7 @@ class ContractItem(models.Model):
     )
 
     eve_type = models.ForeignKey(
-        EveType,
+        ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Item type information",
     )
@@ -1404,7 +1406,7 @@ class TrackingItem(models.Model):
     )
 
     eve_type = models.ForeignKey(
-        EveType,
+        ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Item type information",
     )
