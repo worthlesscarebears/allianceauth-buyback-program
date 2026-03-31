@@ -1,7 +1,7 @@
 { pkgs, lib, config, inputs, ... }:
 
 {
-  packages = [ pkgs.git pkgs.nixd ];
+  packages = [ pkgs.git pkgs.nixd pkgs.libmysqlclient  ];
 
     languages.nix.enable = true;
     languages.python = {
@@ -12,6 +12,8 @@
         sync.enable = true;
       };
     };
+
+    env.LD_LIBRARY_PATH = "${pkgs.libmysqlclient}/lib/mariadb";
 
     git-hooks.hooks = {
        black.enable = true;
