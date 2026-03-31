@@ -2,18 +2,12 @@ import datetime as dt
 
 import factory
 import factory.fuzzy
-from eveuniverse.models import EveEntity
 from faker import Faker
 
 from django.utils.timezone import now
 from eve_sde.models import ItemType, SolarSystem
 
-from app_utils.testdata_factories import (
-    EveAllianceInfoFactory,
-    EveCharacterFactory,
-    EveCorporationInfoFactory,
-    UserMainFactory,
-)
+from app_utils.testdata_factories import EveCorporationInfoFactory, UserMainFactory
 
 from buybackprogram.models import (
     Contract,
@@ -45,43 +39,6 @@ def random_eve_type() -> ItemType:
     if not eve_type_did:
         return None
     return ItemType.objects.get(id=eve_type_did)
-
-
-# TODO: Move to app_utils
-class EveEntityFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = EveEntity
-        django_get_or_create = ("id", "name")
-
-    category = EveEntity.CATEGORY_CHARACTER
-
-    @factory.lazy_attribute
-    def id(self):
-        if self.category == EveEntity.CATEGORY_CHARACTER:
-            obj = EveCharacterFactory()
-            return obj.character_id
-        if self.category == EveEntity.CATEGORY_CORPORATION:
-            obj = EveCorporationInfoFactory()
-            return obj.corporation_id
-        if self.category == EveEntity.CATEGORY_ALLIANCE:
-            obj = EveAllianceInfoFactory()
-            return obj.alliance_id
-        raise NotImplementedError(f"Unknown category: {self.category}")
-
-
-class EveEntityCharacterFactory(EveEntityFactory):
-    name = factory.Faker("name")
-    category = EveEntity.CATEGORY_CHARACTER
-
-
-class EveEntityCorporationFactory(EveEntityFactory):
-    name = factory.Faker("company")
-    category = EveEntity.CATEGORY_CORPORATION
-
-
-class EveEntityAllianceFactory(EveEntityFactory):
-    name = factory.Faker("company")
-    category = EveEntity.CATEGORY_ALLIANCE
 
 
 class UserProjectManagerFactory(UserMainFactory):

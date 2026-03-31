@@ -1,3 +1,4 @@
+import itertools
 import re
 from typing import Any
 
@@ -9,6 +10,16 @@ from django.utils.html import format_html
 from allianceauth.services.hooks import get_extension_logger
 
 logger = get_extension_logger(__name__)
+
+
+def batched(iterable, n: int, strict: bool = False):
+    if n < 1:
+        raise ValueError("n must be at least one")
+    iterator = iter(iterable)
+    while batch := tuple(itertools.islice(iterator, n)):
+        if strict and len(batch) != n:
+            raise ValueError("batched(): incomplete batch")
+        yield batch
 
 
 def clean_setting(

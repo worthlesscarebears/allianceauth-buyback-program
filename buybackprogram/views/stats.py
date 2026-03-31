@@ -2,8 +2,6 @@ import json
 import os
 from datetime import datetime
 
-from eveuniverse.models import EveEntity
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -26,6 +24,7 @@ from ..models import (
     Contract,
     ContractItem,
     ContractNotification,
+    EveEntity,
     Program,
     Tracking,
     TrackingItem,
@@ -78,14 +77,14 @@ def my_stats(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
+        tracking.contract.issuer_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.issuer_id
-        )
+        ).name
 
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
+        tracking.contract.assignee_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.assignee_id
-        )
+        ).name
 
         # Add contract to the valid contract list
         valid_contracts.append(tracking)
@@ -139,7 +138,7 @@ def leaderboard(request, program_pk):
 
             if user not in monthstats["userinfo"]:
                 monthstats["userinfo"][user] = {
-                    "name": EveEntity.objects.resolve_name(user),
+                    "name": EveEntity.objects.get_or_create_esi(user).name,
                     "pic": f"https://images.evetech.net/characters/{user}/portrait?size=32",
                 }
 
@@ -229,14 +228,14 @@ def program_stats(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
+        tracking.contract.issuer_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.issuer_id
-        )
+        ).name
 
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
+        tracking.contract.assignee_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.assignee_id
-        )
+        ).name
 
         # Add contract to the valid contract list
         valid_contracts.append(tracking)
@@ -256,12 +255,14 @@ def program_stats(request):
             contract.notes = ContractNotification.objects.filter(contract=contract)
 
             # Get the name for the issuer
-            contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+            contract.issuer_name = EveEntity.objects.get_or_create_esi(
+                contract.issuer_id
+            ).name
 
             # Get the name for the assignee
-            contract.assignee_name = EveEntity.objects.resolve_name(
+            contract.assignee_name = EveEntity.objects.get_or_create_esi(
                 contract.assignee_id
-            )
+            ).name
 
     context = {
         "contracts": valid_contracts,
@@ -314,14 +315,13 @@ def program_stats_all(request):
             values["finished_count"] += 1
 
         # Get the name for the issuer
-        tracking.contract.issuer_name = EveEntity.objects.resolve_name(
+        tracking.contract.issuer_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.issuer_id
-        )
-
+        ).name
         # Get the name for the assignee
-        tracking.contract.assignee_name = EveEntity.objects.resolve_name(
+        tracking.contract.assignee_name = EveEntity.objects.get_or_create_esi(
             tracking.contract.assignee_id
-        )
+        ).name
 
         valid_contracts.append(tracking)
 
@@ -340,12 +340,14 @@ def program_stats_all(request):
             contract.notes = ContractNotification.objects.filter(contract=contract)
 
             # Get the name for the issuer
-            contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+            contract.issuer_name = EveEntity.objects.get_or_create_esi(
+                contract.issuer_id
+            ).name
 
             # Get the name for the assignee
-            contract.assignee_name = EveEntity.objects.resolve_name(
+            contract.assignee_name = EveEntity.objects.get_or_create_esi(
                 contract.assignee_id
-            )
+            ).name
 
     context = {
         "contracts": valid_contracts,
@@ -431,10 +433,12 @@ def contract_details(request, contract_title):
         contract_item.notes = contract_notes
 
     # Get the name for the issuer
-    contract.issuer_name = EveEntity.objects.resolve_name(contract.issuer_id)
+    contract.issuer_name = EveEntity.objects.get_or_create_esi(contract.issuer_id).name
 
     # Get the name for the assignee
-    contract.assignee_name = EveEntity.objects.resolve_name(contract.assignee_id)
+    contract.assignee_name = EveEntity.objects.get_or_create_esi(
+        contract.assignee_id
+    ).name
 
     # Sort lists by reverse quantity order
     contract_items = sorted(contract_items, key=lambda x: -x.quantity)

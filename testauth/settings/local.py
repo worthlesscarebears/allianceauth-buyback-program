@@ -25,7 +25,7 @@ DEBUG = False
 
 INSTALLED_APPS += ["modeltranslation"]
 # Add any additional apps to this list.
-INSTALLED_APPS += ["buybackprogram", "eve_sde", "eveuniverse"]
+INSTALLED_APPS += ["buybackprogram", "eve_sde"]
 
 # Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
 """

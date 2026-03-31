@@ -1,8 +1,6 @@
 import math
 from typing import Tuple
 
-from eveuniverse.models import EveEntity
-
 from django.contrib.auth.models import Group, User
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError
@@ -20,6 +18,7 @@ from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.services.hooks import get_extension_logger
 from app_utils.esi import fetch_esi_status
 
+from buybackprogram import utils
 from buybackprogram.notification import (
     send_message_to_discord_channel,
     send_user_notification,
@@ -425,7 +424,9 @@ class Owner(models.Model):
                     "color": 0x5BC0DE,
                     "value": intcomma(int(contract.price or 0)),
                     "assigned_to": assigned_to,
-                    "assigned_from": EveEntity.objects.resolve_name(contract.issuer_id),
+                    "assigned_from": EveEntity.objects.get_or_create_esi(
+                        contract.issuer_id
+                    ).name,
                 }
 
                 # If tracking is active and we should send a message for our users
@@ -513,9 +514,9 @@ class Owner(models.Model):
                         "notes": notes,
                         "value": intcomma(int(contract.price or 0)),
                         "assigned_to": assigned_to,
-                        "assigned_from": EveEntity.objects.resolve_name(
+                        "assigned_from": EveEntity.objects.get_or_create_esi(
                             contract.issuer_id
-                        ),
+                        ).name,
                     }
 
                     send_user_notification(
@@ -1465,3 +1466,58 @@ class Faq(models.Model):
     )
 
     body = models.TextField()
+
+
+class EveEntityManager(models.Manager):
+    def bulk_get_or_create_esi(self, entity_ids: list[int]):
+        existing = self.filter(id__in=entity_ids)
+        existing_ids = set(existing.values_list("id", flat=True))
+
+        missing_ids = [eid for eid in entity_ids if eid not in existing_ids]
+        missing_ids.sort()
+
+        if len(missing_ids) == 0:
+            return existing
+
+        new_entities = []
+        for missing in utils.batched(missing_ids, 1000):
+            names, response = esi.client.Universe.PostUniverseNames(
+                body=list(missing)
+            ).results(return_response=True)
+
+            if response.status_code == 304:
+                continue
+
+            new_entities.extend(
+                [
+                    self.model(id=item.id, name=item.name, category=item.category)
+                    for item in names
+                ]
+            )
+
+        self.bulk_create(new_entities)
+
+        return self.filter(id__in=entity_ids)
+
+    def get_or_create_esi(self, entity_id: int):
+        return self.bulk_get_or_create_esi(entity_ids=[entity_id])[0]
+
+
+class EveEntity(models.Model):
+    id = models.BigIntegerField(primary_key=True, null=False, auto_created=False)
+    name = models.TextField(null=False)
+
+    class Category(models.TextChoices):
+        ALLIANCE = "alliance", _("Alliance")
+        CHARACTER = "character", _("Character")
+        CONSTELLATION = "constellation", _("Constellation")
+        CORPORATION = "corporation", _("Corporation")
+        INVENTORY_TYPE = "inventory_type", _("Inventory Type")
+        REGION = "region", _("Region")
+        SOLAR_SYSTEM = "solar_system", _("Solar System")
+        STATION = "station", _("Station")
+        FACTION = "faction", _("Faction")
+
+    category = models.TextField(choices=Category.choices, null=False)
+
+    objects = EveEntityManager()

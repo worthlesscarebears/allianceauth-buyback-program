@@ -75,7 +75,6 @@ An Alliance Auth app for creating buyback programs and to allow users calculate 
 ### Step 1 - Prerequisites
 
 1. Buyback program is a plugin for Alliance Auth. If you don't have Alliance Auth running already, please install it first before proceeding. (see the official [AA installation guide](https://allianceauth.readthedocs.io/en/latest/installation/auth/allianceauth/) for details)
-1. Buyback program needs the app [django-eveuniverse](https://gitlab.com/ErikKalkoken/django-eveuniverse) to function. Please make sure it is installed, before before continuing.
 1. Buyback program needs the app [django-eveonline-sde](https://github.com/Solar-Helix-Independent-Transport/django-eveonline-sde) to function. Please make sure it is installed, before before continuing.
 
 ### Step 2 - Install App
