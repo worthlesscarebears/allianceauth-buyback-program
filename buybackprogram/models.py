@@ -1285,6 +1285,7 @@ class ProgramItem(models.Model):
         ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Select item for special tax",
+        related_name="buyback_program_item_item_type",
     )
     item_tax = models.IntegerField(
         verbose_name="Item tax adjustment",
@@ -1310,6 +1311,7 @@ class ItemPrices(models.Model):
         ItemType,
         on_delete=models.deletion.CASCADE,
         unique=True,
+        related_name="buyback_item_prices_eve_type",
     )
     buy = models.DecimalField(max_digits=20, decimal_places=2)
     sell = models.DecimalField(max_digits=20, decimal_places=2)
@@ -1349,6 +1351,7 @@ class ContractItem(models.Model):
         ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Item type information",
+        related_name="buyback_contract_item_eve_type",
     )
 
     quantity = models.IntegerField()
@@ -1420,6 +1423,7 @@ class TrackingItem(models.Model):
         ItemType,
         on_delete=models.deletion.CASCADE,
         help_text="Item type information",
+        related_name="buyback_tracking_item_eve_type",
     )
 
     buy_value = models.DecimalField(max_digits=20, decimal_places=2, null=False)
