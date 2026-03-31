@@ -366,7 +366,7 @@ def get_item_prices(item_type, name, quantity, program):
                 else:
                     compresed_name = "Compressed " + name
 
-                compresed_type = ItemType.objects.filter(name=compresed_name).first()
+                compresed_type = ItemType.objects.filter(name_en=compresed_name).first()
 
                 compression_price = get_or_create_prices(compresed_type.id)
 

@@ -60,7 +60,7 @@ def program_calculate(request, program_pk):
                     # Get item name from the first part
                     name = parts[0].replace("*", "")
 
-                    item_type = ItemType.objects.filter(name=name).first()
+                    item_type = ItemType.objects.filter(name_en=name).first()
 
                     # Check if we have a match from the database for the item
                     if item_type:
