@@ -332,7 +332,7 @@ def get_item_prices(item_type, name, quantity, program):
 
             # Get price details for the materials inside the item
             for material in type_materials:
-                material_price = get_or_create_prices(material.material_eve_type.id)
+                material_price = get_or_create_prices(material.material_item_type.id)
 
                 # Quantity of refined materials
                 material_quantity = (
@@ -340,7 +340,7 @@ def get_item_prices(item_type, name, quantity, program):
                 ) / item_type.portion_size
 
                 material_type_prices = {
-                    "id": material.material_eve_type.id,
+                    "id": material.material_item_type.id,
                     "quantity": material_quantity,
                     "unit_quantity": material.quantity / item_type.portion_size,
                     "buy": material_price.buy,
