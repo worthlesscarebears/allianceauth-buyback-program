@@ -28,7 +28,7 @@ def program_special_taxes(request, program_pk):
 
 
 @login_required
-@permission_required("buybackprogram.basic_access")
+@permission_required("buybackprogram.manage_programs")
 def program_edit_item(request, program_pk):
     program = Program.objects.get(pk=program_pk)
 
@@ -89,7 +89,7 @@ def program_edit_item(request, program_pk):
 
 
 @login_required
-@permission_required("buybackprogram.basic_access")
+@permission_required("buybackprogram.manage_programs")
 def program_edit_marketgroup(request, program_pk):
     program = Program.objects.get(pk=program_pk)
 
