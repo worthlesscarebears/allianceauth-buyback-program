@@ -21,6 +21,7 @@ from buybackprogram.app_settings import (
     BUYBACKPROGRAM_PRICE_SOURCE_ID,
     BUYBACKPROGRAM_PRICE_SOURCE_NAME,
 )
+from buybackprogram.janice import JaniceAppraisal
 from buybackprogram.models import ItemPrices, Owner, Program, Tracking, TrackingItem
 
 from .app_settings import (
@@ -109,6 +110,25 @@ def get_bulk_prices(type_ids):
         raise f"Unknown pricing method: {BUYBACKPROGRAM_PRICE_METHOD}"
 
     return r
+
+
+def appraise_items(text: str) -> JaniceAppraisal:
+    if BUYBACKPROGRAM_PRICE_METHOD != "Janice":
+        raise Exception("unimplemented")
+
+    r = requests.post(
+        url="https://janice.e-351.com/api/rest/v2/appraisal?market=2&designation=appraisal&pricing=buy&pricingVariant=immediate&persist=false&compactize=true&pricePercentage=1",
+        data=text,
+        headers={
+            "Content-Type": "text/plain",
+            "X-ApiKey": BUYBACKPROGRAM_PRICE_JANICE_API_KEY,
+            "accept": "application/json",
+        },
+    )
+
+    r.raise_for_status()
+
+    return JaniceAppraisal.model_validate(r.json())
 
 
 @shared_task

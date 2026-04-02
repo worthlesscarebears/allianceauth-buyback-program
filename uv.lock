@@ -15,6 +15,8 @@ dependencies = [
     { name = "allianceauth-app-utils" },
     { name = "django-esi" },
     { name = "django-eveonline-sde" },
+    { name = "pydantic" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -29,6 +31,8 @@ requires-dist = [
     { name = "allianceauth-app-utils", specifier = ">=1.18.0" },
     { name = "django-esi", specifier = ">=8.3.1,<10.0.0" },
     { name = "django-eveonline-sde", specifier = ">=0.0.1b6" },
+    { name = "pydantic", specifier = ">=2.11.9" },
+    { name = "requests", specifier = ">=2.33.0,<3.0.0" },
 ]
 
 [package.metadata.requires-dev]

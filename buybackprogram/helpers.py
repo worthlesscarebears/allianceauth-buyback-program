@@ -24,6 +24,7 @@ from buybackprogram.constants import (
     ORE_EVE_GROUPS,
     RED_LOOT_TYPE_IDS,
 )
+from buybackprogram.janice import JaniceAppraisalItem
 from buybackprogram.models import ItemPrices, ProgramItem, Tracking, TrackingItem
 from buybackprogram.notes import (
     note_compressed_price_used,
@@ -69,7 +70,7 @@ def use_npc_price(item, program):
         return False
 
 
-def get_or_create_prices(item_id):
+def get_or_create_prices(item_id: int) -> ItemPrices:
     try:
         return ItemPrices.objects.get(eve_type_id=item_id)
 
@@ -155,7 +156,7 @@ def get_or_create_prices(item_id):
 
             return price
         except Error as e:
-            logger.error("Error updating prices: %s" % e)
+            raise Exception(f"Error updating prices: ${e}")
 
 
 def getList(dict):
@@ -237,9 +238,11 @@ def get_price_dencity_tax(
 
 
 # This method will get the price information for the item. It will not calculate the values as in price including taxes.
-def get_item_prices(item_type, name, quantity, program):
+def get_item_prices(item_type, item: JaniceAppraisalItem, program):
     notes = []
     has_price_variants = False
+    name = item_type.name_en
+    quantity = item.amount
 
     # Get special taxes and see if our item belongs to this table
     program_item_settings = ProgramItem.objects.filter(
@@ -285,7 +288,7 @@ def get_item_prices(item_type, name, quantity, program):
     if not item_disallowed:
         # If raw ore value should not be taken into account
         if is_ore(item_type.group.id) and not program.use_raw_ore_value:
-            logger.debug("Raw price not used for %s" % item_type.name)
+            logger.debug("Raw price not used for %s" % name)
 
             item_raw_price = {
                 "id": item_type.id,
