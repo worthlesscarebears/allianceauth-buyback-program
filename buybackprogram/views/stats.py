@@ -101,7 +101,7 @@ def my_stats(request):
 
 
 @login_required
-@permission_required("buybackprogram.basic_access")
+@permission_required("buybackprogram.manage_programs")
 def leaderboard(request, program_pk):
     program = Program.objects.get(pk=program_pk)
 
