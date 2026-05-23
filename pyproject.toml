@@ -51,7 +51,7 @@ sections = [
     "FIRSTPARTY",
     "LOCALFOLDER",
 ]
-known_allianceauth = ["allianceauth", "app_utils"]
+known_allianceauth = ["allianceauth"]
 known_django = ["django", "django_webtest", "esi", "eve_sde"]
 
 [dependency-groups]
