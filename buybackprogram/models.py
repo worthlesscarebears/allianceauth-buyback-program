@@ -16,7 +16,6 @@ from allianceauth.authentication.models import CharacterOwnership, State
 # Create your models here.
 from allianceauth.eveonline.models import EveCorporationInfo
 from allianceauth.services.hooks import get_extension_logger
-from app_utils.esi import fetch_esi_status
 
 from buybackprogram import utils
 from buybackprogram.notification import (
@@ -700,8 +699,6 @@ class Owner(models.Model):
 
     @fetch_token_for_owner(["esi-universe.read_structures.v1"])
     def _get_location_name(self, token: Token, structid) -> str:
-        if not fetch_esi_status().is_ok:
-            return "Unknown"
         # https://developers.eveonline.com/docs/guides/id-ranges/
         if (
             structid >= 60_000_000 and structid <= 69_999_999
