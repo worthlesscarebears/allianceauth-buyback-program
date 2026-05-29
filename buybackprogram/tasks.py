@@ -3,13 +3,13 @@ import os
 from datetime import datetime, timedelta
 
 import requests
-from bravado.exception import HTTPBadGateway, HTTPGatewayTimeout, HTTPServiceUnavailable
 from celery import shared_task
 
 from django.conf import settings
 from django.db import Error
 from django.utils import timezone
 from esi.errors import TokenError
+from esi.exceptions import HTTPServerError
 
 from allianceauth.services.hooks import get_extension_logger
 from allianceauth.services.tasks import QueueOnce
@@ -44,9 +44,7 @@ TASK_ESI_KWARGS = {
         "bind": True,
         "autoretry_for": (
             OSError,
-            HTTPBadGateway,
-            HTTPGatewayTimeout,
-            HTTPServiceUnavailable,
+            HTTPServerError,
         ),
         "retry_kwargs": {"max_retries": 3},
         "retry_backoff": 30,
