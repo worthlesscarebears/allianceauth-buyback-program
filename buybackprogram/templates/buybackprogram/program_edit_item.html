@@ -1,7 +1,7 @@
 {% extends 'buybackprogram/page.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load bootstrap %}
+{% load django_bootstrap5 %}
 {% load static %}
 
 {% block body %}
@@ -11,13 +11,13 @@
     {% if perms.buybackprogram.manage_programs and program.owner.user == request.user %}
       <form class="form" action="{% url 'buybackprogram:program_edit_item' program_pk=program.id %}" method="POST">
         {% csrf_token %}
-        {{ form|bootstrap }}
+        {% bootstrap_form form %}
         <button type="submit" class="btn btn-primary">{% trans "Add item" %}</button>
       </form>
     {% endif %}
   </div>
   <div class="card-footer text-muted">
-    <a class="btn btn-default navbar-btn btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}"><i class="fas fa-long-arrow-alt-left"></i> {% trans "Back to item taxes" %}</a>
+    <a class="btn btn-warning" href="{% url 'buybackprogram:program_special_taxes' program_pk=program.id %}"><i class="fas fa-long-arrow-alt-left"></i> {% trans "Back to item taxes" %}</a>
   </div>
 </div>
 {% endblock %}

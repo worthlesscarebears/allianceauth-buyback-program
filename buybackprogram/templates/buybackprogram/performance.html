@@ -1,7 +1,7 @@
 {% extends 'buybackprogram/page.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load bootstrap %}
+{% load django_bootstrap5 %}
 {% load static %}
 {% load i18n %}
 
@@ -271,7 +271,7 @@ var hscaling;
 
 	var html = "";
 	for (const [key, value] of Object.entries(data.categories)) {
-		html += '<button type="button" class="btn btn-default" onclick="render(\'' + key + '\')">' + key + '</button>';
+		html += '<button type="button" class="btn btn-secondary" onclick="render(\'' + key + '\')">' + key + '</button>';
 
 		catisk.load({columns: [data['x'], value[0]]});
 		catq.load({columns: [data['x'], value[1]]});
